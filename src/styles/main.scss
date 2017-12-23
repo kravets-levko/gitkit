@@ -1,0 +1,22 @@
+@import "~bootstrap/scss/bootstrap";
+@import "helpers";
+
+svg {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.navbar {
+
+  .navbar-brand {
+    svg {
+      width: 32px;
+      height: 32px;
+
+      path {
+        fill: $gray-100;
+      }
+    }
+  }
+
+}

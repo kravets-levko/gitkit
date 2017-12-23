@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <base href="/">
+    <title>{% block title %}{% endblock %}</title>
+
+    <link rel="stylesheet" type="text/css" href="assets/app.css">
+  </head>
+  <body>
+    {% include 'layout/header.twig' %}
+
+    <div class="container-fluid my-3">{% block content %}{% endblock %}</div>
+
+    <script type="text/javascript" src="assets/app.js"></script>
+  </body>
+</html>

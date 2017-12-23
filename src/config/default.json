@@ -1,0 +1,5 @@
+{
+  "gitBinary": "git",
+  "repositoriesPath": "/home/git",
+  "cloneOverSSHTemplate": "git@localhost:{path}"
+}

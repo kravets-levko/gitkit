@@ -1,0 +1,12 @@
+{
+  "extends": "google",
+  "env": {
+    "es6": true
+  },
+  "rules": {
+    "arrow-parens": ["error", "as-needed"],
+    "comma-dangle": ["error", "always-multiline"],
+    "require-jsdoc": "off",
+    "new-cap": "off"
+  }
+}
