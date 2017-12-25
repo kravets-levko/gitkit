@@ -4,9 +4,17 @@ namespace Classes\Git;
 
 class Process {
 
-  static public function run($command, $args = [], $cwd = null) {
-    $command = trim(escapeshellarg($command) . ' ' .
-      implode(' ', array_map('escapeshellarg', $args)));
+  static public function run($command, $args = null, $cwd = null) {
+    if (is_array($args)) {
+      $args = implode(' ', array_map('escapeshellarg', $args));
+    }
+    if (is_string($args) && ($args != '')) {
+      $args = ' ' . $args;
+    } else {
+      $args = '';
+    }
+
+    $command = trim(escapeshellarg($command) . $args);
 
     $process = proc_open($command, [
       0 => ['pipe', 'r'],

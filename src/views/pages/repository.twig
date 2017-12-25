@@ -4,22 +4,39 @@
 
 {% block content %}
   <h1>{{ group }}/{{ name }}</h1>
-  <p>Clone URL: <a href="{{ repository.getCloneUrl() }}">{{ repository.getCloneUrl() }}</a></p>
+  <div class="row my-3">
+    <div class="col-auto">
+      <div class="dropdown">
+        <button class="form-control dropdown-toggle" data-toggle="dropdown" type="button">
+          Branch: <strong>{{ branch.getName() }}</strong>
+        </button>
+        <div class="dropdown-menu">
+        {% for b in repository.getBranches() %}
+          <a class="dropdown-item {% if b.getName() == branch.getName() %}active{% endif %}"
+            href="/{{ group }}/{{ name }}/tree/{{ b.getName() }}">{{ b.getName() }}</a>
+        {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="col text-right">
+      Clone URL: <input type="text" class="form-control d-inline-block w-auto" value="{{ repository.getCloneUrl() }}">
+    </div>
+  </div>
   <div class="table-responsive">
     <table class="table table-bordered table-striped table-hover">
       <thead class="thead-dark">
         <tr>
-          <th class="py-2" width="1%">Commit</th>
           <th class="py-2" width="1%">Mode</th>
           <th class="py-2">Path</th>
+          <th class="py-2" width="1%">Commit</th>
         </tr>
       </thead>
       <tbody>
       {% for file in repository.getFiles() %}
         <tr>
-          <td class="py-2">{{ file.commit }}</td>
           <td class="py-2">{{ file.mode }}</td>
           <td class="py-2">{{ file.path }}</td>
+          <td class="py-2 text-nowrap text-truncate"><a href="/{{ group }}/{{ name }}/commit/{{ file.commit.getHash() }}">{{ file.commit.getMessage() }}</a></td>
         </tr>
       {% endfor %}
       </tbody>

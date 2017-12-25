@@ -12,10 +12,21 @@ class Repository extends Action {
     $config = $this -> container -> get('config');
     $repo = \Classes\Git\Repository::getRepository(
       $args['group'] . '/' . $args['name'], $config);
+
+    if (isset($args['branch'])) {
+      $branch = $repo -> getBranch($args['branch']);
+    } else {
+      $branch = $repo -> getDefaultBranch();
+    }
+    if (!$branch) {
+      $this -> notFound();
+    }
+
     return $this -> view -> render($response, 'pages/repository.twig', [
       'group' => $args['group'],
       'name' => $args['name'],
       'repository' => $repo,
+      'branch' => $branch,
     ]);
   }
 
