@@ -1,9 +1,9 @@
 @import "~bootstrap/scss/bootstrap";
+@import "~octicons/build/build";
 @import "helpers";
 
 svg {
   display: inline-block;
-  vertical-align: top;
 }
 
 .navbar {
@@ -12,6 +12,7 @@ svg {
     svg {
       width: 32px;
       height: 32px;
+      vertical-align: top;
 
       path {
         fill: $gray-100;

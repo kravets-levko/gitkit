@@ -3,7 +3,7 @@
 {% block title %}{{ group }}/{{ name }} - GitKit{% endblock %}
 
 {% block content %}
-  <h1>{{ group }}/{{ name }}</h1>
+  <h1><a href="{{ group }}/{{ name }}">{{ group }}/{{ name }}</a></h1>
   <div class="row my-3">
     <div class="col-auto">
       <div class="dropdown">
@@ -13,7 +13,7 @@
         <div class="dropdown-menu">
         {% for b in repository.getBranches() %}
           <a class="dropdown-item {% if b.getName() == branch.getName() %}active{% endif %}"
-            href="/{{ group }}/{{ name }}/tree/{{ b.getName() }}">{{ b.getName() }}</a>
+            href="{{ group }}/{{ name }}/tree/{{ b.getName() }}">{{ b.getName() }}</a>
         {% endfor %}
         </div>
       </div>
@@ -22,23 +22,50 @@
       Clone URL: <input type="text" class="form-control d-inline-block w-auto" value="{{ repository.getCloneUrl() }}">
     </div>
   </div>
-  <div class="table-responsive">
+  <div>
     <table class="table table-bordered table-striped table-hover">
-      <thead class="thead-dark">
-        <tr>
-          <th class="py-2" width="1%">Mode</th>
-          <th class="py-2">Path</th>
-          <th class="py-2" width="1%">Commit</th>
-        </tr>
-      </thead>
       <tbody>
-      {% for file in repository.getFiles() %}
         <tr>
-          <td class="py-2">{{ file.mode }}</td>
-          <td class="py-2">{{ file.path }}</td>
-          <td class="py-2 text-nowrap text-truncate"><a href="/{{ group }}/{{ name }}/commit/{{ file.commit.getHash() }}">{{ file.commit.getMessage() }}</a></td>
+          {%  set latest = branch.getLatestCommit() %}
+          <td colspan="3" class="py-3">
+            <div class="row">
+              <div class="col">
+                <strong>{{ latest.getAuthor() }}</strong>
+                <a href="{{ group }}/{{ name }}/commit/{{ latest.getHash() }}">{{ latest.getMessage() }}</a>
+              </div>
+              <div class="col-auto text-right">
+                Latest commit <a href="{{ group }}/{{ name }}/commit/{{ latest.getHash() }}">{{ latest.getAbbrHash() }}</a>
+                {{ commit.getInfo().committerDate | date('M d, Y') }}
+              </div>
+            </div>
+          </td>
+        </tr>
+      {% if path != '' %}
+        <tr>
+          <td colspan="3" class="py-2">
+            <a
+              href="{{ group }}/{{ name }}/tree/{{ branch.getName() }}{% if parentPath != '' %}/{{ parentPath }}{% endif %}"
+            >..</a>
+          </td>
+        </tr>
+      {% endif %}
+      {% spaceless %}
+      {% for file in branch.getFiles(path) %}
+        <tr>
+          <td class="py-2">
+            <span class="octicon mr-1 text-secondary">
+            {% if file.type == 'blob' %}{% include 'assets/octicons/file.svg' %}{% endif %}
+            {% if file.type == 'tree' %}{% include 'assets/octicons/file-directory.svg' %}{% endif %}
+            </span>
+            <a href="{{ group }}/{{ name }}/{{ file.type }}/{{ branch.getName() }}/{{ path }}/{{ file.path }}">{{ file.path }}</a>
+          </td>
+          <td class="py-2"><a style="display: inline-block; max-width: 300px;"
+            title="{{ file.commit.getMessage() }}"
+            class="text-nowrap text-truncate" href="{{ group }}/{{ name }}/commit/{{ file.commit.getHash() }}">{{ file.commit.getMessage() }}</a></td>
+          <td class="py-2 text-nowrap text-right">{{ file.commit.getInfo().committerDate | date('M d, Y') }}</td>
         </tr>
       {% endfor %}
+      {% endspaceless %}
       </tbody>
     </table>
   </div>

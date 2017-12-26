@@ -6,8 +6,17 @@ class Repository {
 
   private $config = [];
   private $path = '';
+  /**
+   * @var Commit[]
+   */
   private $commits = [];
+  /**
+   * @var Branch[]
+   */
   private $branches = null;
+  /**
+   * @var Branch
+   */
   private $defaultBranch = null;
 
   public function __construct($path, $config) {
@@ -55,10 +64,16 @@ class Repository {
   }
 
   public function getCommit(string $hash) {
+    $hash = trim($hash);
+    if ($hash == '') return null;
     if (!array_key_exists($hash, $this -> commits)) {
       $this -> commits[$hash] = new Commit($this, $hash);
     }
     return $this -> commits[$hash];
+  }
+
+  public function getCommits(array $hashes) {
+    return array_filter(array_map([$this, 'getCommit'], $hashes));
   }
 
   public function getCloneUrl() {
@@ -98,26 +113,8 @@ class Repository {
     return array_key_exists($name, $this -> branches) ? $this -> branches[$name] : null;
   }
 
-  public function getFiles($branch = null) {
-    if (!($branch instanceof Branch)) {
-      $branch = $this -> getDefaultBranch();
-    }
-    $result = $this -> exec('ls-tree', '-r', 'HEAD');
-
-    $result = array_map(function($line) use ($branch) {
-      $line = trim($line);
-      list($description, $path) = explode("\t", $line, 2);
-      $commit = $this -> getCommit(trim($this -> exec(
-        'rev-list', '-1', $branch -> getName(), '--', $path
-      )));
-      return [
-        'path' => $path,
-        'commit' => $commit,
-        'mode' => array_first(explode(' ', $description, 2)),
-      ];
-    }, explode("\n", $result));
-
-    return $result;
+  public function getFiles($path = '') {
+    return $this -> getDefaultBranch() -> getFiles($path);
   }
 
   public function create() {

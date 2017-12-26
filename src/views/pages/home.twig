@@ -7,7 +7,7 @@
     {% for group in repositories | keys %}
       {% for name in repositories[group] | keys %}
       <div>
-        <a href="/{{ group }}/{{ name }}">{{ group }}/{{ name }}</a>
+        <a href="{{ group }}/{{ name }}">{{ group }}/{{ name }}</a>
       </div>
       {% endfor %}
     {% endfor %}

@@ -24,13 +24,14 @@ class Commit {
     return $this -> hash;
   }
 
+  public function getAbbrHash() {
+    return substr($this -> hash, 0, 7);
+  }
+
   public function getParents() {
     if ($this -> parents === null) {
-      $result = $this -> repository -> exec(['show', '--no-patch', '--format=%P']);
-      $hashes = array_filter(array_map('trim', explode(' ', $result)), 'strlen');
-      $this -> parents = array_map(function($hash) {
-        return $this -> repository -> getCommit($hash);
-      }, $hashes);
+      $hashes = $this -> repository -> exec(['show', '--no-patch', '--format=%P', $this -> hash]);
+      $this -> parents = $this -> repository -> getCommits(explode(' ', $hashes));
     }
     return $this -> parents;
   }
@@ -40,10 +41,10 @@ class Commit {
       $fields = [
         'author' => '%an',
         'authorEmail' => '%ae',
-        'authorDate' => '%aI',
+        'authorDate' => '%at',
         'committer' => '%cn',
         'committerEmail' => '%ce',
-        'committerDate' => '%cI',
+        'committerDate' => '%ct',
         'message' => '%B',
       ];
 
@@ -85,6 +86,40 @@ class Commit {
       $this -> diff = new Diff($this -> repository, $this);
     }
     return $this -> diff;
+  }
+
+  public function getFiles($path = '') {
+    $result = $this -> repository -> exec('ls-tree', $this -> hash . ':' . trim($path));
+
+    $result = array_filter(array_map(function($line) {
+      $line = trim($line);
+      if ($line == '') return null;
+      list($description, $path) = explode("\t", $line, 2);
+      list($mode, $type) = explode(' ', $description);
+      $commit = $this -> repository -> getCommit(trim($this -> repository -> exec(
+        'rev-list', '-1', $this -> hash, '--', $path
+      )));
+      return (object)[
+        'path' => $path,
+        'commit' => $commit,
+        'type' => $type,
+        'mode' => $mode,
+      ];
+    }, explode("\n", $result)));
+
+    $typeMap = [
+      'tree' => 0,
+      'blob' => 1,
+    ];
+
+    usort($result, function($a, $b) use ($typeMap) {
+      if ($a -> type == $b -> type) {
+        return strcmp($a -> path, $b -> path);
+      }
+      return $typeMap[$a -> type] - $typeMap[$b -> type];
+    });
+
+    return $result;
   }
 
 }
