@@ -1,0 +1,73 @@
+{% extends 'layout/main.twig' %}
+
+{% block title %}{{ group }}/{{ name }} - GitKit{% endblock %}
+
+{% block content %}
+  <h1>{{ group }}/{{ name }}</h1>
+
+  {% set slots = 5 %}
+  {% set stats = commit.getDiff().getStats(slots) %}
+
+  <div class="card">
+    <div class="card-header">{{ commit.getMessage() }}</div>
+    <div class="card-body">
+      <p>
+        {{ commit.getAuthor() }} comitted
+        {% if commit.getCommitter() != commit.getAuthor() %}
+          with {{ commit.getCommitter() }}
+        {% endif %}
+        on {{ commit.getInfo().committerDate }}
+      </p>
+      <p class="text-muted">commit {{ commit.getHash() }}</p>
+      {% if commit.getParents() | length > 0 %}
+      <p>
+        {{ commit.getParents() | length }} parent commit(s)
+        {% for c in commit.getParents() %}
+          <a href="{{ group }}/{{ name }}/commit/{{ p.getHash() }}">{{ p.gethash() }}</a>
+        {% endfor %}
+      </p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="my-3">
+    {% include 'assets/octicons/diff.svg' %}
+    Showing <strong>{{ stats.items | length }} changed file(s)</strong> with
+    <strong>{{ stats.additions }} addition(s)</strong> and
+    <strong>{{ stats.deletions }} deletion(s)</strong>.
+  </div>
+
+  <div class="list-group">
+    {% for item in stats.items %}
+    <div class="list-group-item px-0 py-1 border-x-0 {% if loop.first %}border-top-0{% endif %} {% if loop.last %}border-bottom-0{% endif %}">
+      <div class="row">
+        <div class="col"><a href="javascript:void(0)">{{ item.filename }}</a></div>
+        <div class="col-auto text-right">
+          {% if item.binary %}
+            <strong class="text-primary">BIN</strong>
+          {% else %}
+            <strong class="text-success">+{{ item.additions }}</strong>
+            <strong class="text-danger">-{{ item.deletions }}</strong>
+          {% endif %}
+          {% spaceless %}
+            {% if item.additions_slots > 0 %}
+              {% for i in 1..item.additions_slots %}<span class="diff-slot text-success"></span>{% endfor %}
+            {% endif %}
+            {% if item.deletions_slots > 0 %}
+              {% for i in 1..item.deletions_slots %}<span class="diff-slot text-danger"></span>{% endfor %}
+            {% endif %}
+            {% set rest_slots = slots - item.additions_slots - item.deletions_slots %}
+            {% if rest_slots > 0 %}
+              {% for i in 1..rest_slots %}<span class="diff-slot"></span>{% endfor %}
+            {% endif %}
+          {% endspaceless %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div>
+    <pre>{{ stats | json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+  </div>
+{% endblock %}

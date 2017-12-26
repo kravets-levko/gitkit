@@ -9,6 +9,7 @@ $app = new \Slim\App([
   ],
 ]);
 
+$app -> get('/{group}/{name}/commit/{commit}', Actions\Commit::class);
 $app -> get('/{group}/{name}/tree/{branch}', Actions\Repository::class);
 $app -> get('/{group}/{name}', Actions\Repository::class);
 $app -> get('/', Actions\Home::class);

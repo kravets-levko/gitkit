@@ -20,3 +20,13 @@ svg {
   }
 
 }
+
+.diff-slot {
+  display: inline-block;
+  width: 0.7em;
+  height: 0.7em;
+  border: none;
+  color: $gray-300;
+  background: currentColor;
+  margin: 1px 0 1px 1px;
+}
