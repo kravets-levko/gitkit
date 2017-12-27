@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Git;
+namespace Classes\Git\Utils;
 
 class Process {
 

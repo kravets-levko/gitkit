@@ -3,26 +3,10 @@
 namespace Actions;
 
 use Classes\Action;
-use Classes\Git\Branch;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
 class Repository extends Action {
-
-  private function parseBranchAndPath($branches, $url) {
-    $branches = array_map(function(Branch $branch) {
-      return $branch -> getName();
-    }, $branches);
-    usort($branches, function($a, $b) {
-      return strlen($b) - strlen($a);
-    });
-    foreach ($branches as $branch) {
-      if (($branch == $url) || (strpos($url, $branch . '/') === 0)) {
-        return [$branch, trim(substr($url, strlen($branch) + 1), '/')];
-      }
-    }
-    return [$url, ''];
-  }
 
   public function get(Request $request, Response $response, $args) {
     $config = $this -> container -> get('config');
@@ -31,12 +15,12 @@ class Repository extends Action {
 
     $path = '';
     if (isset($args['branch'])) {
-      list($branch, $path) = $this -> parseBranchAndPath($repo -> getBranches(), $args['branch']);
-      $branch = $repo -> getBranch($branch);
+      list($ref, $path) = explode(':', $args['branch']);
+      $ref = $repo -> getRef($ref);
     } else {
-      $branch = $repo -> getDefaultBranch();
+      $ref = $repo -> getDefaultBranch();
     }
-    if (!$branch) {
+    if (!$ref) {
       $this -> notFound();
     }
     if (!is_string($path)) {
@@ -52,7 +36,7 @@ class Repository extends Action {
       'group' => $args['group'],
       'name' => $args['name'],
       'repository' => $repo,
-      'branch' => $branch,
+      'ref' => $ref,
       'path' => $path,
       'parentPath' => $parentPath,
     ]);

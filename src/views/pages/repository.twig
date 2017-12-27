@@ -6,15 +6,52 @@
   <h1><a href="{{ group }}/{{ name }}">{{ group }}/{{ name }}</a></h1>
   <div class="row my-3">
     <div class="col-auto">
-      <div class="dropdown">
+      <div class="dropdown" data-close-outside>
         <button class="form-control dropdown-toggle" data-toggle="dropdown" type="button">
-          Branch: <strong>{{ branch.getName() }}</strong>
+          Branch: <strong>{{ ref.getName() }}</strong>
         </button>
-        <div class="dropdown-menu">
-        {% for b in repository.getBranches() %}
-          <a class="dropdown-item {% if b.getName() == branch.getName() %}active{% endif %}"
-            href="{{ group }}/{{ name }}/tree/{{ b.getName() }}">{{ b.getName() }}</a>
-        {% endfor %}
+        <div class="dropdown-menu p-0">
+          <div class="card border-0">
+            <div class="card-header">
+              <ul class="nav nav-tabs card-header-tabs flex-nowrap">
+                <li class="nav-item">
+                  <a class="nav-link {% if ref.getRefType() == 'branch' %}active{% endif %}"
+                    data-toggle="tab" data-target="#repository-branches"
+                    href="javascript:void(0)">Branches</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link {% if ref.getRefType() == 'tag' %}active{% endif %}"
+                    data-target="#repository-tags" data-toggle="tab"
+                    href="javascript:void(0)">Tags</a>
+                </li>
+              </ul>
+            </div>
+            <div class="card-body p-0" style="min-width: 300px; max-height: 400px; overflow: auto;">
+              <div class="tab-content">
+                <div class="tab-pane {% if ref.getRefType() == 'branch' %}show active{% endif %}" id="repository-branches">
+                  <div class="nav flex-column nav-pills">
+                  {% for b in repository.getBranches() %}
+                    <a class="nav-link rounded-0 text-nowrap {% if b.getName() == ref.getName() %}active{% endif %}"
+                      href="{{ group }}/{{ name }}/tree/{{ b.getName() }}">{{ b.getName() }}</a>
+                  {% else %}
+                    <div class="nav-link disabled">Nothing to show</div>
+                  {% endfor %}
+                  </div>
+                </div>
+
+                <div class="tab-pane {% if ref.getRefType() == 'tag' %}show active{% endif %}" id="repository-tags">
+                  <div class="nav flex-column nav-pills">
+                    {% for b in repository.getTags() %}
+                      <a class="nav-link rounded-0 text-nowrap {% if b.getName() == ref.getName() %}active{% endif %}"
+                        href="{{ group }}/{{ name }}/tree/{{ b.getName() }}">{{ b.getName() }}</a>
+                    {% else %}
+                      <div class="nav-link disabled">Nothing to show</div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -22,11 +59,12 @@
       Clone URL: <input type="text" class="form-control d-inline-block w-auto" value="{{ repository.getCloneUrl() }}">
     </div>
   </div>
+
   <div>
     <table class="table table-bordered table-striped table-hover">
       <tbody>
         <tr>
-          {%  set latest = branch.getLatestCommit() %}
+          {% set latest = ref.getHead() %}
           <td colspan="3" class="py-3">
             <div class="row">
               <div class="col">
@@ -34,8 +72,8 @@
                 <a href="{{ group }}/{{ name }}/commit/{{ latest.getHash() }}">{{ latest.getMessage() }}</a>
               </div>
               <div class="col-auto text-right">
-                Latest commit <a href="{{ group }}/{{ name }}/commit/{{ latest.getHash() }}">{{ latest.getAbbrHash() }}</a>
-                {{ commit.getInfo().committerDate | date('M d, Y') }}
+                Latest commit <a href="{{ group }}/{{ name }}/commit/{{ latest.getHash() }}">{{ latest.getAbbreviatedHash() }}</a>
+                {{ latest.getInfo().committerDate | date('M d, Y') }}
               </div>
             </div>
           </td>
@@ -44,25 +82,25 @@
         <tr>
           <td colspan="3" class="py-2">
             <a
-              href="{{ group }}/{{ name }}/tree/{{ branch.getName() }}{% if parentPath != '' %}/{{ parentPath }}{% endif %}"
+              href="{{ group }}/{{ name }}/tree/{{ ref.getName() }}{% if parentPath != '' %}:{{ parentPath }}{% endif %}"
             >..</a>
           </td>
         </tr>
       {% endif %}
       {% spaceless %}
-      {% for file in branch.getFiles(path) %}
+      {% for node in ref.getTree().getNodes(path) %}
         <tr>
           <td class="py-2">
             <span class="octicon mr-1 text-secondary">
-            {% if file.type == 'blob' %}{% include 'assets/octicons/file.svg' %}{% endif %}
-            {% if file.type == 'tree' %}{% include 'assets/octicons/file-directory.svg' %}{% endif %}
+            {% if node.getType() == 'blob' %}{% include 'assets/octicons/file.svg' %}{% endif %}
+            {% if node.getType() == 'tree' %}{% include 'assets/octicons/file-directory.svg' %}{% endif %}
             </span>
-            <a href="{{ group }}/{{ name }}/{{ file.type }}/{{ branch.getName() }}/{{ path }}/{{ file.path }}">{{ file.path }}</a>
+            <a href="{{ group }}/{{ name }}/{{ node.getType() }}/{{ ref.getName() }}:{{ node.getPath() }}">{{ node.getName() }}</a>
           </td>
           <td class="py-2"><a style="display: inline-block; max-width: 300px;"
-            title="{{ file.commit.getMessage() }}"
-            class="text-nowrap text-truncate" href="{{ group }}/{{ name }}/commit/{{ file.commit.getHash() }}">{{ file.commit.getMessage() }}</a></td>
-          <td class="py-2 text-nowrap text-right">{{ file.commit.getInfo().committerDate | date('M d, Y') }}</td>
+            title="{{ node.getCommit().getMessage() }}"
+            class="text-nowrap text-truncate" href="{{ group }}/{{ name }}/commit/{{ node.getCommit().getHash() }}">{{ node.getCommit().getMessage() }}</a></td>
+          <td class="py-2 text-nowrap text-right">{{ node.getCommit().getInfo().committerDate | date('M d, Y') }}</td>
         </tr>
       {% endfor %}
       {% endspaceless %}

@@ -1,6 +1,8 @@
 <?php
 
-namespace Classes\Git;
+namespace Classes\Git\Core;
+
+use \Classes\Git\Repository;
 
 class Diff {
 

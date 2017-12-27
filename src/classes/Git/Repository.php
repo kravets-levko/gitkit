@@ -2,10 +2,20 @@
 
 namespace Classes\Git;
 
+use \Classes\Git\Utils\Config;
+use \Classes\Git\Utils\LazyArray;
+use \Classes\Git\Utils\Process;
+use \Classes\Git\Core\Commit;
+use \Classes\Git\Core\Branch;
+use \Classes\Git\Core\Tag;
+
 class Repository {
 
-  private $config = [];
-  private $path = '';
+  /**
+   * @var Config
+   */
+  private $config;
+  private $path;
   /**
    * @var Commit[]
    */
@@ -18,6 +28,11 @@ class Repository {
    * @var Branch
    */
   private $defaultBranch = null;
+
+  /**
+   * @var Tag[]
+   */
+  private $tags = null;
 
   public function __construct($path, $config) {
     $this -> config = $config;
@@ -73,7 +88,8 @@ class Repository {
   }
 
   public function getCommits(array $hashes) {
-    return array_filter(array_map([$this, 'getCommit'], $hashes));
+    $hashes = array_filter(array_map('trim', $hashes), 'strlen');
+    return new LazyArray($hashes, [$this, 'getCommit']);
   }
 
   public function getCloneUrl() {
@@ -113,8 +129,27 @@ class Repository {
     return array_key_exists($name, $this -> branches) ? $this -> branches[$name] : null;
   }
 
-  public function getFiles($path = '') {
-    return $this -> getDefaultBranch() -> getFiles($path);
+  public function getTags() {
+    if ($this -> tags === null) {
+      $this -> tags = [];
+      $names = explode("\n", $this -> exec('tag', '--list'));
+      foreach ($names as $name) {
+        $this -> tags[$name] = new Tag($this, $name);
+      }
+    }
+    return array_values($this -> tags);
+  }
+
+  public function getTag($name) {
+    $this -> getTags();
+    return array_key_exists($name, $this -> tags) ? $this -> tags[$name] : null;
+  }
+
+  public function getRef($ref) {
+    $result = $this -> getBranch($ref);
+    if (!$result) $result = $this -> getTag($ref);
+    // TODO: Ref may be a commit - it should exist in this repo
+    return $result;
   }
 
   public function create() {

@@ -23,7 +23,7 @@
       <p>
         {{ commit.getParents() | length }} parent commit(s)
         {% for p in commit.getParents() %}
-          <a href="{{ group }}/{{ name }}/commit/{{ p.getHash() }}">{{ p.getAbbrHash() }}</a>
+          <a href="{{ group }}/{{ name }}/commit/{{ p.getHash() }}">{{ p.getAbbreviatedHash() }}</a>
         {% endfor %}
       </p>
       {% endif %}
