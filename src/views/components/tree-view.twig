@@ -1,0 +1,41 @@
+<table class="table table-striped table-hover m-0">
+  <tbody>
+  {% if path != '' %}
+    <tr>
+      {% set parentPath = path | split('/') | reverse | slice(1) | reverse | join('/') %}
+      <td colspan="3" class="py-2">
+        {% if parentPath == '' %}
+          {% if ref.name == defaultBranch.name %}
+            <a href="{{ base }}">..</a>
+          {% else %}
+            <a href="{{ base }}/tree/{{ ref.name }}">..</a>
+          {% endif %}
+        {% else %}
+          <a href="{{ base }}/tree/{{ ref.name }}:{{ parentPath }}">..</a>
+        {% endif %}
+      </td>
+    </tr>
+  {% endif %}
+  {% spaceless %}
+    {% for node in ref.tree.nodes(path) %}
+      <tr>
+        <td class="py-2">
+            <span class="octicon mr-1 text-secondary">
+            {% if node.type == 'blob' %}{% include 'assets/octicons/file.svg' %}{% endif %}
+              {% if node.type == 'tree' %}{% include 'assets/octicons/file-directory.svg' %}{% endif %}
+            </span>
+          <a href="{{ base }}/{{ node.type }}/{{ ref.name }}:{{ node.path }}">{{ node.name }}</a>
+        </td>
+        <td class="py-2">
+          <div class="text-nowrap text-truncate" style="max-width: 400px;">
+            <a title="{{ node.commit.message }}"
+              href="{{ base }}/commit/{{ node.commit.hash }}"
+            >{{ node.commit.message }}</a>
+          </div>
+        </td>
+        <td width="1%" class="py-2 text-nowrap text-right">{{ node.commit.info.committerDate | date('M d, Y') }}</td>
+      </tr>
+    {% endfor %}
+  {% endspaceless %}
+  </tbody>
+</table>

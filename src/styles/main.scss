@@ -8,7 +8,12 @@ svg {
 
 // Make it hidden until rendered
 markdown {
-  display: none;
+  display: block;
+  white-space: pre-wrap;
+}
+
+.dropdown-menu.shadow {
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
 }
 
 .navbar {
@@ -25,6 +30,11 @@ markdown {
     }
   }
 
+}
+
+.btn.form-control {
+  border: $input-btn-border-width solid $input-border-color;
+  @include form-control-focus();
 }
 
 .diff-slot {

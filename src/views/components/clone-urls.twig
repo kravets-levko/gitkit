@@ -1,0 +1,51 @@
+{% spaceless %}
+  <div class="dropdown" data-close-outside>
+    <button class="btn btn-success dropdown-toggle" data-toggle="dropdown" type="button">Clone or download</button>
+    <div class="dropdown-menu dropdown-menu-right shadow p-0">
+      <div class="card border-0">
+        <div class="card-header">
+          <ul class="nav nav-tabs card-header-tabs flex-nowrap">
+            {% for key in cloneUrls | keys %}
+            <li class="nav-item">
+              <a class="nav-link {% if loop.first %}active{% endif %}"
+                data-toggle="tab" data-target="#repository-clone-{{ key }}"
+                href="javascript:void(0)">{{ {ssh: 'SSH', http: 'HTTP'}[key] ?? (key | upper) }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="card-body p-0">
+          <div class="tab-content px-3 py-2">
+            {% for key in cloneUrls | keys %}
+            <div class="tab-pane {% if loop.first %}show active{% endif %}" id="repository-clone-{{ key }}">
+              {% if key == 'ssh' %}
+                <h3 class="text-nowrap">Clone with SSH</h3>
+                <p>Use an SSH key and passphrase from account.</p>
+              {% elseif key == 'http' %}
+                <h3 class="text-nowrap">Clone with HTTP</h3>
+                <p>Use Git or checkout with SVN using the web URL.</p>
+              {% endif %}
+              <div class="input-group">
+                <input type="text" class="form-control" style="min-width: 300px;"
+                  id="resource-clone-url-{{ key }}" value="{{ cloneUrls[key] }}">
+                <span class="input-group-btn">
+                  <button class="btn form-control" type="button"
+                    data-clipboard-target="#resource-clone-url-{{ key }}"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="Copy to clipboard" data-title-copied="Copied!"
+                  >
+                    <span class="octicon">{% include 'assets/octicons/clippy.svg' %}</span>
+                  </button>
+                </span>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="card-footer text-center">
+          <a href="javascript:void(0)"><strong>Download ZIP</strong></a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endspaceless %}

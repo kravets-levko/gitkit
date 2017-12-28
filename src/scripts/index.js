@@ -3,8 +3,27 @@
 window.$ = window.jQuery = require('jquery');
 window.Popper = require('popper.js');
 require('bootstrap');
-
+const Clipboard = require('clipboard');
 const marked = require('marked');
+
+// Tooltips
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip();
+});
+
+// Copy to clipboard buttons
+$(function() {
+  const clipboard = new Clipboard('[data-clipboard-target]');
+  clipboard.on('success', function(element) {
+    element = $(element.trigger);
+    const originalTitle = element.attr('data-original-title');
+    element.attr('data-original-title', element.attr('data-title-copied'));
+    element.tooltip('setContent').tooltip('show');
+    element.one('hidden.bs.tooltip', function() {
+      element.attr('data-original-title', originalTitle);
+    });
+  });
+});
 
 // Dropdown: allow to stay visible if click inside and close on click outside
 $('body').on('hide.bs.dropdown', '.dropdown[data-close-outside]', function(event) {
@@ -22,7 +41,7 @@ $('body').on('hide.bs.dropdown', '.dropdown[data-close-outside]', function(event
 
 $(function() {
   const renderer = new marked.Renderer();
-  marked.setOptions({
+  const options = {
     renderer: renderer,
     gfm: true,
     tables: true,
@@ -31,7 +50,7 @@ $(function() {
     sanitize: false,
     smartLists: true,
     smartypants: false
-  });
+  };
 
   renderer.listitem = function(text) {
     if (/^\s*\[[x ]\]\s*/.test(text)) {
@@ -52,6 +71,6 @@ $(function() {
 
   $('markdown').each(function() {
     const item = $(this);
-    item.replaceWith(marked(item.text()));
+    item.replaceWith(marked(item.text(), options));
   });
 });

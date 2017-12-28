@@ -1,5 +1,8 @@
 {
   "gitBinary": "git",
   "repositoriesPath": "/home/git",
-  "cloneOverSSHTemplate": "git@localhost:{path}"
+  "cloneUrlTemplates": {
+    "ssh": "git@localhost:{path}",
+    "http": "http://gitkit.local/{path}"
+  }
 }

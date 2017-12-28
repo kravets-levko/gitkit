@@ -1,0 +1,20 @@
+{% spaceless %}
+<table class="table m-0">
+  <thead>
+    <tr>
+      <th class="border-0 align-top">
+        <strong title="{{ commit.info.author ~ '<' ~ commit.info.authorEmail ~ '>' }}">{{ commit.info.author }}</strong>
+        <a class="ml-2" href="{{ group }}/{{ name }}/commit/{{ commit.hash }}">{{ commit.message }}</a>
+      </th>
+      <th class="border-0 align-top text-right">
+        <span class="text-nowrap">
+          <span>Latest commit</span>
+          <a class="ml-2" href="{{ group }}/{{ name }}/commit/{{ commit.hash }}">{{ commit.abbreviatedHash }}</a>
+        </span>
+        &#32;
+        <span class="ml-2 text-nowrap">{{ commit.info.committerDate | date('M d, Y') }}</span>
+      </th>
+    </tr>
+  </thead>
+</table>
+{% endspaceless %}

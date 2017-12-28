@@ -68,9 +68,13 @@ class Repository {
     return new Repository($path, $config);
   }
 
-  protected function getCloneUrl() {
+  protected function getCloneUrls() {
     $path = substr($this -> _path, strlen($this -> _config -> repositoriesPath) + 1);
-    return str_replace('{path}', $path, $this -> _config -> cloneOverSSHTemplate);
+    $result = [];
+    foreach ($this -> _config -> cloneUrlTemplates as $key => $template) {
+      $result[$key] = str_replace('{path}', $path, $template);
+    }
+    return $result;
   }
 
   protected function getBranches() {

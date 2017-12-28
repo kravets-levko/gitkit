@@ -1,0 +1,13 @@
+{% spaceless %}
+  {% set readmeFound = false %}
+  {% for node in tree.nodes %}
+    {% if not readmeFound %}
+      {% if node.name | upper in ['README', 'README.TXT', 'README.MD', 'README.MARKDOWN'] %}
+        <div class="card">
+          <div class="card-header"><span class="octicon mr-1">{% include 'assets/octicons/book.svg' %}</span>{{ node.name }}</div>
+          <div class="card-body"><markdown>{{ node.data }}</markdown></div>
+        </div>
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endspaceless %}
