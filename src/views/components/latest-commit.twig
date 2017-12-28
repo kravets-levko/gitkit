@@ -4,7 +4,7 @@
     <tr>
       <th class="border-0 align-top">
         <strong title="{{ commit.info.author ~ '<' ~ commit.info.authorEmail ~ '>' }}">{{ commit.info.author }}</strong>
-        <a class="ml-2" href="{{ group }}/{{ name }}/commit/{{ commit.hash }}">{{ commit.message }}</a>
+        <a class="ml-2" href="{{ group }}/{{ name }}/commit/{{ commit.hash }}">{{ commit.info.message }}</a>
       </th>
       <th class="border-0 align-top text-right">
         <span class="text-nowrap">

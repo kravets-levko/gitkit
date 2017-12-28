@@ -4,6 +4,14 @@
 
 {% block content %}
   <h1><a href="{{ group }}/{{ name }}">{{ group }}/{{ name }}</a></h1>
+  <div class="my-3">
+    {% include 'components/repository-stats.twig' with {
+      repository: repository,
+      ref: ref,
+      base: group ~ '/' ~ name,
+    } %}
+  </div>
+
   <div class="row my-3">
     <div class="col-auto">
       {% include 'components/ref-selector.twig' with {
@@ -21,10 +29,10 @@
     </div>
   </div>
 
-  <div class="card mb-3">
+  <div class="card my-3">
     <div class="card-header p-0">
       {% include 'components/latest-commit.twig' with {
-        commit: ref.type == 'commit' ? ref : ref.head,
+        commit: ref.head,
       } %}
     </div>
 
@@ -38,5 +46,7 @@
     </div>
   </div>
 
-  {% include 'components/readme.twig' with {tree: ref.tree} %}
+  <div class="my-3">
+    {% include 'components/readme.twig' with {tree: ref.tree} %}
+  </div>
 {% endblock %}

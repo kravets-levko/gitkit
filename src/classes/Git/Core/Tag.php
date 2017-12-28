@@ -11,12 +11,11 @@ use \Classes\Git\Repository;
  * @property-read string $name
  * @property-read string $type
  * @property-read Commit $commit
- *
- * @property-read Commit $head
  * @property-read Commit[] $commits
+ * @property-read Commit $head
  * @property-read Tree $tree
  */
-class Tag extends Branch {
+class Tag extends Ref {
 
   protected $_type = 'tag';
 

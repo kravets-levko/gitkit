@@ -28,9 +28,9 @@
         </td>
         <td class="py-2">
           <div class="text-nowrap text-truncate" style="max-width: 400px;">
-            <a title="{{ node.commit.message }}"
+            <a title="{{ node.commit.info.message }}"
               href="{{ base }}/commit/{{ node.commit.hash }}"
-            >{{ node.commit.message }}</a>
+            >{{ node.commit.info.message }}</a>
           </div>
         </td>
         <td width="1%" class="py-2 text-nowrap text-right">{{ node.commit.info.committerDate | date('M d, Y') }}</td>

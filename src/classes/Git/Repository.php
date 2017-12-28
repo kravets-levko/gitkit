@@ -95,6 +95,8 @@ class Repository {
       if (!$this -> _defaultBranch) {
         $this -> _defaultBranch = array_first($this -> _branches);
       }
+
+      ksort($this -> _branches);
     }
     return array_values($this -> _branches);
   }
@@ -111,6 +113,9 @@ class Repository {
       foreach ($names as $name) {
         $this -> _tags[$name] = new Tag($this, $name);
       }
+
+      ksort($this -> _tags);
+      $this -> _tags = array_reverse($this -> _tags);
     }
     return array_values($this -> _tags);
   }

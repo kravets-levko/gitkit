@@ -11,13 +11,14 @@ use \Classes\Git\Repository;
  * @property-read string $name
  * @property-read string $type
  * @property-read Commit $commit
+ * @property-read Commit[] $commits
+ * @property-read Commit $head
+ * @property-read Tree $tree
  *
  * @property-read string $hash
  * @property-read string $abbreviatedHash
  * @property-read Commit[] $parents
  * @property-read \stdClass $info
- * @property-read string $message
- * @property-read Tree $tree
  * @property-read Diff $diff
  */
 class Commit extends Ref {
@@ -27,7 +28,6 @@ class Commit extends Ref {
   private $_info = null;
   private $_diff = null;
   private $_parents = null;
-  private $_tree = null;
 
   protected function getCommit() {
     return $this;
@@ -75,22 +75,11 @@ class Commit extends Ref {
     return $this -> _info;
   }
 
-  protected function getMessage() {
-    return $this -> info -> message;
-  }
-
   protected function getDiff() {
     if ($this -> _diff === null) {
       $this -> _diff = new Diff($this -> repository, $this);
     }
     return $this -> _diff;
-  }
-
-  protected function getTree() {
-    if ($this -> _tree === null) {
-      $this -> _tree = new Tree($this -> repository, $this);
-    }
-    return $this -> _tree;
   }
 
 }

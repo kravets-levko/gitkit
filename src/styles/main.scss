@@ -1,9 +1,32 @@
 @import "~bootstrap/scss/bootstrap";
-@import "~octicons/build/build";
 @import "helpers";
 
 svg {
   display: inline-block;
+}
+
+.octicon {
+  display: inline-block;
+  line-height: 1em;
+  fill: currentColor;
+
+  svg {
+    vertical-align: top;
+  }
+}
+
+a.link-secondary {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover, &:active, &:focus {
+    text-decoration: none;
+    color: $link-hover-color;
+
+    & *:not(.octicon) {
+      color: inherit !important;
+    }
+  }
 }
 
 // Make it hidden until rendered

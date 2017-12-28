@@ -12,6 +12,7 @@ use \Classes\Git\Repository;
  * @property-read Repository $repository
  * @property-read Ref $ref
  *
+ * @property-read string[] $filenames
  * @property-read TreeFolder $root
  */
 class Tree {
@@ -24,6 +25,7 @@ class Tree {
    * @var TreeFolder
    */
   private $_root = null;
+  private $_filenames = null;
   private $filesByPath = [];
   private $infoByPath = [];
 
@@ -39,12 +41,38 @@ class Tree {
     return $this -> _root;
   }
 
-  public function getRepository() {
+  protected function getRepository() {
     return $this -> _repository;
   }
 
-  public function getRef() {
+  protected function getRef() {
     return $this -> _ref;
+  }
+
+  public function filenames(...$globs) {
+    if (count($globs) == 0) {
+      $globs = ['*'];
+    } elseif ((count($globs) == 1) && is_array($globs[0])) {
+      $globs = $globs[0];
+    }
+    $globs = array_filter($globs, 'is_string');
+    $globs = array_filter($globs, 'strlen'); // empty glob matches nothing
+    if (count($globs) == 0) {
+      return [];
+    }
+
+    if ($this -> _filenames === null) {
+      $lines = $this -> repository -> exec('ls-tree', '--name-only', '-r', '-z', $this -> ref -> name);
+      $this -> _filenames = explode("\0", $lines);
+    }
+    return array_values(array_filter($this -> _filenames, function($name) use ($globs) {
+      foreach ($globs as $glob) {
+        if (matches_glob($name, $glob)) {
+          return true;
+        }
+      }
+      return false;
+    }));
   }
 
   public function nodes($path = '') {
@@ -70,6 +98,23 @@ class Tree {
     }
 
     return $this -> filesByPath[$path];
+  }
+
+  public function node($path) {
+    $path = trim($path, '/');
+    if ($path == '') return $this -> root;
+
+    $parentPath = explode('/', $path);
+    $fileName = array_pop($parentPath);
+    $parentPath = implode('/', $parentPath);
+
+    $children = $this -> nodes($parentPath);
+    foreach ($children as $item) {
+      if ($item -> name == $fileName) {
+        return $item;
+      }
+    }
+    return null;
   }
 
   public function childrenInfo($path) {
@@ -118,10 +163,13 @@ class Tree {
       ];
     }
     if (!array_key_exists($path, $this -> infoByPath)) {
+      $parentPath = explode('/', $path);
+      array_pop($parentPath);
+      $parentPath = implode('/', $parentPath);
       // Cache children info for parent of $path ($path will be among them)
-      $this -> childrenInfo(pathinfo($path, PATHINFO_DIRNAME));
+      $this -> childrenInfo($parentPath);
     }
-    return $this -> infoByPath[$path];
+    return @$this -> infoByPath[$path];
   }
 
 }

@@ -1,0 +1,39 @@
+<div class="card">
+  <div class="card-body p-0">
+    <div class="row py-2">
+      <div class="col text-center">
+        <a class="link-secondary" href="{{ base }}/commits/{{ ref.name }}">
+          <span class="octicon text-muted mr-1">{% include 'assets/octicons/history.svg' %}</span>
+          <strong>{{ ref.commits | length }}</strong><span class="text-muted ml-1">commits</span>
+        </a>
+      </div>
+
+      <div class="col text-center">
+        <a class="link-secondary" href="{{ base }}/branches">
+          <span class="octicon text-muted mr-1">{% include 'assets/octicons/git-branch.svg' %}</span>
+          <strong>{{ repository.branches | length }}</strong><span class="text-muted ml-1">branches</span>
+        </a>
+      </div>
+
+      <div class="col text-center">
+        <a class="link-secondary" href="{{ base }}/releases">
+          <span class="octicon text-muted mr-1">{% include 'assets/octicons/tag.svg' %}</span>
+          <strong>{{ repository.tags | length }}</strong><span class="text-muted ml-1">releases</span>
+        </a>
+      </div>
+
+      {% set names = ref.tree.filenames('LICEN[CS]E.*', 'LICEN[CS]E') %}
+      {% if names | length > 0 %}
+        {% set node = ref.tree.node(names | first) %}
+        {% if node.type == 'blob' %}
+          <div class="col text-center">
+            <a class="link-secondary" href="{{ base }}/{{ node.type }}/{{ ref.name }}:{{ node.path }}">
+              <span class="octicon text-muted mr-1">{% include 'assets/octicons/law.svg' %}</span>
+              <span>Licence</span>
+            </a>
+          </div>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</div>

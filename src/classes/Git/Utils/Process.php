@@ -22,22 +22,27 @@ class Process {
       2 => ['pipe', 'w'],
     ], $pipes, $cwd);
 
-    while ($status = proc_get_status($process)) {
-      if (!$status['running']) {
-        break;
+    if ($process) {
+      fclose($pipes[0]);
+
+      $stdout = [];
+      while (!feof($pipes[1])) {
+        $stdout[] = stream_get_contents($pipes[1]);
       }
+      fclose($pipes[1]);
+
+      $stderr = [];
+      while (!feof($pipes[2])) {
+        $stderr[] = stream_get_contents($pipes[2]);
+      }
+      fclose($pipes[2]);
+
+      $exitCode = proc_close($process);
+
+      return [$exitCode, implode('', $stdout), implode('', $stderr)];
     }
 
-    $stdout = stream_get_contents($pipes[1]);
-    $stderr = stream_get_contents($pipes[2]);
-
-    fclose($pipes[0]);
-    fclose($pipes[1]);
-    fclose($pipes[2]);
-
-    proc_close($process);
-
-    return [$status['exitcode'], $stdout, $stderr];
+    return [128, '', 'Failed to execute ' . $command];
   }
 
 }
