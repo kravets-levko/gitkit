@@ -6,34 +6,34 @@ use \Classes\Git\Repository;
 
 class Diff {
 
-  private $repository;
-  private $from;
-  private $to;
+  private $_repository;
+  private $_from;
+  private $_to;
 
   private $stats = null;
 
   private function getRange() {
     $from = '';
     $to = '';
-    if ($this -> from instanceof Commit) {
-      $from = $this -> from -> getHash();
+    if ($this -> _from instanceof Commit) {
+      $from = $this -> _from -> hash;
     }
-    if ($this -> to instanceof Commit) {
-      $to = $this -> to -> getHash();
+    if ($this -> _to instanceof Commit) {
+      $to = $this -> _to -> hash;
     }
 
     return implode('..', array_filter([$from, $to], 'strlen'));
   }
 
   public function __construct(Repository $repository, $from, $to = null) {
-    $this -> repository = $repository;
-    $this -> from = is_object($from) ? $from : null;
-    $this -> to = is_object($to) ? $to : null;
+    $this -> _repository = $repository;
+    $this -> _from = is_object($from) ? $from : null;
+    $this -> _to = is_object($to) ? $to : null;
   }
 
-  public function getStats($slots = 7) {
+  public function stats($slots = 7) {
     if ($this -> stats === null) {
-      $data = $this -> repository -> exec([
+      $data = $this -> _repository -> exec([
         'show', '--format=format:', '--numstat', $this -> getRange(),
       ]);
       $data = array_filter(explode("\n", $data), 'strlen');
@@ -94,12 +94,12 @@ class Diff {
     return $result;
   }
 
-  public function getDiff() {
+  public function diff() {
     // TODO: Implement
     return '';
   }
 
-  public function getPatch() {
+  public function patch() {
     // TODO: Implement
     return '';
   }

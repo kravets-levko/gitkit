@@ -2,41 +2,54 @@
 
 namespace Classes\Git\Core;
 
+use \Classes\Git\Utils\Properties;
+
 use \Classes\Git\Repository;
 
+/**
+ * Class Ref
+ *
+ * @property-read Repository $repository
+ * @property-read string $name
+ * @property-read string $type
+ * @property-read Commit $commit
+ */
 class Ref {
+  use Properties;
 
-  private $repository;
-  private $ref;
+  private $_repository;
+  private $_name;
+
+  protected $_type = null;
 
   /**
    * @var Commit
    */
-  private $commit = null;
+  private $_commit = null;
 
-  public function __construct(Repository $repository, string $ref) {
-    $this -> repository = $repository;
-    $this -> ref = $ref;
+  public function __construct(Repository $repository, string $name) {
+    $this -> _repository = $repository;
+    $this -> _name = $name;
   }
 
-  public function getRepository() {
-    return $this -> repository;
+  protected function getRepository() {
+    return $this -> _repository;
   }
 
-  public function getRef() {
-    return $this -> ref;
-  }
-  public function getRefType() {
-    return null;
+  protected function getName() {
+    return $this -> _name;
   }
 
+  protected function getType() {
+    return $this -> _type;
+  }
 
-  public function getCommit() {
-    if ($this -> commit === null) {
-      $hash = trim($this -> getRepository() -> exec(['rev-list', '-1', $this -> ref]));
-      $this -> commit = $this -> getRepository() -> getCommit($hash);
+  protected function getCommit() {
+    if ($this -> _commit === null) {
+      $hash = trim($this -> repository -> exec(['rev-list', '-1', $this -> name]));
+      $this -> _commit = $this -> repository -> commit($hash);
     }
-    return $this -> commit;
+    return $this -> _commit;
   }
 
 }

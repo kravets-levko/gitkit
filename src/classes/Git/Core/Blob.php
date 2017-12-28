@@ -2,58 +2,71 @@
 
 namespace Classes\Git\Core;
 
+use \Classes\Git\Utils\Properties;
 use \Classes\Git\Repository;
 
+/**
+ * Class Blob
+ *
+ * @property-read Repository $repository
+ * @property-read Tree $tree
+ * @property-read string $path
+ * @property-read \stdClass $info
+ * @property-read Commit $commit
+ * @property-read string $type
+ * @property-read string $name
+ */
 class Blob {
+  use Properties;
 
-  private $repository;
-  private $tree;
-  private $path;
-  private $info = null;
+  private $_repository;
+  private $_tree;
+  private $_path;
+  private $_info = null;
 
   private $commit = null;
 
   public function __construct(Repository $repository, Tree $tree, string $path) {
-    $this -> repository = $repository;
-    $this -> tree = $tree;
-    $this -> path = trim($path, '/');
+    $this -> _repository = $repository;
+    $this -> _tree = $tree;
+    $this -> _path = trim($path, '/');
   }
 
-  public function getRepository() {
-    return $this -> repository;
+  protected function getRepository() {
+    return $this -> _repository;
   }
 
-  public function getTree() {
-    return $this -> tree;
+  protected function getTree() {
+    return $this -> _tree;
   }
 
-  public function getCommit() {
+  protected function getPath() {
+    return $this -> _path;
+  }
+
+  protected function getInfo() {
+    if ($this -> _info === null) {
+      $this -> _info = $this -> tree -> nodeInfo($this -> path);
+    }
+    return $this -> _info;
+  }
+
+  protected function getCommit() {
     if ($this -> commit === null) {
-      $hash = trim($this -> getRepository() -> exec(
-        'rev-list', '-1', $this -> getTree() -> getRef() -> getRef(), '--', $this -> getPath()
+      $hash = trim($this -> repository -> exec(
+        'rev-list', '-1', $this -> tree -> ref -> name, '--', $this -> path
       ));
-      $this -> commit = $this -> getRepository() -> getCommit($hash);
+      $this -> commit = $this -> repository -> commit($hash);
     }
     return $this -> commit;
   }
 
-  public function getPath() {
-    return $this -> path;
+  protected function getType() {
+    return $this -> info -> type;
   }
 
-  public function getInfo() {
-    if ($this -> info === null) {
-      $this -> info = $this -> getTree() -> getNodeInfo($this -> getPath());
-    }
-    return $this -> info;
-  }
-
-  public function getType() {
-    return $this -> getInfo() -> type;
-  }
-
-  public function getName() {
-    return $this -> getInfo() -> name;
+  protected function getName() {
+    return $this -> info -> name;
   }
 
 }

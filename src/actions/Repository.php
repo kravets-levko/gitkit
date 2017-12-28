@@ -6,6 +6,11 @@ use Classes\Action;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
+/**
+ * Class Repository
+ *
+ * @property \Slim\Views\Twig $view
+ */
 class Repository extends Action {
 
   public function get(Request $request, Response $response, $args) {
@@ -16,9 +21,9 @@ class Repository extends Action {
     $path = '';
     if (isset($args['branch'])) {
       list($ref, $path) = explode(':', $args['branch']);
-      $ref = $repo -> getRef($ref);
+      $ref = $repo -> ref($ref);
     } else {
-      $ref = $repo -> getDefaultBranch();
+      $ref = $repo -> defaultBranch;
     }
     if (!$ref) {
       $this -> notFound();
@@ -26,7 +31,6 @@ class Repository extends Action {
     if (!is_string($path)) {
       $path = '';
     }
-
 
     $parentPath = explode('/', $path);
     array_pop($parentPath);

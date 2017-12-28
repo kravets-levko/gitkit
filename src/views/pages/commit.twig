@@ -6,31 +6,31 @@
   <h1><a href="{{ group }}/{{ name }}">{{ group }}/{{ name }}</a></h1>
 
   {% set slots = 5 %}
-  {% set stats = commit.getDiff().getStats(slots) %}
+  {% set stats = commit.diff.stats(slots) %}
 
   <div class="card">
     <div class="card-header">
       <div class="row">
-        <div class="col">{{ commit.getMessage() }}</div>
+        <div class="col">{{ commit.message }}</div>
         <div class="col-auto">
-          <a class="btn btn-primary" href="{{ group }}/{{ name }}/tree/{{ commit.getHash() }}">Browse files</a>
+          <a class="btn btn-primary" href="{{ group }}/{{ name }}/tree/{{ commit.hash }}">Browse files</a>
         </div>
       </div>
     </div>
     <div class="card-body">
       <p>
-        {{ commit.getAuthor() }} comitted
-        {% if commit.getCommitter() != commit.getAuthor() %}
-          with {{ commit.getCommitter() }}
+        <strong title="{{ commit.info.author ~ '<' ~ commit.info.authorEmail ~ '>' }}">{{ commit.info.author }}</strong> comitted
+        {% if commit.info.committerEmail != commit.info.authorEmail %}
+          with <strong title="{{ commit.info.committer ~ '<' ~ commit.info.committerEmail ~ '>' }}">{{ commit.info.committer }}</strong>
         {% endif %}
-        on {{ commit.getInfo().committerDate | date('M d, Y') }}
+        on {{ commit.info.committerDate | date('M d, Y') }}
       </p>
-      <p class="text-muted">commit {{ commit.getHash() }}</p>
-      {% if commit.getParents() | length > 0 %}
+      <p class="text-muted">commit {{ commit.hash }}</p>
+      {% if commit.parents | length > 0 %}
       <p>
-        {{ commit.getParents() | length }} parent commit(s)
-        {% for p in commit.getParents() %}
-          <a href="{{ group }}/{{ name }}/commit/{{ p.getHash() }}">{{ p.getAbbreviatedHash() }}</a>
+        {{ commit.parents | length }} parent commit(s)
+        {% for p in commit.parents %}
+          <a href="{{ group }}/{{ name }}/commit/{{ p.hash }}">{{ p.abbreviatedHash }}</a>
         {% endfor %}
       </p>
       {% endif %}

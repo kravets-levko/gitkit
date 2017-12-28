@@ -8,20 +8,20 @@
     <div class="col-auto">
       <div class="dropdown" data-close-outside>
         <button class="form-control dropdown-toggle" data-toggle="dropdown" type="button">
-          {{ {branch: 'Branch', 'tag': 'Tag', 'commit': 'Tree'}[ref.getRefType()] }}:
-          <strong>{{ ref.getRefType() == 'commit' ? ref.getAbbreviatedHash() : ref.getRef() }}</strong>
+          {{ {branch: 'Branch', 'tag': 'Tag', 'commit': 'Tree'}[ref.type] }}:
+          <strong>{{ ref.type == 'commit' ? ref.abbreviatedHash : ref.name }}</strong>
         </button>
         <div class="dropdown-menu p-0">
           <div class="card border-0">
             <div class="card-header">
               <ul class="nav nav-tabs card-header-tabs flex-nowrap">
                 <li class="nav-item">
-                  <a class="nav-link {% if ref.getRefType() in ['branch', 'commit'] %}active{% endif %}"
+                  <a class="nav-link {% if ref.type in ['branch', 'commit'] %}active{% endif %}"
                     data-toggle="tab" data-target="#repository-branches"
                     href="javascript:void(0)">Branches</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link {% if ref.getRefType() == 'tag' %}active{% endif %}"
+                  <a class="nav-link {% if ref.type == 'tag' %}active{% endif %}"
                     data-target="#repository-tags" data-toggle="tab"
                     href="javascript:void(0)">Tags</a>
                 </li>
@@ -29,22 +29,22 @@
             </div>
             <div class="card-body p-0" style="min-width: 300px; max-height: 400px; overflow: auto;">
               <div class="tab-content">
-                <div class="tab-pane {% if ref.getRefType() in ['branch', 'commit'] %}show active{% endif %}" id="repository-branches">
+                <div class="tab-pane {% if ref.type in ['branch', 'commit'] %}show active{% endif %}" id="repository-branches">
                   <div class="nav flex-column nav-pills">
-                  {% for b in repository.getBranches() %}
-                    <a class="nav-link rounded-0 text-nowrap {% if b.getName() == ref.getRef() %}active{% endif %}"
-                      href="{{ group }}/{{ name }}/tree/{{ b.getName() }}">{{ b.getName() }}</a>
+                  {% for b in repository.branches %}
+                    <a class="nav-link rounded-0 text-nowrap {% if b.name == ref.name %}active{% endif %}"
+                      href="{{ group }}/{{ name }}/tree/{{ b.name }}">{{ b.name }}</a>
                   {% else %}
                     <div class="nav-link disabled">Nothing to show</div>
                   {% endfor %}
                   </div>
                 </div>
 
-                <div class="tab-pane {% if ref.getRefType() == 'tag' %}show active{% endif %}" id="repository-tags">
+                <div class="tab-pane {% if ref.type == 'tag' %}show active{% endif %}" id="repository-tags">
                   <div class="nav flex-column nav-pills">
-                    {% for b in repository.getTags() %}
-                      <a class="nav-link rounded-0 text-nowrap {% if b.getName() == ref.getRef() %}active{% endif %}"
-                        href="{{ group }}/{{ name }}/tree/{{ b.getName() }}">{{ b.getName() }}</a>
+                    {% for b in repository.tags %}
+                      <a class="nav-link rounded-0 text-nowrap {% if b.name == ref.name %}active{% endif %}"
+                        href="{{ group }}/{{ name }}/tree/{{ b.name }}">{{ b.name }}</a>
                     {% else %}
                       <div class="nav-link disabled">Nothing to show</div>
                     {% endfor %}
@@ -57,24 +57,24 @@
       </div>
     </div>
     <div class="col text-right">
-      Clone URL: <input type="text" class="form-control d-inline-block w-auto" value="{{ repository.getCloneUrl() }}">
+      Clone URL: <input type="text" class="form-control d-inline-block w-auto" value="{{ repository.cloneUrl }}">
     </div>
   </div>
 
   <div>
     <table class="table table-bordered table-striped table-hover">
       <tbody>
-        {% set latest = ref.getRefType() == 'commit' ? ref : ref.getHead() %}
+        {% set latest = ref.type == 'commit' ? ref : ref.head %}
         <tr>
           <td colspan="3" class="py-3">
             <div class="row">
               <div class="col">
-                <strong>{{ latest.getAuthor() }}</strong>
-                <a href="{{ group }}/{{ name }}/commit/{{ latest.getHash() }}">{{ latest.getMessage() }}</a>
+                <strong title="{{ latest.info.author ~ '<' ~ latest.info.authorEmail ~ '>' }}">{{ latest.info.author }}</strong>
+                <a href="{{ group }}/{{ name }}/commit/{{ latest.hash }}">{{ latest.message }}</a>
               </div>
               <div class="col-auto text-right">
-                Latest commit <a href="{{ group }}/{{ name }}/commit/{{ latest.getHash() }}">{{ latest.getAbbreviatedHash() }}</a>
-                {{ latest.getInfo().committerDate | date('M d, Y') }}
+                Latest commit <a href="{{ group }}/{{ name }}/commit/{{ latest.hash }}">{{ latest.abbreviatedHash }}</a>
+                {{ latest.info.committerDate | date('M d, Y') }}
               </div>
             </div>
           </td>
@@ -83,25 +83,29 @@
         <tr>
           <td colspan="3" class="py-2">
             <a
-              href="{{ group }}/{{ name }}/tree/{{ ref.getRef() }}{% if parentPath != '' %}:{{ parentPath }}{% endif %}"
+              href="{{ group }}/{{ name }}/tree/{{ ref.name }}{% if parentPath != '' %}:{{ parentPath }}{% endif %}"
             >..</a>
           </td>
         </tr>
       {% endif %}
       {% spaceless %}
-      {% for node in ref.getTree().getNodes(path) %}
+      {% for node in ref.tree.nodes(path) %}
         <tr>
           <td class="py-2">
             <span class="octicon mr-1 text-secondary">
-            {% if node.getType() == 'blob' %}{% include 'assets/octicons/file.svg' %}{% endif %}
-            {% if node.getType() == 'tree' %}{% include 'assets/octicons/file-directory.svg' %}{% endif %}
+            {% if node.type == 'blob' %}{% include 'assets/octicons/file.svg' %}{% endif %}
+            {% if node.type == 'tree' %}{% include 'assets/octicons/file-directory.svg' %}{% endif %}
             </span>
-            <a href="{{ group }}/{{ name }}/{{ node.getType() }}/{{ ref.getRef() }}:{{ node.getPath() }}">{{ node.getName() }}</a>
+            <a href="{{ group }}/{{ name }}/{{ node.type }}/{{ ref.name }}:{{ node.path }}">{{ node.name }}</a>
           </td>
-          <td class="py-2"><a style="display: inline-block; max-width: 300px;"
-            title="{{ node.getCommit().getMessage() }}"
-            class="text-nowrap text-truncate" href="{{ group }}/{{ name }}/commit/{{ node.getCommit().getHash() }}">{{ node.getCommit().getMessage() }}</a></td>
-          <td class="py-2 text-nowrap text-right">{{ node.getCommit().getInfo().committerDate | date('M d, Y') }}</td>
+          <td class="py-2">
+            <div class="text-nowrap text-truncate" style="max-width: 400px;">
+              <a title="{{ node.commit.message }}"
+                href="{{ group }}/{{ name }}/commit/{{ node.commit.hash }}"
+              >{{ node.commit.message }}</a>
+            </div>
+          </td>
+          <td width="1%" class="py-2 text-nowrap text-right">{{ node.commit.info.committerDate | date('M d, Y') }}</td>
         </tr>
       {% endfor %}
       {% endspaceless %}
@@ -109,15 +113,15 @@
     </table>
   </div>
 
-  <div class="card">
-    {% set readmeFound = false %}
-    {% for node in ref.getTree().getNodes() %}
-      {% if not readmeFound %}
-        {% if node.getName() | upper in ['README', 'README.TXT', 'README.MD', 'README.MARKDOWN'] %}
-          <div class="card-header"><span class="octicon mr-1">{% include 'assets/octicons/book.svg' %}</span>{{ node.getName() }}</div>
-          <div class="card-body"><markdown>{{ node.getData() }}</markdown></div>
-        {% endif %}
+  {% set readmeFound = false %}
+  {% for node in ref.tree.nodes %}
+    {% if not readmeFound %}
+      {% if node.name | upper in ['README', 'README.TXT', 'README.MD', 'README.MARKDOWN'] %}
+        <div class="card">
+          <div class="card-header"><span class="octicon mr-1">{% include 'assets/octicons/book.svg' %}</span>{{ node.name }}</div>
+          <div class="card-body"><markdown>{{ node.data }}</markdown></div>
+        </div>
       {% endif %}
-    {% endfor %}
-  </div>
+    {% endif %}
+  {% endfor %}
 {% endblock %}

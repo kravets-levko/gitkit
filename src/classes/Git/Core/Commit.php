@@ -2,41 +2,57 @@
 
 namespace Classes\Git\Core;
 
+use \Classes\Git\Repository;
+
+/**
+ * Class Commit
+ *
+ * @property-read Repository $repository
+ * @property-read string $name
+ * @property-read string $type
+ * @property-read Commit $commit
+ *
+ * @property-read string $hash
+ * @property-read string $abbreviatedHash
+ * @property-read Commit[] $parents
+ * @property-read \stdClass $info
+ * @property-read string $message
+ * @property-read Tree $tree
+ * @property-read Diff $diff
+ */
 class Commit extends Ref {
 
-  private $info = null;
-  private $diff = null;
-  private $parents = null;
-  private $tree = null;
+  protected $_type = 'commit';
 
-  public function getRefType() {
-    return 'commit';
-  }
+  private $_info = null;
+  private $_diff = null;
+  private $_parents = null;
+  private $_tree = null;
 
-  public function getCommit() {
+  protected function getCommit() {
     return $this;
   }
 
-  public function getHash() {
-    return $this -> getRef();
+  protected function getHash() {
+    return $this -> name;
   }
 
-  public function getAbbreviatedHash() {
-    return substr($this -> getHash(), 0, 7);
+  protected function getAbbreviatedHash() {
+    return substr($this -> hash, 0, 7);
   }
 
-  public function getParents() {
-    if ($this -> parents === null) {
-      $hashes = $this -> getRepository() -> exec([
-        'show', '--no-patch', '--format=%P', $this -> getHash()
-      ]);
-      $this -> parents = $this -> getRepository() -> getCommits(explode(' ', $hashes));
+  protected function getParents() {
+    if ($this -> _parents === null) {
+      $hashes = $this -> repository -> exec(
+        'show', '--no-patch', '--format=%P', $this -> hash
+      );
+      $this -> _parents = $this -> repository -> commits(explode(' ', $hashes));
     }
-    return $this -> parents;
+    return $this -> _parents;
   }
 
-  public function getInfo() {
-    if ($this -> info === null) {
+  protected function getInfo() {
+    if ($this -> _info === null) {
       $fields = [
         'author' => '%an',
         'authorEmail' => '%ae',
@@ -49,49 +65,32 @@ class Commit extends Ref {
 
       $format = implode("%n", array_values($fields));
 
-      $this -> info = (object)array_combine(
+      $this -> _info = (object)array_combine(
         array_keys($fields),
-        explode("\n", $this -> getRepository() -> exec(
-          'show', '--no-patch', '--format=' . $format, $this -> getHash()
+        explode("\n", $this -> repository -> exec(
+          'show', '--no-patch', '--format=' . $format, $this -> hash
         ), count($fields)) // commit message may be multiline
       );
     }
-    return $this -> info;
+    return $this -> _info;
   }
 
-  public function getMessage() {
-    $info = $this -> getInfo();
-    return $info -> message;
+  protected function getMessage() {
+    return $this -> info -> message;
   }
 
-  public function getAuthor() {
-    $info = $this -> getInfo();
-    $result = [];
-    if ($info -> author) $result[] = $info -> author;
-    if ($info -> authorEmail) $result[] = '<' . $info -> authorEmail . '>';
-    return implode(' ', $result);
-  }
-
-  public function getCommitter() {
-    $info = $this -> getInfo();
-    $result = [];
-    if ($info -> committer) $result[] = $info -> committer;
-    if ($info -> committerEmail) $result[] = '<' . $info -> committerEmail . '>';
-    return implode(' ', $result);
-  }
-
-  public function getDiff() {
-    if ($this -> diff === null) {
-      $this -> diff = new Diff($this -> getRepository(), $this);
+  protected function getDiff() {
+    if ($this -> _diff === null) {
+      $this -> _diff = new Diff($this -> repository, $this);
     }
-    return $this -> diff;
+    return $this -> _diff;
   }
 
-  public function getTree() {
-    if ($this -> tree === null) {
-      $this -> tree = new Tree($this -> getRepository(), $this);
+  protected function getTree() {
+    if ($this -> _tree === null) {
+      $this -> _tree = new Tree($this -> repository, $this);
     }
-    return $this -> tree;
+    return $this -> _tree;
   }
 
 }

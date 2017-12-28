@@ -2,41 +2,47 @@
 
 namespace Classes\Git;
 
-use \Classes\Git\Utils\Config;
-use \Classes\Git\Utils\LazyArray;
 use \Classes\Git\Utils\Process;
+use \Classes\Git\Utils\Properties;
 use \Classes\Git\Core\Commit;
 use \Classes\Git\Core\Branch;
 use \Classes\Git\Core\Tag;
 
+/**
+ * @property-read string $cloneUrl
+ * @property-read Branch[] $branches
+ * @property-read Branch $defaultBranch
+ * @property-read Tag[] $tags
+ */
 class Repository {
+  use Properties;
 
   /**
-   * @var Config
+   * @var \stdClass
    */
-  private $config;
-  private $path;
+  private $_config;
+  private $_path;
   /**
    * @var Commit[]
    */
-  private $commits = [];
+  private $_commits = [];
   /**
    * @var Branch[]
    */
-  private $branches = null;
+  private $_branches = null;
   /**
    * @var Branch
    */
-  private $defaultBranch = null;
+  private $_defaultBranch = null;
 
   /**
    * @var Tag[]
    */
-  private $tags = null;
+  private $_tags = null;
 
   public function __construct($path, $config) {
-    $this -> config = $config;
-    $this -> path = $path;
+    $this -> _config = $config;
+    $this -> _path = $path;
   }
 
   static public function getRepositories($config) {
@@ -62,14 +68,57 @@ class Repository {
     return new Repository($path, $config);
   }
 
+  protected function getCloneUrl() {
+    $path = substr($this -> _path, strlen($this -> _config -> repositoriesPath) + 1);
+    return str_replace('{path}', $path, $this -> _config -> cloneOverSSHTemplate);
+  }
+
+  protected function getBranches() {
+    if ($this -> _branches === null) {
+      $this -> _branches = [];
+      $names = explode("\n", $this -> exec('branch', '--list'));
+      foreach ($names as $name) {
+        $name = explode(' ', trim($name));
+        $isDefault = count($name) == 2;
+        $name = array_last($name);
+        if ($name != '') {
+          $this -> _branches[$name] = new Branch($this, $name);
+          if ($isDefault) {
+            $this -> _defaultBranch = $this -> _branches[$name];
+          }
+        }
+      }
+      if (!$this -> _defaultBranch) {
+        $this -> _defaultBranch = array_first($this -> _branches);
+      }
+    }
+    return array_values($this -> _branches);
+  }
+
+  protected function getDefaultBranch() {
+    $this -> getBranches();
+    return $this -> _defaultBranch;
+  }
+
+  protected function getTags() {
+    if ($this -> _tags === null) {
+      $this -> _tags = [];
+      $names = explode("\n", $this -> exec('tag', '--list'));
+      foreach ($names as $name) {
+        $this -> _tags[$name] = new Tag($this, $name);
+      }
+    }
+    return array_values($this -> _tags);
+  }
+
   public function exec(...$args) {
     if ((count($args) == 1) && is_array($args[0])) {
       $args = $args[0];
     }
     list($status, $stdout, $stderr) = Process::run(
-      $this -> config -> gitBinary,
+      $this -> _config -> gitBinary,
       $args,
-      $this -> path
+      $this -> _path
     );
 
     if ($status != 0) {
@@ -78,7 +127,7 @@ class Repository {
     return $stdout;
   }
 
-  public function getCommit(string $hash, bool $validate = false) {
+  public function commit(string $hash, bool $validate = false) {
     $hash = trim($hash);
     if ($hash == '') return null;
 
@@ -91,81 +140,38 @@ class Repository {
     }
     if ($hash == '') return null;
 
-    if (!array_key_exists($hash, $this -> commits)) {
-      $this -> commits[$hash] = new Commit($this, $hash);
+    if (!array_key_exists($hash, $this -> _commits)) {
+      $this -> _commits[$hash] = new Commit($this, $hash);
     }
-    return $this -> commits[$hash];
+    return $this -> _commits[$hash];
   }
 
-  public function getCommits(array $hashes) {
+  public function commits(array $hashes) {
     $hashes = array_filter(array_map('trim', $hashes), 'strlen');
-    return new LazyArray($hashes, [$this, 'getCommit']);
+    return array_map([$this, 'commit'], $hashes);
   }
 
-  public function getCloneUrl() {
-    $path = substr($this -> path, strlen($this -> config -> repositoriesPath) + 1);
-    return str_replace('{path}', $path, $this -> config -> cloneOverSSHTemplate);
-  }
-
-  public function getBranches() {
-    if ($this -> branches === null) {
-      $this -> branches = [];
-      $names = explode("\n", $this -> exec('branch', '--list'));
-      foreach ($names as $name) {
-        $name = explode(' ', trim($name));
-        $isDefault = count($name) == 2;
-        $name = array_last($name);
-        if ($name != '') {
-          $this -> branches[$name] = new Branch($this, $name);
-          if ($isDefault) {
-            $this -> defaultBranch = $this -> branches[$name];
-          }
-        }
-      }
-      if (!$this -> defaultBranch) {
-        $this -> defaultBranch = array_first($this -> branches);
-      }
-    }
-    return array_values($this -> branches);
-  }
-
-  public function getDefaultBranch() {
+  public function branch($name) {
     $this -> getBranches();
-    return $this -> defaultBranch;
+    return array_key_exists($name, $this -> _branches) ? $this -> _branches[$name] : null;
   }
 
-  public function getBranch($name) {
-    $this -> getBranches();
-    return array_key_exists($name, $this -> branches) ? $this -> branches[$name] : null;
-  }
-
-  public function getTags() {
-    if ($this -> tags === null) {
-      $this -> tags = [];
-      $names = explode("\n", $this -> exec('tag', '--list'));
-      foreach ($names as $name) {
-        $this -> tags[$name] = new Tag($this, $name);
-      }
-    }
-    return array_values($this -> tags);
-  }
-
-  public function getTag($name) {
+  public function tag($name) {
     $this -> getTags();
-    return array_key_exists($name, $this -> tags) ? $this -> tags[$name] : null;
+    return array_key_exists($name, $this -> _tags) ? $this -> _tags[$name] : null;
   }
 
-  public function getRef($ref) {
-    $result = $this -> getBranch($ref);
-    if (!$result) $result = $this -> getTag($ref);
-    if (!$result) $result = $this -> getCommit($ref, true);
+  public function ref($ref) {
+    $result = $this -> branch($ref);
+    if (!$result) $result = $this -> tag($ref);
+    if (!$result) $result = $this -> commit($ref, true);
     return $result;
   }
 
   public function create() {
     list($status) = Process::run(
-      $this -> config -> gitBinary,
-      ['init', '--bare', '--shared=0775', $this -> path]
+      $this -> _config -> gitBinary,
+      ['init', '--bare', '--shared=0775', $this -> _path]
     );
     return $status === 0;
   }

@@ -2,42 +2,64 @@
 
 namespace Classes\Git\Core;
 
+use \Classes\Git\Utils\Properties;
+
 use \Classes\Git\Repository;
 
+/**
+ * Class Tree
+ *
+ * @property-read Repository $repository
+ * @property-read Ref $ref
+ *
+ * @property-read TreeFolder $root
+ */
 class Tree {
+  use Properties;
 
-  private $repository;
-  private $ref;
+  private $_repository;
+  private $_ref;
 
+  /**
+   * @var TreeFolder
+   */
+  private $_root = null;
   private $filesByPath = [];
   private $infoByPath = [];
 
   public function __construct(Repository $repository, Ref $ref) {
-    $this -> repository = $repository;
-    $this -> ref = $ref;
+    $this -> _repository = $repository;
+    $this -> _ref = $ref;
+  }
+
+  protected function getRoot() {
+    if ($this -> _root === null) {
+      $this -> _root = new TreeFolder($this -> repository, $this, '');
+    }
+    return $this -> _root;
   }
 
   public function getRepository() {
-    return $this -> repository;
+    return $this -> _repository;
   }
 
   public function getRef() {
-    return $this -> ref;
+    return $this -> _ref;
   }
 
-  public function getNodes($path = '') {
+  public function nodes($path = '') {
     $path = trim($path, '/');
     if (!array_key_exists($path, $this -> filesByPath)) {
-      $items = $this -> getChildrenInfo($path);
+      $items = $this -> childrenInfo($path);
 
       $nodes = [];
       $files = [];
 
       foreach ($items as $info) {
         if ($info -> type == 'tree') {
-          $nodes[$info -> name] = new TreeNode($this -> getRepository(), $this, $info -> path);
+          $nodes[$info -> name] = new TreeFolder($this -> repository, $this, $info -> path);
         } elseif ($info -> type == 'blob') {
-          $files[$info -> name] = new TreeFile($this -> getRepository(), $this, $info -> path);
+          $files[$info -> name] = new TreeFile($this -> repository, $this, $info -> path);
         }
       }
 
@@ -50,13 +72,13 @@ class Tree {
     return $this -> filesByPath[$path];
   }
 
-  public function getChildrenInfo($path) {
+  public function childrenInfo($path) {
     $path = trim($path, '/');
     if (!array_key_exists($path, $this -> infoByPath)) {
       $pathPrefix = $path == '' ? '' : $path . '/';
 
-      $lines = $this -> getRepository() -> exec(
-        'ls-tree', '--long', '-z', $this -> getRef() -> getRef() . ':' . $path
+      $lines = $this -> repository -> exec(
+        'ls-tree', '--long', '-z', $this -> ref -> name . ':' . $path
       );
       $lines = array_filter(explode("\0", $lines), 'strlen');
 
@@ -83,11 +105,21 @@ class Tree {
     }, ARRAY_FILTER_USE_KEY));
   }
 
-  public function getNodeInfo($path) {
+  public function nodeInfo($path) {
     $path = trim($path, '/');
+    if ($path == '') {
+      return (object)[
+        'name' => '',
+        'path' => '',
+        'type' => 'tree',
+        'mode' => '000000',
+        'hash' => str_repeat('0', 40),
+        'size' => 0,
+      ];
+    }
     if (!array_key_exists($path, $this -> infoByPath)) {
       // Cache children info for parent of $path ($path will be among them)
-      $this -> getChildrenInfo(pathinfo($path, PATHINFO_DIRNAME));
+      $this -> childrenInfo(pathinfo($path, PATHINFO_DIRNAME));
     }
     return $this -> infoByPath[$path];
   }

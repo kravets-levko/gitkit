@@ -5,7 +5,7 @@ namespace Classes\Git\Core;
 use \Classes\Git\Repository;
 
 /**
- * Class TreeFile
+ * Class TreeFolder
  *
  * @property-read Repository $repository
  * @property-read Tree $tree
@@ -15,15 +15,12 @@ use \Classes\Git\Repository;
  * @property-read string $type
  * @property-read string $name
 
- * @property string $data
+ * @property (Blob | TreeFolder | TreeFile)[] $nodes
  */
-class TreeFile extends Blob {
+class TreeFolder extends Blob {
 
-  protected function getData() {
-    return $this -> repository -> exec(
-      'show',
-      $this -> commit -> hash . ':' . $this -> path
-    );
+  public function children() {
+    return $this -> tree -> nodes($this -> path);
   }
 
 }
