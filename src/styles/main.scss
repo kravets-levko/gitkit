@@ -6,6 +6,11 @@ svg {
   display: inline-block;
 }
 
+// Make it hidden until rendered
+markdown {
+  display: none;
+}
+
 .navbar {
 
   .navbar-brand {

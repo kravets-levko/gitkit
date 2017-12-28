@@ -9,7 +9,14 @@
   {% set stats = commit.getDiff().getStats(slots) %}
 
   <div class="card">
-    <div class="card-header">{{ commit.getMessage() }}</div>
+    <div class="card-header">
+      <div class="row">
+        <div class="col">{{ commit.getMessage() }}</div>
+        <div class="col-auto">
+          <a class="btn btn-primary" href="{{ group }}/{{ name }}/tree/{{ commit.getHash() }}">Browse files</a>
+        </div>
+      </div>
+    </div>
     <div class="card-body">
       <p>
         {{ commit.getAuthor() }} comitted

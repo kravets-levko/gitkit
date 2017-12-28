@@ -78,9 +78,19 @@ class Repository {
     return $stdout;
   }
 
-  public function getCommit(string $hash) {
+  public function getCommit(string $hash, bool $validate = false) {
     $hash = trim($hash);
     if ($hash == '') return null;
+
+    if ($validate) {
+      try {
+        $this -> exec('branch', '--contains', $hash);
+      } catch (Exception $e) {
+        $hash = '';
+      }
+    }
+    if ($hash == '') return null;
+
     if (!array_key_exists($hash, $this -> commits)) {
       $this -> commits[$hash] = new Commit($this, $hash);
     }
@@ -148,7 +158,7 @@ class Repository {
   public function getRef($ref) {
     $result = $this -> getBranch($ref);
     if (!$result) $result = $this -> getTag($ref);
-    // TODO: Ref may be a commit - it should exist in this repo
+    if (!$result) $result = $this -> getCommit($ref, true);
     return $result;
   }
 
