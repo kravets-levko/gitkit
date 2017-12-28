@@ -11,32 +11,28 @@ use \Psr\Http\Message\ResponseInterface as Response;
  *
  * @property \Slim\Views\Twig $view
  */
-class Repository extends Action {
+class Tree extends Action {
 
   public function get(Request $request, Response $response, $args) {
     $config = $this -> container -> get('config');
     $repo = \Classes\Git\Repository::getRepository(
       $args['group'] . '/' . $args['name'], $config);
 
-    $path = '';
-    if (isset($args['branch'])) {
-      list($ref, $path) = explode(':', $args['branch']);
-      $ref = $repo -> ref($ref);
+    if (isset($args['ref'])) {
+      $ref = $repo -> ref($args['ref']);
     } else {
       $ref = $repo -> defaultBranch;
     }
     if (!$ref) {
       $this -> notFound();
     }
-    if (!is_string($path)) {
-      $path = '';
-    }
+    $path = isset($args['path']) && is_string($args['path']) ? $args['path'] : '';
 
     $parentPath = explode('/', $path);
     array_pop($parentPath);
     $parentPath = implode('/', $parentPath);
 
-    return $this -> view -> render($response, 'pages/repository.twig', [
+    return $this -> view -> render($response, 'pages/tree.twig', [
       'group' => $args['group'],
       'name' => $args['name'],
       'repository' => $repo,

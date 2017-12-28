@@ -9,13 +9,15 @@ use Psr\Http\Message\ResponseInterface as Response;
 $app = new \Slim\App([
   'settings' => [
     'displayErrorDetails' => true,
+    'outputBuffering' => false,
   ],
 ]);
 
 $app -> group('/{group}/{name}', function() {
   $this -> get('/commit/{commit}', Actions\Commit::class);
-  $this -> get('/tree/{branch:.*}', Actions\Repository::class);
-  $this -> get('', Actions\Repository::class);
+  $this -> get('/tree/{ref:[^:]*}[:{path:.*}]', Actions\Tree::class);
+  $this -> get('/blob/{ref:[^:]*}[:{path:.*}]', Actions\Blob::class);
+  $this -> get('', Actions\Tree::class);
 });
 $app -> get('/', Actions\Home::class);
 

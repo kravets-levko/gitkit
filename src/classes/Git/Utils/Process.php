@@ -4,7 +4,7 @@ namespace Classes\Git\Utils;
 
 class Process {
 
-  static public function run($command, $args = null, $cwd = null) {
+  static public function run($command, $args = null, $cwd = null, $displayOutput = false) {
     if (is_array($args)) {
       $args = implode(' ', array_map('escapeshellarg', $args));
     }
@@ -27,7 +27,12 @@ class Process {
 
       $stdout = [];
       while (!feof($pipes[1])) {
-        $stdout[] = stream_get_contents($pipes[1]);
+        $buffer = stream_get_contents($pipes[1]);
+        if ($displayOutput) {
+          echo $buffer; flush();
+        } else {
+          $stdout[] = $buffer;
+        }
       }
       fclose($pipes[1]);
 

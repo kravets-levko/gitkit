@@ -25,6 +25,7 @@ class Tree {
    * @var TreeFolder
    */
   private $_root = null;
+  private $_rootInfo = null;
   private $_filenames = null;
   private $filesByPath = [];
   private $infoByPath = [];
@@ -32,6 +33,15 @@ class Tree {
   public function __construct(Repository $repository, Ref $ref) {
     $this -> _repository = $repository;
     $this -> _ref = $ref;
+
+    $this -> _rootInfo = (object)[
+      'name' => '',
+      'path' => '',
+      'type' => 'tree',
+      'mode' => '000000',
+      'hash' => str_repeat('0', 40),
+      'size' => 0,
+    ];
   }
 
   protected function getRoot() {
@@ -50,16 +60,8 @@ class Tree {
   }
 
   public function filenames(...$globs) {
-    if (count($globs) == 0) {
-      $globs = ['*'];
-    } elseif ((count($globs) == 1) && is_array($globs[0])) {
-      $globs = $globs[0];
-    }
-    $globs = array_filter($globs, 'is_string');
-    $globs = array_filter($globs, 'strlen'); // empty glob matches nothing
-    if (count($globs) == 0) {
-      return [];
-    }
+    $globs = prepare_string_list($globs, '*');
+    if (count($globs) == 0) return [];
 
     if ($this -> _filenames === null) {
       $lines = $this -> repository -> exec('ls-tree', '--name-only', '-r', '-z', $this -> ref -> name);
@@ -127,13 +129,14 @@ class Tree {
       );
       $lines = array_filter(explode("\0", $lines), 'strlen');
 
+      $children = [];
       foreach ($lines as $line) {
         list($description, $name) = explode("\t", $line, 2);
         list($mode, $type, $hash, $size) = array_values(array_filter(
           explode(' ', $description), 'strlen'));
         $fullPath = $pathPrefix . $name;
 
-        $this -> infoByPath[$fullPath] = (object)[
+        $children[$name] = (object)[
           'name' => $name,
           'path' => $fullPath,
           'type' => $type,
@@ -142,34 +145,29 @@ class Tree {
           'size' => (int)$size,
         ];
       }
+
+      ksort($children);
+      $this -> infoByPath[$path] = array_values($children);
     }
 
-    $path = $path == '' ? '/' : '/' . $path . '/';
-    return array_values(array_filter($this -> infoByPath, function($key) use ($path) {
-      return strpos('/' . $key, $path) === 0;
-    }, ARRAY_FILTER_USE_KEY));
+    return $this -> infoByPath[$path];
   }
 
   public function nodeInfo($path) {
     $path = trim($path, '/');
-    if ($path == '') {
-      return (object)[
-        'name' => '',
-        'path' => '',
-        'type' => 'tree',
-        'mode' => '000000',
-        'hash' => str_repeat('0', 40),
-        'size' => 0,
-      ];
+    if ($path == '') return $this -> _rootInfo;
+
+    $parentPath = explode('/', $path);
+    $fileName = array_pop($parentPath);
+    $parentPath = implode('/', $parentPath);
+
+    $children = $this -> childrenInfo($parentPath);
+    foreach ($children as $item) {
+      if ($item -> name == $fileName) {
+        return $item;
+      }
     }
-    if (!array_key_exists($path, $this -> infoByPath)) {
-      $parentPath = explode('/', $path);
-      array_pop($parentPath);
-      $parentPath = implode('/', $parentPath);
-      // Cache children info for parent of $path ($path will be among them)
-      $this -> childrenInfo($parentPath);
-    }
-    return @$this -> infoByPath[$path];
+    return null;
   }
 
 }

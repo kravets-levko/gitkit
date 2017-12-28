@@ -29,8 +29,18 @@ a.link-secondary {
   }
 }
 
-// Make it hidden until rendered
-markdown {
+a.form-control {
+  &, &:hover, &:active, &:focus {
+    text-decoration: none;
+    color: $input-color;
+  }
+}
+
+.text-monospace {
+  font-family: $font-family-monospace;
+}
+
+.text-block {
   display: block;
   white-space: pre-wrap;
 }

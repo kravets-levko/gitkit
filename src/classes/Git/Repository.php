@@ -136,6 +136,22 @@ class Repository {
     return $stdout;
   }
 
+  public function passthru(...$args) {
+    if ((count($args) == 1) && is_array($args[0])) {
+      $args = $args[0];
+    }
+    list($status, , $stderr) = Process::run(
+      $this -> _config -> gitBinary,
+      $args,
+      $this -> _path,
+      true
+    );
+
+    if ($status != 0) {
+      throw new Exception($stderr);
+    }
+  }
+
   public function commit(string $hash, bool $validate = false) {
     $hash = trim($hash);
     if ($hash == '') return null;

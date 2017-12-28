@@ -69,4 +69,14 @@ class Blob {
     return $this -> info -> name;
   }
 
+  public function matchesGlob(...$globs) {
+    $globs = prepare_string_list($globs, '*');
+    foreach ($globs as $glob) {
+      if (matches_glob($this -> path, $glob)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }

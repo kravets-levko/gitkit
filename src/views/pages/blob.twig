@@ -1,0 +1,67 @@
+{% extends 'layout/main.twig' %}
+
+{% block title %}{{ group }}/{{ name }} - GitKit{% endblock %}
+
+{% block content %}
+  <h1><a href="{{ group }}/{{ name }}">{{ group }}/{{ name }}</a></h1>
+
+  {% set rawUrl = group ~ '/' ~ name ~ '/' ~ blob.type ~ '/' ~ ref.name ~ ':' ~ blob.path ~ '?raw' %}
+
+  <div class="row my-3">
+    <div class="col-auto">
+      {% include 'components/ref-selector.twig' with {
+      ref: ref,
+      branches: repository.branches,
+      tags: repository.tags,
+      base: group ~ '/' ~ name,
+      } %}
+    </div>
+    <div class="col d-flex align-items-center"><span>{{ blob.path }}</span></div>
+    <div class="col-auto">
+      <button class="form-control" type="button"
+        data-clipboard-text="{{ blob.path }}"
+        data-toggle="tooltip" data-placement="bottom"
+        title="Copy file path to clipboard" data-title-copied="Copied!"
+      >Copy path</button>
+    </div>
+  </div>
+
+  <div class="card my-3">
+    <div class="card-header border-0 p-0">
+      {% include 'components/latest-commit.twig' with {
+        commit: blob.commit,
+      } %}
+    </div>
+  </div>
+
+  <div class="card my-3">
+    <div class="card-header p-0">
+      {% include 'components/blob-info.twig' with {
+        blob: blob,
+        ref: ref,
+        base: group ~ '/' ~ name,
+      } %}
+    </div>
+    <div class="card-body">
+      {% if blob.info.size <= 2 * 1024 * 1024 %}
+        {% if blob.matchesMime('text/markdown', 'text/x-markdown') or blob.matchesGlob('README', 'README.*', 'LICEN[CS]E', 'LICEN[CS]E.*') %}
+          <markdown class="text-block">{{ blob.data }}</markdown>
+        {% elseif blob.matchesMime('text/*') or (blob.ext == '') %}
+          <div class="text-block text-monospace">{{ blob.data }}</div>
+        {% elseif blob.matchesMime('image/*') %}
+          <div class="text-center">
+            <img src="{{ rawUrl }}" alt="{{ blob.name }}">
+          </div>
+        {% else %}
+          <div class="p-5 text-center">
+            Cannot show file preview. <a href="{{ rawUrl }}">View raw</a>
+          </div>
+        {% endif %}
+      {% else %}
+        <div class="p-5 text-center">
+          This file is too large to be displayed. <a href="{{ rawUrl }}">View raw</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

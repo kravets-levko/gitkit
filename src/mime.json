@@ -1,0 +1,18 @@
+{
+  "txt": "text/plain",
+  "md": "text/markdown",
+  "markdown": "text/markdown",
+  "json": "text/json",
+  "yml": "text/yaml",
+  "yaml": "text/yaml",
+  "js": "text/javascript",
+  "ini": "text/plain",
+
+  "gif": "image/gif",
+  "png": "image/png",
+  "jpg": "image/jpeg",
+  "jpeg": "image/jpeg",
+  "jpe": "image/jpeg",
+  "jfif": "image/jpeg",
+  "svg": "image/svg+xml"
+}

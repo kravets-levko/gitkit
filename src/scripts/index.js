@@ -13,7 +13,7 @@ $(function () {
 
 // Copy to clipboard buttons
 $(function() {
-  const clipboard = new Clipboard('[data-clipboard-target]');
+  const clipboard = new Clipboard('[data-clipboard-target], [data-clipboard-text]');
   clipboard.on('success', function(element) {
     element = $(element.trigger);
     const originalTitle = element.attr('data-original-title');

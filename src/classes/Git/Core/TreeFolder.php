@@ -24,16 +24,9 @@ class TreeFolder extends Blob {
   }
 
   public function filenames(...$globs) {
-    if (count($globs) == 0) {
-      $globs = ['*'];
-    } elseif ((count($globs) == 1) && is_array($globs[0])) {
-      $globs = $globs[0];
-    }
-    $globs = array_filter($globs, 'is_string');
-    $globs = array_filter($globs, 'strlen'); // empty glob matches nothing
-    if (count($globs) == 0) {
-      return [];
-    }
+    $globs = prepare_string_list($globs, '*');
+    if (count($globs) == 0) return [];
+
     // Add prefix to each glob
     $globs = array_map(function($glob) {
       return $this -> path . '/' . $glob;

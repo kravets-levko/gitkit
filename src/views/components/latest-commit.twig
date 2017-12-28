@@ -2,16 +2,16 @@
 <table class="table m-0">
   <thead>
     <tr>
-      <th class="border-0 align-top">
+      <th class="border-0 align-top font-weight-normal">
         <strong title="{{ commit.info.author ~ '<' ~ commit.info.authorEmail ~ '>' }}">{{ commit.info.author }}</strong>
         <a class="ml-2" href="{{ group }}/{{ name }}/commit/{{ commit.hash }}">{{ commit.info.message }}</a>
       </th>
-      <th class="border-0 align-top text-right">
+      <th class="border-0 align-top text-right font-weight-normal">
         <span class="text-nowrap">
           <span>Latest commit</span>
           <a class="ml-2" href="{{ group }}/{{ name }}/commit/{{ commit.hash }}">{{ commit.abbreviatedHash }}</a>
         </span>
-        &#32;
+        <wbr>
         <span class="ml-2 text-nowrap">{{ commit.info.committerDate | date('M d, Y') }}</span>
       </th>
     </tr>
