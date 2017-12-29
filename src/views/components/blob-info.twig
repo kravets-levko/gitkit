@@ -3,7 +3,7 @@
     <thead>
     <tr>
       <th class="border-0 align-middle font-weight-normal">
-        <span title="{{ blob.info.size }} byte(s) }}">{{ blob.info.size }} byte(s)</span>
+        <span title="{{ blob.info.size }} byte(s) }}">{{ blob.info.size | format_bytes }}</span>
       </th>
       <th class="border-0 align-middle font-weight-normal text-right">
         <a href="{{ base }}/{{ blob.type }}/{{ ref.name }}:{{ blob.path }}?raw" class="form-control no-hover d-inline-block w-auto">Raw</a>

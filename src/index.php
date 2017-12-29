@@ -23,9 +23,13 @@ $app -> get('/', Actions\Home::class);
 
 $container = $app->getContainer();
 $container['view'] = function() {
-  return new \Slim\Views\Twig(__DIR__ . '/views/', [
+  $view = new \Slim\Views\Twig(__DIR__ . '/views/', [
     'cache' => false,
   ]);
+
+  $view -> addExtension(new \Classes\Twig\Functions());
+
+  return $view;
 };
 
 $container['config'] = function() {

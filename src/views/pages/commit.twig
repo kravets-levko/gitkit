@@ -61,9 +61,12 @@
     <div class="card-body">
       <div class="row">
         <div class="col">
+          <img class="rounded mr-1" src="https://www.gravatar.com/avatar/{{ commit.info.authorEmail | trim | lower | md5 }}?s=30">
           <strong title="{{ commit.info.author ~ '<' ~ commit.info.authorEmail ~ '>' }}">{{ commit.info.author }}</strong> comitted
           {% if commit.info.committerEmail != commit.info.authorEmail %}
-            with <strong title="{{ commit.info.committer ~ '<' ~ commit.info.committerEmail ~ '>' }}">{{ commit.info.committer }}</strong>
+            with
+            <img class="rounded ml-2 mr-1" src="https://www.gravatar.com/avatar/{{ commit.info.committerEmail | trim | lower | md5 }}?s=30">
+            <strong title="{{ commit.info.committer ~ '<' ~ commit.info.committerEmail ~ '>' }}">{{ commit.info.committer }}</strong>
           {% endif %}
           on {{ commit.info.committerDate | date('M d, Y') }}
         </div>
