@@ -41,7 +41,7 @@ class Diff {
       $totalAdditions = 0;
       $totalDeletions = 0;
       $items = array_map(function($line) use (&$totalAdditions, &$totalDeletions) {
-        list($additions, $deletions, $filename) = explode("\t", $line);
+        list($additions, $deletions, $path) = explode("\t", $line);
         $binary = ($additions == '-') || ($deletions == '-');
         $additions = (int)$additions;
         $deletions = (int)$deletions;
@@ -50,7 +50,9 @@ class Diff {
         $totalDeletions += $deletions;
 
         return (object)[
-          'filename' => $filename,
+          'path' => $path,
+          'name' => pathinfo($path, PATHINFO_BASENAME),
+          'type' => 'blob',
           'binary' => $binary,
           'additions' => (int)$additions,
           'deletions' => (int)$deletions,

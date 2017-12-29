@@ -3,6 +3,7 @@
 {% block title %}{{ group }}/{{ name }} - GitKit{% endblock %}
 
 {% block content %}
+{% spaceless %}
   <h1><a href="{{ group }}/{{ name }}">{{ group }}/{{ name }}</a></h1>
 
   {% set slots = 5 %}
@@ -13,27 +14,76 @@
       <div class="row">
         <div class="col">{{ commit.info.message }}</div>
         <div class="col-auto">
-          <a class="btn btn-primary" href="{{ group }}/{{ name }}/tree/{{ commit.hash }}">Browse files</a>
+          <a class="btn btn-outline-primary" href="{{ group }}/{{ name }}/tree/{{ commit.hash }}">Browse files</a>
         </div>
       </div>
+
+      {% if (commit.branches | length > 0) or (commit.tags | length > 0) %}
+        <hr class="my-2">
+        <div>
+        {% if commit.branches | length > 0 %}
+          {% set commitBranch = commit.branches | first %}
+            <a class="link-secondary mr-4"
+              href="{{ group }}/{{ name }}{% if commitBranch.name != repository.defaultBranch.name %}/tree/{{ commitBranch.name }}{% endif %}">
+              <span class="octicon text-muted mr-1">{% include 'assets/octicons/git-branch.svg' %}</span>
+              <strong>{{ commitBranch.name }}</strong>
+            </a>
+        {% endif %}
+        {% if commit.tags | length > 0 %}
+          {% set commitTag = commit.tags | first %}
+          <a class="link-secondary mr-2" href="{{ group }}/{{ name }}/tree/{{ commitTag.name }}">
+            <span class="octicon text-muted mr-1">{% include 'assets/octicons/tag.svg' %}</span>
+            <strong>{{ commitTag.name }}</strong>
+          </a>
+          {% if commit.tags | length > 1 %}
+            {% if commit.tags | length > 2 %}
+              <div class="d-inline collapsed-list">
+              {% for commitTag in commit.tags | slice(1) %}
+                {% if not loop.last %}
+                <a class="link-secondary {% if not loop.first %}ml-2{% endif %}"
+                  href="{{ group }}/{{ name }}/tree/{{ commitTag.name }}">
+                  <span class="text-muted">{{ commitTag.name }}</span>
+                </a>
+                {% endif %}
+              {% endfor %}
+              </div>
+            {% endif %}
+            {% set commitTag = commit.tags | last %}
+            <a class="link-secondary {% if commit.tags | length > 2 %}ml-2{% endif %}"
+              href="{{ group }}/{{ name }}/tree/{{ commitTag.name }}">
+              <span class="text-muted">{{ commitTag.name }}</span>
+            </a>
+          {% endif %}
+        {% endif %}
+        </div>
+      {% endif %}
     </div>
     <div class="card-body">
-      <p>
-        <strong title="{{ commit.info.author ~ '<' ~ commit.info.authorEmail ~ '>' }}">{{ commit.info.author }}</strong> comitted
-        {% if commit.info.committerEmail != commit.info.authorEmail %}
-          with <strong title="{{ commit.info.committer ~ '<' ~ commit.info.committerEmail ~ '>' }}">{{ commit.info.committer }}</strong>
+      <div class="row">
+        <div class="col">
+          <strong title="{{ commit.info.author ~ '<' ~ commit.info.authorEmail ~ '>' }}">{{ commit.info.author }}</strong> comitted
+          {% if commit.info.committerEmail != commit.info.authorEmail %}
+            with <strong title="{{ commit.info.committer ~ '<' ~ commit.info.committerEmail ~ '>' }}">{{ commit.info.committer }}</strong>
+          {% endif %}
+          on {{ commit.info.committerDate | date('M d, Y') }}
+        </div>
+
+        {% if commit.parents | length > 0 %}
+        <div class="col-auto text-nowrap">
+          {{ commit.parents | length }} parent commit(s)
+          {% for p in commit.parents %}
+            {% if not loop.first %}<small class="mx-1 text-muted">+</small>{% endif %}
+            <a href="{{ group }}/{{ name }}/commit/{{ p.hash }}">
+              <span>{{ p.abbreviatedHash }}</span>
+            </a>
+          {% endfor %}
+        </div>
         {% endif %}
-        on {{ commit.info.committerDate | date('M d, Y') }}
-      </p>
-      <p class="text-muted">commit {{ commit.hash }}</p>
-      {% if commit.parents | length > 0 %}
-      <p>
-        {{ commit.parents | length }} parent commit(s)
-        {% for p in commit.parents %}
-          <a href="{{ group }}/{{ name }}/commit/{{ p.hash }}">{{ p.abbreviatedHash }}</a>
-        {% endfor %}
-      </p>
-      {% endif %}
+
+        <div class="col-auto text-nowrap">
+          <span class="text-muted">commit {{ commit.hash }}</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -51,7 +101,7 @@
       {% for item in stats.items %}
       <div class="list-group-item px-0 py-1 border-x-0 {% if loop.first %}border-top-0{% endif %} {% if loop.last %}border-bottom-0{% endif %}">
         <div class="row">
-          <div class="col"><a href="javascript:void(0)">{{ item.filename }}</a></div>
+          <div class="col"><a href="{{ group }}/{{ name }}/{{ item.type }}/{{ commit.hash }}:{{ item.path }}">{{ item.name }}</a></div>
           <div class="col-auto text-right">
             {% if item.binary %}
               <strong class="text-primary">BIN</strong>
@@ -81,4 +131,5 @@
   <div>
     <pre>{{ stats | json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
   </div>
+{% endspaceless %}
 {% endblock %}

@@ -20,6 +20,8 @@ use \Classes\Git\Repository;
  * @property-read Commit[] $parents
  * @property-read \stdClass $info
  * @property-read Diff $diff
+ * @property-read Branch[] $branches
+ * @property-read Tag[] $tags
  */
 class Commit extends Ref {
 
@@ -28,6 +30,8 @@ class Commit extends Ref {
   private $_info = null;
   private $_diff = null;
   private $_parents = null;
+  private $_branches = null;
+  private $_tags = null;
 
   protected function getCommit() {
     return $this;
@@ -80,6 +84,45 @@ class Commit extends Ref {
       $this -> _diff = new Diff($this -> repository, $this);
     }
     return $this -> _diff;
+  }
+
+  protected function getBranches() {
+    if ($this -> _branches === null) {
+      $lines = $this -> repository -> exec('branch', '--contains', $this -> hash);
+      $lines = explode("\n", $lines);
+
+      $this -> _branches = [];
+      foreach ($lines as $line) {
+        $line = trim(trim($line, '*'));
+        $branch = $this -> repository -> branch($line);
+        if ($branch) {
+          $this -> _branches[$branch -> name] = $branch;
+        }
+      }
+
+      ksort($this -> _branches);
+      $this -> _branches = array_values($this -> _branches);
+    }
+    return $this -> _branches;
+  }
+
+  protected function getTags() {
+    if ($this -> _tags === null) {
+      $lines = $this -> repository -> exec('tag', '--contains', $this -> hash);
+      $lines = explode("\n", $lines);
+
+      $this -> _tags = [];
+      foreach ($lines as $line) {
+        $tag = $this -> repository -> tag(trim($line));
+        if ($tag) {
+          $this -> _tags[$tag -> name] = $tag;
+        }
+      }
+
+      ksort($this -> _tags);
+      $this -> _tags = array_reverse(array_values($this -> _tags));
+    }
+    return $this -> _tags;
   }
 
 }

@@ -70,6 +70,22 @@ a.form-control {
   @include form-control-focus();
 }
 
+.collapsed-list {
+  > * {
+    display: none;
+  }
+
+  &:before {
+    content: "\00B7\00B7\00B7";
+    display: inline-block;
+    padding: 0 0.5em;
+    line-height: 1em;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 0.2em;
+    cursor: pointer;
+  }
+}
+
 .diff-slot {
   display: inline-block;
   width: 0.7em;

@@ -13,6 +13,8 @@ $(function () {
 
 // Copy to clipboard buttons
 $(function() {
+  const $body = $('body');
+
   const clipboard = new Clipboard('[data-clipboard-target], [data-clipboard-text]');
   clipboard.on('success', function(element) {
     element = $(element.trigger);
@@ -23,23 +25,24 @@ $(function() {
       element.attr('data-original-title', originalTitle);
     });
   });
-});
 
-// Dropdown: allow to stay visible if click inside and close on click outside
-$('body').on('hide.bs.dropdown', '.dropdown[data-close-outside]', function(event) {
-  const nodes = document.querySelectorAll(':hover');
-  const elementUnderCursor = nodes[nodes.length - 1];
-  const list = this.querySelector('.dropdown-menu');
-  if (list.contains(elementUnderCursor)) {
-    event.preventDefault();
-    event.returnValue = false;
-    return false;
-  }
-});
+  // Dropdown: allow to stay visible if click inside and close on click outside
+  $body.on('hide.bs.dropdown', '.dropdown[data-close-outside]', function(event) {
+    const nodes = document.querySelectorAll(':hover');
+    const elementUnderCursor = nodes[nodes.length - 1];
+    const list = this.querySelector('.dropdown-menu');
+    if (list.contains(elementUnderCursor)) {
+      event.preventDefault();
+      event.returnValue = false;
+      return false;
+    }
+  });
 
-// Markdown
+  $body.on('click', '.collapsed-list', function() {
+    $(this).removeClass('collapsed-list');
+  });
 
-$(function() {
+  // Markdown
   const renderer = new marked.Renderer();
   const options = {
     renderer: renderer,

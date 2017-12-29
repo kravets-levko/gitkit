@@ -110,6 +110,7 @@ class Repository {
     if ($this -> _tags === null) {
       $this -> _tags = [];
       $names = explode("\n", $this -> exec('tag', '--list'));
+      $names = array_filter(array_map('trim', $names), 'strlen');
       foreach ($names as $name) {
         $this -> _tags[$name] = new Tag($this, $name);
       }
