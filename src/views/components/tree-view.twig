@@ -27,13 +27,17 @@
           <a href="{{ base }}/{{ node.type }}/{{ ref.name }}:{{ node.path }}">{{ node.name }}</a>
         </td>
         <td class="py-2">
-          <div class="text-nowrap text-truncate" style="max-width: 400px;">
+          <div class="text-truncate" style="max-width: 400px;">
             <a title="{{ node.commit.info.message }}"
               href="{{ base }}/commit/{{ node.commit.hash }}"
             >{{ node.commit.info.message }}</a>
           </div>
         </td>
-        <td width="1%" class="py-2 text-nowrap text-right">{{ node.commit.info.committerDate | date('M d, Y') }}</td>
+        <td width="1%" class="py-2 text-nowrap text-right">
+          <span title="{{ node.commit.info.committerDate | full_date }}">{{
+            node.commit.info.committerDate | format_time_ago
+          }}</span>
+        </td>
       </tr>
     {% endfor %}
   {% endspaceless %}

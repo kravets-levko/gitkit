@@ -1,0 +1,64 @@
+{% extends 'layout/main.twig' %}
+
+{% block title %}SSH Keys - GitKit{% endblock %}
+
+{% block content %}
+{% spaceless %}
+  <h1>SSH Keys</h1>
+
+  <div class="card my-3">
+    <div class="card-header collapsed cursor-pointer" data-toggle="collapse" data-target="#ssh-keys-new">
+      <span class="octicon mr-2 text-success">{% include 'assets/octicons/key.svg' %}</span>
+      <span>New SSH key</span>
+    </div>
+    <div class="collapse" id="ssh-keys-new">
+      <div class="card-body">
+        <form method="post">
+          <input type="hidden" name="action" value="add">
+          <div class="form-group">
+            <label for="new-ssh-key">Description</label>
+            <textarea class="form-control resize-vertical" name="key" id="new-ssh-key" rows="4"
+              placeholder="Begins with 'ssh-rsa', 'ssh-dss', 'ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', or 'ecdsa-sha2-nistp521'"
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="new-ssh-key-description">Description<small class="text-muted ml-2">(this field is optional)</small></label>
+            <input class="form-control" id="new-ssh-key-description" type="text"
+              name="description" placeholder="Type something...">
+          </div>
+          <div class="text-right">
+            <button class="btn btn-success" type="submit">Add SSH key</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  {% for index, key in keys %}
+    <div class="card my-3">
+      <div class="card-header collapsed cursor-pointer" data-toggle="collapse" data-target="#ssh-keys-{{ index }}">
+        <div class="row">
+          <div class="col-8 col-sm-9 col-md-9 col-lg-10 col-xl-10 d-flex align-items-center">
+            <div class="text-truncate">
+              <span class="octicon text-muted mr-2">{% include 'assets/octicons/key.svg' %}</span>
+              <span>{{ key.description }}</span>
+            </div>
+          </div>
+          <div class="col-4 col-sm-3 col-md-3 col-lg-2 col-xl-2 text-right">
+            <form method="post">
+              <input type="hidden" name="action" value="delete">
+              <input type="hidden" name="key" value="{{ key.raw }}">
+              <button class="btn btn-danger" type="submit">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="collapse" id="ssh-keys-{{ index }}">
+        <div class="card-body">
+          <div class="text-monospace">{{ key.type }} {{ key.key }}</div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+{% endspaceless %}
+{% endblock %}

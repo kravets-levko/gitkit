@@ -92,16 +92,26 @@ class Commit extends Ref {
       $lines = explode("\n", $lines);
 
       $this -> _branches = [];
+      $defaultBranch = null;
       foreach ($lines as $line) {
-        $line = trim(trim($line, '*'));
+        $line = explode(' ', trim($line));
+        $isDefault = count($line) > 1;
+        $line = array_last($line);
         $branch = $this -> repository -> branch($line);
         if ($branch) {
           $this -> _branches[$branch -> name] = $branch;
+          if ($isDefault) $defaultBranch = $branch;
         }
+      }
+
+      if ($defaultBranch) {
+        unset($this -> _branches[$defaultBranch -> name]);
       }
 
       ksort($this -> _branches);
       $this -> _branches = array_values($this -> _branches);
+
+      if ($defaultBranch) array_unshift($this -> _branches, $defaultBranch);
     }
     return $this -> _branches;
   }

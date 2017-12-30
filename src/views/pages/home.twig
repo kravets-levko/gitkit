@@ -3,13 +3,45 @@
 {% block title %}GitKit{% endblock %}
 
 {% block content %}
+{% spaceless %}
   <div>
+    <div class="my-3">
+      <a href="new{% if group %}?group={{ group | escape('url') }}{% endif %}" class="btn btn-success">New repository</a>
+    </div>
     {% for group in repositories | keys %}
-      {% for name in repositories[group] | keys %}
-      <div>
-        <a href="{{ group }}/{{ name }}">{{ group }}/{{ name }}</a>
-      </div>
+      {% for name, repo in repositories[group] %}
+        <hr>
+        <div class="my-3">
+          <h3>
+            <a href="{{ group }}">{{ group }}</a>
+            <span class="text-color-link mx-1">/</span>
+            <a href="{{ group }}/{{ name }}"><strong>{{ name }}</strong></a>
+          </h3>
+          {% if repo.info.description %}<div><markdown>{{ repo.info.description }}</markdown></div>{% endif %}
+          {% if repo.latestCommit %}
+          <div>
+            <strong>Latest commit:</strong>
+            <a class="ml-2" href="{{ group }}/{{ name }}/commit/{{ repo.latestCommit.hash }}"
+            >{{ repo.latestCommit.abbreviatedHash }}</a>
+            {% if repo.latestCommit.branches | length > 0 %}
+              {% set commitBranch = repo.latestCommit.branches | first %}
+              <a class="ml-2"
+                href="{{ group }}/{{ name }}{% if commitBranch.name != repo.defaultBranch.name %}/tree/{{ commitBranch.name }}{% endif %}">
+                <span class="octicon text-muted mr-1">{% include 'assets/octicons/git-branch.svg' %}</span>
+                <span>{{ commitBranch.name }}</span>
+              </a>
+              <span class="ml-2" title="{{ repo.latestCommit.info.committerDate | full_date }}">{{
+                repo.latestCommit.info.committerDate | format_time_ago
+              }}</span>
+            {% endif %}
+          </div>
+          <div>
+            <markdown>{{ repo.latestCommit.info.message }}</markdown>
+          </div>
+          {% endif %}
+        </div>
       {% endfor %}
     {% endfor %}
   </div>
+{% endspaceless %}
 {% endblock %}

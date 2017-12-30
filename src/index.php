@@ -3,9 +3,6 @@
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/utils.php';
 
-use Psr\Http\Message\RequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
-
 $app = new \Slim\App([
   'settings' => [
     'displayErrorDetails' => true,
@@ -14,12 +11,13 @@ $app = new \Slim\App([
 ]);
 
 $app -> group('/{group}/{name}', function() {
-  $this -> get('/commit/{commit}', Actions\Commit::class);
-  $this -> get('/tree/{ref:[^:]*}[:{path:.*}]', Actions\Tree::class);
-  $this -> get('/blob/{ref:[^:]*}[:{path:.*}]', Actions\Blob::class);
-  $this -> get('', Actions\Tree::class);
+  $this -> any('/commit/{commit}', Actions\Commit::class);
+  $this -> any('/tree/{ref:[^:]*}[:{path:.*}]', Actions\Tree::class);
+  $this -> any('/blob/{ref:[^:]*}[:{path:.*}]', Actions\Blob::class);
+  $this -> any('', Actions\Tree::class);
 });
-$app -> get('/', Actions\Home::class);
+$app -> any('/ssh-keys', Actions\SSHKeys::class);
+$app -> any('/[{group}]', Actions\Home::class);
 
 $container = $app->getContainer();
 $container['view'] = function() {

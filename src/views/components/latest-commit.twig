@@ -12,7 +12,9 @@
           <a class="ml-2" href="{{ group }}/{{ name }}/commit/{{ commit.hash }}">{{ commit.abbreviatedHash }}</a>
         </span>
         <wbr>
-        <span class="ml-2 text-nowrap">{{ commit.info.committerDate | date('M d, Y') }}</span>
+        <span class="ml-2 text-nowrap" title="{{ commit.info.committerDate | full_date }}">{{
+          commit.info.committerDate | pretty_date('on %s')
+        }}</span>
       </th>
     </tr>
   </thead>

@@ -22,6 +22,14 @@ class Action {
     return $this -> container -> get($name);
   }
 
+  protected function beforeRequest(Request $request, Response $response, $args) {
+    return $response;
+  }
+
+  protected function afterRequest(Request $request, Response $response, $args) {
+    return $response;
+  }
+
   public function notFound() {
     throw new NotFoundException($this -> currentRequest, $this -> currentResponse);
   }
@@ -32,12 +40,14 @@ class Action {
       $this -> currentRequest = $request;
       $this -> currentResponse = $response;
       try {
-        $result = $this ->{$method}($request, $response, $args);
+        $response = $this -> beforeRequest($request, $response, $args);
+        $response = $this -> {$method}($request, $response, $args);
+        $response = $this -> beforeRequest($request, $response, $args);
       } finally {
         $this -> currentRequest = null;
         $this -> currentResponse = null;
       }
-      return $result;
+      return $response;
     }
     throw new InvalidMethodException($request, $request -> getMethod());
   }

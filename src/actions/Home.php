@@ -13,11 +13,20 @@ use \Psr\Http\Message\ResponseInterface as Response;
  */
 class Home extends Action {
 
-  public function get(Request $request, Response $response) {
+  public function get(Request $request, Response $response, $args) {
     $config = $this -> container -> get('config');
     $repos = \Classes\Git\Repository::getRepositories($config);
+
+    $group = isset($args['group']) ? $args['group'] : '';
+    if ($group == '') $group = null;
+
+    if ($group) {
+      $repos = array_intersect_key($repos, [$group => true]);
+    }
+
     return $this -> view -> render($response, 'pages/home.twig', [
       'repositories' => $repos,
+      'group' => $group,
     ]);
   }
 

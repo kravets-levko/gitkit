@@ -26,7 +26,6 @@ trait Properties {
   }
 
   public function __set($name, $value) {
-    var_dump(get_class($this) . '::' . __METHOD__, $name);
     $setter = 'set' . ucfirst($name);
     if (method_exists($this, $setter)) {
       $this -> {$setter}();

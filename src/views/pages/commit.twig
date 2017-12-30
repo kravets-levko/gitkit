@@ -68,12 +68,14 @@
             <img class="rounded ml-2 mr-1" src="https://www.gravatar.com/avatar/{{ commit.info.committerEmail | trim | lower | md5 }}?s=30">
             <strong title="{{ commit.info.committer ~ '<' ~ commit.info.committerEmail ~ '>' }}">{{ commit.info.committer }}</strong>
           {% endif %}
-          on {{ commit.info.committerDate | date('M d, Y') }}
+          <span title="{{ commit.info.committerDate | full_date }}">{{
+            commit.info.committerDate | pretty_date('on %s')
+          }}</span>
         </div>
 
         {% if commit.parents | length > 0 %}
         <div class="col-auto text-nowrap">
-          {{ commit.parents | length }} parent commit(s)
+          {{ commit.parents | length }} parent(s)
           {% for p in commit.parents %}
             {% if not loop.first %}<small class="mx-1 text-muted">+</small>{% endif %}
             <a href="{{ group }}/{{ name }}/commit/{{ p.hash }}">

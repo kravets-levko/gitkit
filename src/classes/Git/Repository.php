@@ -8,11 +8,15 @@ use \Classes\Git\Core\Commit;
 use \Classes\Git\Core\Branch;
 use \Classes\Git\Core\Tag;
 
+use \Classes\Process\Binary;
+
 /**
  * @property-read string $cloneUrl
  * @property-read Branch[] $branches
  * @property-read Branch $defaultBranch
  * @property-read Tag[] $tags
+ * @property-read Commit $latestCommit
+ * @property-read \StdClass $info
  */
 class Repository {
   use Properties;
@@ -40,9 +44,16 @@ class Repository {
    */
   private $_tags = null;
 
+  private $_latestCommit = null;
+
+  private $git = null;
+
+  private $_info = null;
+
   public function __construct($path, $config) {
     $this -> _config = $config;
     $this -> _path = $path;
+    $this -> git = new Binary($this -> _config -> gitBinary);
   }
 
   static public function getRepositories($config) {
@@ -65,6 +76,7 @@ class Repository {
 
   static public function getRepository($name, $config) {
     $path = $config -> repositoriesPath . '/' . $name . '.git';
+    if (!is_dir($path)) throw new Exception('Path does not exist');
     return new Repository($path, $config);
   }
 
@@ -83,7 +95,7 @@ class Repository {
       $names = explode("\n", $this -> exec('branch', '--list'));
       foreach ($names as $name) {
         $name = explode(' ', trim($name));
-        $isDefault = count($name) == 2;
+        $isDefault = count($name) > 1;
         $name = array_last($name);
         if ($name != '') {
           $this -> _branches[$name] = new Branch($this, $name);
@@ -119,6 +131,24 @@ class Repository {
       $this -> _tags = array_reverse($this -> _tags);
     }
     return array_values($this -> _tags);
+  }
+
+  protected function getLatestCommit() {
+    if ($this -> _latestCommit === null) {
+      $hash = trim($this -> exec(['rev-list', '-1', '--all']));
+      $this -> _latestCommit = $this -> commit($hash);
+    }
+    return $this -> _latestCommit;
+  }
+
+  protected function getInfo() {
+    if ($this -> _info === null) {
+      $this -> _info = @json_decode(file_get_contents($this -> _path . '.json'));
+      if (!is_object($this -> _info)) {
+        $this -> _info = (object)[];
+      }
+    }
+    return $this -> _info;
   }
 
   public function exec(...$args) {

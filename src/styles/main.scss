@@ -5,6 +5,10 @@ svg {
   display: inline-block;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .octicon {
   display: inline-block;
   line-height: 1em;
@@ -13,6 +17,10 @@ svg {
   svg {
     vertical-align: top;
   }
+}
+
+.text-color-link {
+  color: $link-color;
 }
 
 a.link-secondary {
@@ -43,6 +51,10 @@ a.form-control {
 .text-block {
   display: block;
   white-space: pre-wrap;
+}
+
+.card-header.collapsed {
+  border-bottom: 0;
 }
 
 .dropdown-menu.shadow {

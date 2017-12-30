@@ -33,7 +33,7 @@ sudo -u git touch .ssh/authorized_keys
 ### Install and configure app
 
 Do some preparations over web-server and git:
-- Add write permissions for group to `git` home directory: `sudo chmod -R g+w /home/git`
+- Add write permissions for group to `git` home directory: `sudo chmod -R g+rw /home/git`
 - Find name and group of your webserver user (usually `www-data:www-data`), and then cross-add it and `git` user to
 each other groups:
 ```
