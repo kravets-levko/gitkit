@@ -33,9 +33,7 @@
                     data-clipboard-target="#resource-clone-url-{{ key }}"
                     data-toggle="tooltip" data-placement="bottom"
                     title="Copy to clipboard" data-title-copied="Copied!"
-                  >
-                    <span class="octicon">{% include 'assets/octicons/clippy.svg' %}</span>
-                  </button>
+                  >{% include 'icon.twig' with { icon: 'clippy' } %}</button>
                 </span>
               </div>
             </div>

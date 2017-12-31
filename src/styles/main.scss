@@ -13,10 +13,7 @@ svg {
   display: inline-block;
   line-height: 1em;
   fill: currentColor;
-
-  svg {
-    vertical-align: top;
-  }
+  vertical-align: middle;
 }
 
 .text-color-link {
@@ -64,15 +61,7 @@ a.form-control {
 .navbar {
 
   .navbar-brand {
-    svg {
-      width: 32px;
-      height: 32px;
-      vertical-align: top;
-
-      path {
-        fill: $gray-100;
-      }
-    }
+    color: $gray-100;
   }
 
 }

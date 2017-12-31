@@ -35,7 +35,7 @@ module.exports = {
     'app': ['./src/scripts/index.js', './src/styles/main.scss'],
   },
   output: {
-    path: path.resolve(__dirname, 'public/assets'),
+    path: path.resolve(__dirname, 'public'),
     filename: '[name].js',
   },
   module: {

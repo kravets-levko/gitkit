@@ -25,14 +25,14 @@
           {% set commitBranch = commit.branches | first %}
             <a class="link-secondary mr-4"
               href="{{ group }}/{{ name }}{% if commitBranch.name != repository.defaultBranch.name %}/tree/{{ commitBranch.name }}{% endif %}">
-              <span class="octicon text-muted mr-1">{% include 'assets/octicons/git-branch.svg' %}</span>
+              <span class="text-muted mr-1">{% include 'icon.twig' with { icon: 'git-branch' } %}</span>
               <strong>{{ commitBranch.name }}</strong>
             </a>
         {% endif %}
         {% if commit.tags | length > 0 %}
           {% set commitTag = commit.tags | first %}
           <a class="link-secondary mr-2" href="{{ group }}/{{ name }}/tree/{{ commitTag.name }}">
-            <span class="octicon text-muted mr-1">{% include 'assets/octicons/tag.svg' %}</span>
+            <span class="text-muted mr-1">{% include 'icon.twig' with { icon: 'tag' } %}</span>
             <strong>{{ commitTag.name }}</strong>
           </a>
           {% if commit.tags | length > 1 %}
@@ -93,7 +93,7 @@
   </div>
 
   <div class="my-3">
-    <span class="octicon">{% include 'assets/octicons/diff.svg' %}</span>
+    {% include 'icon.twig' with { icon: 'diff' } %}
     Showing {% spaceless %}<a href="javascript:void(0)" data-toggle="collapse" data-target="#commit-changes">
       <strong>{{ stats.items | length }} changed file(s)</strong>
     </a>{% endspaceless %} with

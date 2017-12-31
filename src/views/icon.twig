@@ -1,0 +1,5 @@
+{% spaceless %}
+<svg class="octicon" width="{{ width ?? size ?? 16 }}" height="{{ height ?? size ?? 16 }}">
+  <use xlink:href="octicons.svg#{{ icon | escape('url') }}"></use>
+</svg>
+{% endspaceless %}

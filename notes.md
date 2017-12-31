@@ -15,3 +15,13 @@ Get file media type (MIME) (read from stdin)
 $ cat <file> | file --brief --mime-type -
 text/plain
 ```
+
+Generate SSH key fingerprint / validate SSH key (print output to stdout)
+```
+cat id_rsa.pub | ssh-keygen -l -f -
+```
+
+Create new SSH key pair (https://www.ssh.com/ssh/keygen/)
+```
+ssh-keygen -t <algorythm> -b <bits> -f <output filename> -q -N <passphrase>
+```

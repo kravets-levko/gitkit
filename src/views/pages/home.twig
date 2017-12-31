@@ -27,7 +27,7 @@
               {% set commitBranch = repo.latestCommit.branches | first %}
               <a class="ml-2"
                 href="{{ group }}/{{ name }}{% if commitBranch.name != repo.defaultBranch.name %}/tree/{{ commitBranch.name }}{% endif %}">
-                <span class="octicon text-muted mr-1">{% include 'assets/octicons/git-branch.svg' %}</span>
+                <span class="text-muted">{% include 'icon.twig' with { icon: 'git-branch' } %}</span>
                 <span>{{ commitBranch.name }}</span>
               </a>
               <span class="ml-2" title="{{ repo.latestCommit.info.committerDate | full_date }}">{{

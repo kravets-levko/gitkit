@@ -5,13 +5,13 @@
     <base href="/">
     <title>{% block title %}{% endblock %}</title>
 
-    <link rel="stylesheet" type="text/css" href="assets/app.css">
+    <link rel="stylesheet" type="text/css" href="app.css">
   </head>
   <body>
     {% include 'layout/header.twig' %}
 
     <div class="container-fluid my-3">{% block content %}{% endblock %}</div>
 
-    <script type="text/javascript" src="assets/app.js"></script>
+    <script type="text/javascript" src="app.js"></script>
   </body>
 </html>

@@ -20,9 +20,9 @@
     {% for node in ref.tree.nodes(path) %}
       <tr>
         <td class="py-2">
-            <span class="octicon mr-1 text-secondary">
-            {% if node.type == 'blob' %}{% include 'assets/octicons/file.svg' %}{% endif %}
-              {% if node.type == 'tree' %}{% include 'assets/octicons/file-directory.svg' %}{% endif %}
+            <span class="mr-1 text-secondary">
+              {% if node.type == 'blob' %}{% include 'icon.twig' with { icon: 'file' } %}{% endif %}
+              {% if node.type == 'tree' %}{% include 'icon.twig' with { icon: 'file-directory' } %}{% endif %}
             </span>
           <a href="{{ base }}/{{ node.type }}/{{ ref.name }}:{{ node.path }}">{{ node.name }}</a>
         </td>

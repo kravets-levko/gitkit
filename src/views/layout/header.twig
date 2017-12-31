@@ -1,6 +1,7 @@
+{% spaceless %}
 <nav class="navbar navbar-expand navbar-dark bg-dark sticky-top">
   <a class="navbar-brand p-0" href="">
-    {% include 'assets/octicons/mark-github.svg' %}
+    {% include 'icon.twig' with { icon: 'mark-github', size: 32 } %}
   </a>
 
   <div class="navbar-nav flex-grow-1">
@@ -9,3 +10,4 @@
     </div>
   </div>
 </nav>
+{% endspaceless %}
