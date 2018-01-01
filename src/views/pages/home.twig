@@ -12,11 +12,7 @@
       {% for name, repo in repositories[group] %}
         <hr>
         <div class="my-3">
-          <h3>
-            <a href="{{ group }}">{{ group }}</a>
-            <span class="text-color-link mx-1">/</span>
-            <a href="{{ group }}/{{ name }}"><strong>{{ name }}</strong></a>
-          </h3>
+          <h3>{% include 'components/repository-link.twig' with {group: group, name: name} %}</h3>
           {% if repo.info.description %}<div><markdown>{{ repo.info.description }}</markdown></div>{% endif %}
           {% if repo.latestCommit %}
           <div>

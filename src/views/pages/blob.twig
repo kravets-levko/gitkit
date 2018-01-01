@@ -3,7 +3,7 @@
 {% block title %}{{ group }}/{{ name }} - GitKit{% endblock %}
 
 {% block content %}
-  <h1><a href="{{ group }}/{{ name }}">{{ group }}/{{ name }}</a></h1>
+  <h1>{% include 'components/repository-link.twig' with {group: group, name: name} %}</h1>
 
   {% set rawUrl = group ~ '/' ~ name ~ '/' ~ blob.type ~ '/' ~ ref.name ~ ':' ~ blob.path ~ '?raw' %}
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace Actions;
+namespace Actions\SSH;
 
-use Classes\Action;
+use \Actions\Action;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
@@ -11,7 +11,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
  *
  * @property \Slim\Views\Twig $view
  */
-class SSHKeys extends Action {
+class Keys extends Action {
 
   protected function parseSSHKey($str) {
     list($type, $key, $description) = array_map('trim', explode(' ', $str, 3));

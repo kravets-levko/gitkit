@@ -7,17 +7,13 @@ $app = new \Slim\App([
   'settings' => [
     'displayErrorDetails' => true,
     'outputBuffering' => false,
+    'determineRouteBeforeAppMiddleware' => true,
   ],
 ]);
 
-$app -> group('/{group}/{name}', function() {
-  $this -> any('/commit/{commit}', Actions\Commit::class);
-  $this -> any('/tree/{ref:[^:]*}[:{path:.*}]', Actions\Tree::class);
-  $this -> any('/blob/{ref:[^:]*}[:{path:.*}]', Actions\Blob::class);
-  $this -> any('', Actions\Tree::class);
-});
-$app -> any('/ssh-keys', Actions\SSHKeys::class);
-$app -> any('/[{group}]', Actions\Home::class);
+new \Actions\SSH\Router($app);
+new \Actions\Repositories\Router($app);
+
 
 $container = $app->getContainer();
 $container['view'] = function() {

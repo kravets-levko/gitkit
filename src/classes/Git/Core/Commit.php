@@ -3,6 +3,7 @@
 namespace Classes\Git\Core;
 
 use \Classes\Git\Repository;
+use \Classes\Git\Utils\Parse;
 
 /**
  * Class Commit
@@ -88,49 +89,42 @@ class Commit extends Ref {
 
   protected function getBranches() {
     if ($this -> _branches === null) {
-      $lines = $this -> repository -> exec('branch', '--contains', $this -> hash);
-      $lines = explode("\n", $lines);
+      list($names, $defaultName) = Parse::parseBranchList(
+        $this -> repository -> exec('branch', '--contains', $this -> hash)
+      );
 
       $this -> _branches = [];
-      $defaultBranch = null;
-      foreach ($lines as $line) {
-        $line = explode(' ', trim($line));
-        $isDefault = count($line) > 1;
-        $line = array_last($line);
-        $branch = $this -> repository -> branch($line);
+      foreach ($names as $name) {
+        $branch = $this -> repository -> branch($name);
         if ($branch) {
           $this -> _branches[$branch -> name] = $branch;
-          if ($isDefault) $defaultBranch = $branch;
         }
       }
 
-      if ($defaultBranch) {
-        unset($this -> _branches[$defaultBranch -> name]);
+      ksort($this -> _branches);
+      if ($defaultName !== null) {
+        $defaultBranch = $this -> _branches[$defaultName];
+        unset($this -> _branches[$defaultName]);
+        array_unshift($this -> _branches, $defaultBranch);
       }
 
-      ksort($this -> _branches);
       $this -> _branches = array_values($this -> _branches);
-
-      if ($defaultBranch) array_unshift($this -> _branches, $defaultBranch);
     }
     return $this -> _branches;
   }
 
   protected function getTags() {
     if ($this -> _tags === null) {
-      $lines = $this -> repository -> exec('tag', '--contains', $this -> hash);
-      $lines = explode("\n", $lines);
-
+      $names = Parse::parseTagList(
+        $this -> repository -> exec('tag', '--contains', $this -> hash)
+      );
       $this -> _tags = [];
-      foreach ($lines as $line) {
-        $tag = $this -> repository -> tag(trim($line));
+      foreach ($names as $name) {
+        $tag = $this -> repository -> tag($name);
         if ($tag) {
-          $this -> _tags[$tag -> name] = $tag;
+          $this -> _tags[] = $tag;
         }
       }
-
-      ksort($this -> _tags);
-      $this -> _tags = array_reverse(array_values($this -> _tags));
     }
     return $this -> _tags;
   }

@@ -1,8 +1,8 @@
 <?php
 
-namespace Actions;
+namespace Actions\Repositories;
 
-use Classes\Action;
+use \Actions\Action;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 

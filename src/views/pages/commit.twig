@@ -4,7 +4,7 @@
 
 {% block content %}
 {% spaceless %}
-  <h1><a href="{{ group }}/{{ name }}">{{ group }}/{{ name }}</a></h1>
+  <h1>{% include 'components/repository-link.twig' with {group: group, name: name} %}</h1>
 
   {% set slots = 5 %}
   {% set stats = commit.diff.stats(slots) %}

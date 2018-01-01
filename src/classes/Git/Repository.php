@@ -3,12 +3,11 @@
 namespace Classes\Git;
 
 use \Classes\Git\Utils\Process;
+use \Classes\Git\Utils\Parse;
 use \Classes\Git\Utils\Properties;
 use \Classes\Git\Core\Commit;
 use \Classes\Git\Core\Branch;
 use \Classes\Git\Core\Tag;
-
-use \Classes\Process\Binary;
 
 /**
  * @property-read string $cloneUrl
@@ -46,14 +45,11 @@ class Repository {
 
   private $_latestCommit = null;
 
-  private $git = null;
-
   private $_info = null;
 
   public function __construct($path, $config) {
     $this -> _config = $config;
     $this -> _path = $path;
-    $this -> git = new Binary($this -> _config -> gitBinary);
   }
 
   static public function getRepositories($config) {
@@ -94,23 +90,15 @@ class Repository {
   protected function getBranches() {
     if ($this -> _branches === null) {
       $this -> _branches = [];
-      $names = explode("\n", $this -> exec('branch', '--list'));
+      list($names, $defaultName) = Parse::parseBranchList(
+        $this -> exec('branch', '--list')
+      );
       foreach ($names as $name) {
-        $name = explode(' ', trim($name));
-        $isDefault = count($name) > 1;
-        $name = array_last($name);
-        if ($name != '') {
-          $this -> _branches[$name] = new Branch($this, $name);
-          if ($isDefault) {
-            $this -> _defaultBranch = $this -> _branches[$name];
-          }
-        }
+        $this -> _branches[$name] = new Branch($this, $name);
       }
-      if (!$this -> _defaultBranch) {
-        $this -> _defaultBranch = array_first($this -> _branches);
-      }
-
-      ksort($this -> _branches);
+      $this -> _defaultBranch = $defaultName !== null
+        ? $this -> _branches[$defaultName]
+        : array_first($this -> _branches);
     }
     return array_values($this -> _branches);
   }
@@ -123,14 +111,10 @@ class Repository {
   protected function getTags() {
     if ($this -> _tags === null) {
       $this -> _tags = [];
-      $names = explode("\n", $this -> exec('tag', '--list'));
-      $names = array_filter(array_map('trim', $names), 'strlen');
+      $names = Parse::parseTagList($this -> exec('tag', '--list'));
       foreach ($names as $name) {
         $this -> _tags[$name] = new Tag($this, $name);
       }
-
-      ksort($this -> _tags);
-      $this -> _tags = array_reverse($this -> _tags);
     }
     return array_values($this -> _tags);
   }

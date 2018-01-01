@@ -1,8 +1,8 @@
 <?php
 
-namespace Actions;
+namespace Actions\Repositories;
 
-use Classes\Action;
+use \Actions\Action;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
@@ -11,7 +11,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
  *
  * @property \Slim\Views\Twig $view
  */
-class Home extends Action {
+class View extends Action {
 
   public function get(Request $request, Response $response, $args) {
     $config = $this -> container -> get('config');

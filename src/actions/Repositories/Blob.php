@@ -1,8 +1,8 @@
 <?php
 
-namespace Actions;
+namespace Actions\Repositories;
 
-use Classes\Action;
+use \Actions\Action;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
@@ -11,7 +11,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
  *
  * @property \Slim\Views\Twig $view
  */
-class Tree extends Action {
+class Blob extends Action {
 
   public function get(Request $request, Response $response, $args) {
     $config = $this -> container -> get('config');
@@ -28,17 +28,30 @@ class Tree extends Action {
     }
     $path = isset($args['path']) && is_string($args['path']) ? $args['path'] : '';
 
-    $parentPath = explode('/', $path);
-    array_pop($parentPath);
-    $parentPath = implode('/', $parentPath);
+    /**
+     * @var \Classes\Git\Core\TreeFile $blob
+     */
+    $blob = $ref -> tree -> node($path);
+    if (!$blob || ($blob -> type !== 'blob')) {
+      $this -> notFound();
+    }
 
-    return $this -> view -> render($response, 'pages/tree.twig', [
+    // Raw output
+    if (array_key_exists('raw', $request -> getQueryParams())) {
+      if (!headers_sent()) {
+        header("Content-Type: {$blob -> mime}", true);
+      }
+      $blob -> displayData();
+      die;
+    }
+
+
+    return $this -> view -> render($response, 'pages/blob.twig', [
       'group' => $args['group'],
       'name' => $args['name'],
       'repository' => $repo,
       'ref' => $ref,
-      'path' => $path,
-      'parentPath' => $parentPath,
+      'blob' => $blob,
     ]);
   }
 
