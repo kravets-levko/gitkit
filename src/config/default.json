@@ -1,9 +1,0 @@
-{
-  "gitBinary": "git",
-  "repositoriesPath": "/home/git",
-  "sshKeysFile": "/home/git/.ssh/authorized_keys",
-  "cloneUrlTemplates": {
-    "ssh": "git@localhost:{path}",
-    "http": "http://gitkit.local/{path}"
-  }
-}

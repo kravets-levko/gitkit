@@ -60,13 +60,13 @@ class Repository {
     $result = [];
 
     list(, $names) = Process::run('find', '. -mindepth 2 -maxdepth 2 -type d -name *.git',
-      $config -> repositoriesPath);
+      $config -> repositoriesRoot);
 
     $items = array_filter(array_map('trim', explode("\n", $names)), 'strlen');
     foreach ($items as $item) {
       if (preg_match('#([^/]+)/([^/]+)\.git$#', $item, $matches)) {
         list(, $group, $name) = $matches;
-        $repository = new Repository($config -> repositoriesPath . '/' . $item, $config);
+        $repository = new Repository($config -> repositoriesRoot . '/' . $item, $config);
         @$result[$group][$name] = $repository;
       }
     }
@@ -75,18 +75,20 @@ class Repository {
   }
 
   static public function getRepository($name, $config) {
-    $path = $config -> repositoriesPath . '/' . $name . '.git';
+    $path = $config -> repositoriesRoot . '/' . $name . '.git';
     if (!is_dir($path)) throw new Exception('Path does not exist');
     return new Repository($path, $config);
   }
 
   protected function getCloneUrls() {
-    $path = substr($this -> _path, strlen($this -> _config -> repositoriesPath) + 1);
-    $result = [];
-    foreach ($this -> _config -> cloneUrlTemplates as $key => $template) {
-      $result[$key] = str_replace('{path}', $path, $template);
-    }
-    return $result;
+    $path = substr($this -> _path, strlen($this -> _config -> repositoriesRoot) + 1);
+    $https = $this -> _config -> https ? 'https' : 'http';
+    $host = $this -> _config -> host;
+    $user = $this -> _config -> gitUser;
+    return [
+      'ssh' => "{$user}@{$host}:{$path}",
+      'http' => "{$https}://{$host}/{$path}",
+    ];
   }
 
   protected function getBranches() {

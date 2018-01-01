@@ -30,8 +30,6 @@ $container['view'] = function() {
   return $view;
 };
 
-$container['config'] = function() {
-  return json_decode(file_get_contents(__DIR__ . '/config/default.json'));
-};
+$container['config'] = new \Classes\Config();
 
 $app -> run();

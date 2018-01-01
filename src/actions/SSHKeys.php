@@ -25,7 +25,7 @@ class SSHKeys extends Action {
 
   protected function beforeRequest(Request $request, Response $response, $args) {
     $config = $this -> container -> get('config');
-    if (!isset($config -> sshKeysFile)) $this -> notFound();
+    if (!isset($config -> sshAuthorizedKeys)) $this -> notFound();
     return parent::beforeRequest($request, $response, $args);
   }
 
@@ -36,7 +36,7 @@ class SSHKeys extends Action {
     if (isset($params['key'])) {
       $action = $params['action'];
       $sshKey = $params['key'];
-      $lines = @file($config -> sshKeysFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+      $lines = @file($config -> sshAuthorizedKeys, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
       if (!is_array($lines)) $lines = [];
 
       if (($action == 'delete') || ($action == 'remove')) {
@@ -54,7 +54,7 @@ class SSHKeys extends Action {
 
       $lines = array_unique($lines);
       $lines[] = '';
-      @file_put_contents($config -> sshKeysFile, implode(PHP_EOL, $lines));
+      @file_put_contents($config -> sshAuthorizedKeys, implode(PHP_EOL, $lines));
     }
     return $response -> withRedirect($request -> getUri(), 302);
   }
@@ -62,7 +62,7 @@ class SSHKeys extends Action {
   public function get(Request $request, Response $response) {
     $config = $this -> container -> get('config');
 
-    $keys = @file($config -> sshKeysFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $keys = @file($config -> sshAuthorizedKeys, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     if (!is_array($keys)) $keys = [];
 
     $keys = array_map([$this, 'parseSSHKey'], $keys);
