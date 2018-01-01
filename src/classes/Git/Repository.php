@@ -4,7 +4,7 @@ namespace Classes\Git;
 
 use \Classes\Git\Utils\Process;
 use \Classes\Git\Utils\Parse;
-use \Classes\Git\Utils\Properties;
+use \Classes\Properties;
 use \Classes\Git\Core\Commit;
 use \Classes\Git\Core\Branch;
 use \Classes\Git\Core\Tag;
@@ -147,9 +147,7 @@ class Repository {
       $this -> _path
     );
 
-    if ($status != 0) {
-      throw new Exception($stderr);
-    }
+    if ($status != 0) throw new Exception($stderr);
     return $stdout;
   }
 

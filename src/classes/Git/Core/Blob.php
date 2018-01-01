@@ -2,7 +2,7 @@
 
 namespace Classes\Git\Core;
 
-use \Classes\Git\Utils\Properties;
+use \Classes\Properties;
 use \Classes\Git\Repository;
 
 /**

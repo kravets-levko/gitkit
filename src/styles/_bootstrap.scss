@@ -4,6 +4,14 @@ svg {
   display: inline-block;
 }
 
+.text-wrap {
+  word-break: break-all;
+}
+
+.border-dotted {
+  border-style: dotted;
+}
+
 textarea {
   resize: none;
 
@@ -114,4 +122,13 @@ a.form-control {
 .btn.form-control {
   border: $input-btn-border-width solid $input-border-color;
   @include form-control-focus();
+}
+
+.show-on-demand {
+  visibility: hidden;
+}
+*:hover {
+  > .show-on-demand {
+    visibility: visible;
+  }
 }

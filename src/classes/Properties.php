@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Git\Utils;
+namespace Classes;
 
 trait Properties {
 

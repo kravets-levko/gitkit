@@ -4,61 +4,92 @@
 
 {% block content %}
 {% spaceless %}
-  <h1>SSH Keys</h1>
 
-  <div class="card my-3">
-    <div class="card-header collapsed cursor-pointer" data-toggle="collapse" data-target="#ssh-keys-new">
-      <span class="mr-2 text-success">{% include 'icon.twig' with { icon: 'key' } %}</span>
-      <span>New SSH key</span>
-    </div>
-    <div class="collapse" id="ssh-keys-new">
-      <div class="card-body">
-        <form method="post">
-          <input type="hidden" name="action" value="add">
-          <div class="form-group">
-            <label for="new-ssh-key">Description</label>
-            <textarea class="form-control resize-vertical" name="key" id="new-ssh-key" rows="4"
-              placeholder="Begins with 'ssh-rsa', 'ssh-dss', 'ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', or 'ecdsa-sha2-nistp521'"
-            ></textarea>
-          </div>
-          <div class="form-group">
-            <label for="new-ssh-key-description">Description<small class="text-muted ml-2">(this field is optional)</small></label>
-            <input class="form-control" id="new-ssh-key-description" type="text"
-              name="description" placeholder="Type something...">
-          </div>
-          <div class="text-right">
-            <button class="btn btn-success" type="submit">Add SSH key</button>
-          </div>
-        </form>
-      </div>
+  <div class="d-flex">
+    <h1 class="mb-0 flex-grow-1 d-flex align-items-center">SSH Keys</h1>
+    <div class="flex-grow-0 d-flex align-items-center">
+      <button class="btn btn-success btn-sm cursor-pointer" type="button"
+        data-toggle="modal" data-target="#new-ssh-key-modal">New SSH key</button>
     </div>
   </div>
 
-  {% for index, key in keys %}
-    <div class="card my-3">
-      <div class="card-header collapsed cursor-pointer" data-toggle="collapse" data-target="#ssh-keys-{{ index }}">
-        <div class="row">
-          <div class="col-8 col-sm-9 col-md-9 col-lg-10 col-xl-10 d-flex align-items-center">
-            <div class="text-truncate">
-              <span class="text-muted mr-2">{% include 'icon.twig' with { icon: 'key' } %}</span>
-              <span>{{ key.description }}</span>
+  <hr>
+  <p>
+    This is a list of SSH keys allowed to access git repositories on this machine.
+    Remove any keys that you do not recognize.
+  </p>
+
+  <div class="list-group">
+  {% for index, key in keys if key.valid %}
+    <div class="list-group-item d-flex">
+      <div class="flex-grow-0 d-flex d-flex flex-column justify-content-center text-center mr-3" style="max-height: 100px;">
+        <div class="mb-2">{% include 'icon.twig' with { icon: 'key', size: 32 } %}</div>
+        <div><small class="border border-secondary rounded px-2 py-1 text-nowrap">{{ key.algorithm }}</small></div>
+      </div>
+      <div class="flex-grow-1">
+        <div class="mb-1">
+          <strong>{{ key.comment }}</strong>
+        </div>
+        <div class="mb-1">
+          <strong class="mr-2">Fingerprint:</strong>
+          <span class="text-monospace">{{ key.fingerprint }}</span>
+        </div>
+        <hr class="my-2 border-dotted">
+        <div>
+          <div class="d-flex">
+            <div class="flex-grow-1 d-flex align-items-center">
+              <a href="javascript:void(0)" data-toggle="collapse" data-target="#ssh-key-{{ index }}">Show key</a>
+            </div>
+            <div class="flex-grow-0">
+              <button class="btn btn-sm form-control cursor-pointer" type="button"
+                data-clipboard-text="{{ key }}"
+                data-toggle="tooltip" data-placement="bottom"
+                title="Copy key to clipboard" data-title-copied="Copied!"
+              >{% include 'icon.twig' with { icon: 'clippy' } %}</button>
             </div>
           </div>
-          <div class="col-4 col-sm-3 col-md-3 col-lg-2 col-xl-2 text-right">
-            <form method="post">
-              <input type="hidden" name="action" value="delete">
-              <input type="hidden" name="key" value="{{ key.raw }}">
-              <button class="btn btn-danger" type="submit">Delete</button>
-            </form>
+          <div class="collapse" id="ssh-key-{{ index }}">
+            <div class="text-monospace text-wrap pt-2">{{ key }}</div>
           </div>
         </div>
       </div>
-      <div class="collapse" id="ssh-keys-{{ index }}">
-        <div class="card-body">
-          <div class="text-monospace">{{ key.type }} {{ key.key }}</div>
-        </div>
+      <div class="flex-grow-0 d-flex flex-column justify-content-center ml-3" style="max-height: 100px;">
+        <form method="post">
+          <input type="hidden" name="action" value="delete">
+          <input type="hidden" name="key" value="{{ key.raw }}">
+          <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+        </form>
       </div>
     </div>
   {% endfor %}
+  </div>
+
+  <div class="modal fade" id="new-ssh-key-modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <form method="post" class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">New SSH key</h5>
+          <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="action" value="add">
+          <div class="form-group">
+            <label for="new-ssh-key">Key</label>
+            <textarea class="form-control resize-vertical text-monospace" name="key" id="new-ssh-key" rows="5"
+              placeholder="Begins with 'ssh-rsa', 'ssh-dss', 'ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', or 'ecdsa-sha2-nistp521'"
+            ></textarea>
+          </div>
+          <div class="form-group mb-0">
+            <label for="new-ssh-key-comment">Comment<small class="text-muted ml-2">(this field is optional)</small></label>
+            <input class="form-control" id="new-ssh-key-comment" type="text"
+              name="description" placeholder="Type something...">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Add SSH key</button>
+        </div>
+      </form>
+    </div>
+  </div>
 {% endspaceless %}
 {% endblock %}

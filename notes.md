@@ -23,5 +23,5 @@ cat id_rsa.pub | ssh-keygen -l -f -
 
 Create new SSH key pair (https://www.ssh.com/ssh/keygen/)
 ```
-ssh-keygen -t <algorythm> -b <bits> -f <output filename> -q -N <passphrase>
+ssh-keygen -t <algorythm> -b <bits> -f <output filename> -q -N <passphrase> -C <comment>
 ```
