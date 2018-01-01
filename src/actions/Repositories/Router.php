@@ -11,6 +11,7 @@ class Router {
       $group -> any('/commit/{commit}', Commit::class);
       $group -> any('/tree/{ref:[^:]*}[:{path:.*}]', Tree::class);
       $group -> any('/blob/{ref:[^:]*}[:{path:.*}]', Blob::class);
+      $group -> any('/commits[/{ref:.*}]', Commits::class);
       $group -> any('', Tree::class);
     });
 

@@ -1,0 +1,60 @@
+{% extends 'layout/main.twig' %}
+
+{% block title %}{{ group }}/{{ name }} - GitKit{% endblock %}
+
+{% block content %}
+{% spaceless %}
+  <h1>{% include 'components/repository-link.twig' with {group: group, name: name} %}</h1>
+
+  <div class="row my-3">
+    <div class="col-auto">
+      {% include 'components/ref-selector.twig' with {
+        ref: ref,
+        branches: repository.branches,
+        tags: repository.tags,
+        base: group ~ '/' ~ name ~ '/commits',
+      } %}
+    </div>
+    <div class="col"></div>
+  </div>
+
+  <div class="my-3">
+    <div class="list-group">
+    {% for commit in ref.commits %}
+      <div class="list-group-item p-2 d-flex">
+        <div class="flex-grow-0 mr-2">
+          <img class="rounded mr-1" src="https://www.gravatar.com/avatar/{{ commit.info.authorEmail | trim | lower | md5 }}?s=30">
+        </div>
+        <div class="flex-grow-1">
+          <div><strong>{{ commit.info.message }}</strong></div>
+          <div>
+            <small>
+              <strong class="mr-1" title="{{ commit.info.author ~ '<' ~ commit.info.authorEmail ~ '>' }}">{{ commit.info.author }}</strong>
+              <span class="mr-1">committed</span>
+              <span title="{{ commit.info.committerDate | full_date }}">{{ commit.info.committerDate | pretty_date }}</span>
+            </small>
+          </div>
+        </div>
+        <div class="flex-grow-0 ml-2 text-nowrap">
+          <div class="btn-group">
+            <button class="btn form-control cursor-pointer" type="button"
+              data-clipboard-text="{{ commit.hash }}"
+              data-toggle="tooltip" data-placement="bottom"
+              title="Copy the full hash" data-title-copied="Copied!"
+            >{% include 'icon.twig' with { icon: 'clippy' } %}</button>
+            <a class="btn form-control"
+              href="{{ group }}/{{ name }}/commit/{{ commit.hash }}">{{ commit.abbreviatedHash }}</a>
+          </div>
+
+          <a class="btn form-control w-auto ml-3"
+            title="Browse the repository at this point in the history"
+            data-toggle="tooltip" data-placement="bottom"
+            href="{{ group }}/{{ name }}/tree/{{ commit.hash }}"
+          >{% include 'icon.twig' with { icon: 'code' } %}</a>
+        </div>
+      </div>
+    {% endfor %}
+    </div>
+  </div>
+{% endspaceless %}
+{% endblock %}

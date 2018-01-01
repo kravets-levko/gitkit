@@ -26,7 +26,7 @@
               <div class="nav flex-column nav-pills">
                 {% for b in branches %}
                   <a class="nav-link rounded-0 text-nowrap {% if b.name == ref.name %}active{% endif %}"
-                    href="{{ base }}/tree/{{ b.name }}">{{ b.name }}</a>
+                    href="{{ base }}/{{ b.name }}">{{ b.name }}</a>
                 {% else %}
                   <div class="nav-link disabled">Nothing to show</div>
                 {% endfor %}
@@ -37,7 +37,7 @@
               <div class="nav flex-column nav-pills">
                 {% for b in tags %}
                   <a class="nav-link rounded-0 text-nowrap {% if b.name == ref.name %}active{% endif %}"
-                    href="{{ base }}/tree/{{ b.name }}">{{ b.name }}</a>
+                    href="{{ base }}/{{ b.name }}">{{ b.name }}</a>
                 {% else %}
                   <div class="nav-link disabled">Nothing to show</div>
                 {% endfor %}

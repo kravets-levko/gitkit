@@ -7,11 +7,11 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
 /**
- * Class Tree
+ * Class Commits
  *
  * @property \Slim\Views\Twig $view
  */
-class Tree extends Action {
+class Commits extends Action {
 
   public function get(Request $request, Response $response, $args) {
     $config = $this -> container -> get('config');
@@ -26,19 +26,15 @@ class Tree extends Action {
     if (!$ref) {
       $this -> notFound();
     }
-    $path = isset($args['path']) && is_string($args['path']) ? $args['path'] : '';
 
-    $parentPath = explode('/', $path);
-    array_pop($parentPath);
-    $parentPath = implode('/', $parentPath);
+    // TODO: Pagination
+    // TODO: Group by date
 
-    return $this -> view -> render($response, 'pages/tree.twig', [
+    return $this -> view -> render($response, 'pages/commits.twig', [
       'group' => $args['group'],
       'name' => $args['name'],
       'repository' => $repo,
       'ref' => $ref,
-      'path' => $path,
-      'parentPath' => $parentPath,
     ]);
   }
 

@@ -168,7 +168,7 @@ class Repository {
   }
 
   public function commit(string $hash, bool $validate = false) {
-    $hash = trim($hash);
+    $hash = strtolower(trim($hash));
     if ($hash == '') return null;
 
     if ($validate) {

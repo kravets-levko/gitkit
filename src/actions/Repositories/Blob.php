@@ -7,7 +7,7 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
 /**
- * Class Repository
+ * Class Blob
  *
  * @property \Slim\Views\Twig $view
  */
