@@ -42,7 +42,7 @@
                 {% if not loop.last %}
                 <a class="link-secondary {% if not loop.first %}ml-2{% endif %}"
                   href="{{ group }}/{{ name }}/tree/{{ commitTag.name }}">
-                  <span class="text-muted">{{ commitTag.name }}</span>
+                  <span class="text-muted-soft">{{ commitTag.name }}</span>
                 </a>
                 {% endif %}
               {% endfor %}
@@ -51,7 +51,7 @@
             {% set commitTag = commit.tags | last %}
             <a class="link-secondary {% if commit.tags | length > 2 %}ml-2{% endif %}"
               href="{{ group }}/{{ name }}/tree/{{ commitTag.name }}">
-              <span class="text-muted">{{ commitTag.name }}</span>
+              <span class="text-muted-soft">{{ commitTag.name }}</span>
             </a>
           {% endif %}
         {% endif %}

@@ -1,0 +1,42 @@
+@import "~bootstrap/scss/variables";
+
+.octicon {
+  display: inline-block;
+  line-height: 1em;
+  fill: currentColor;
+  vertical-align: middle;
+}
+
+.navbar .navbar-brand {
+  color: $gray-100;
+}
+
+.card-header.collapsed {
+  border-bottom: 0;
+}
+
+.collapsed-list {
+  > * {
+    display: none;
+  }
+
+  &:before {
+    content: "\00B7\00B7\00B7";
+    display: inline-block;
+    padding: 0 0.5em;
+    line-height: 1em;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 0.2em;
+    cursor: pointer;
+  }
+}
+
+.diff-slot {
+  display: inline-block;
+  width: 0.7em;
+  height: 0.7em;
+  border: none;
+  color: $gray-300;
+  background: currentColor;
+  margin: 1px 0 1px 1px;
+}

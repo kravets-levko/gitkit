@@ -1,0 +1,117 @@
+@import "~bootstrap/scss/bootstrap";
+
+svg {
+  display: inline-block;
+}
+
+textarea {
+  resize: none;
+
+  &.resize-vertical {
+    resize: vertical;
+  }
+  &.resize-horizontal {
+    resize: horizontal;
+  }
+  &.resize-vertical.resize-horizontal,
+  &.resize-both {
+    resize: both;
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.scrollbox {
+  overflow: auto;
+}
+
+.w-auto {
+  width: auto;
+}
+.h-auto {
+  height: auto;
+}
+
+.border-x-0 {
+  border-left: 0 !important;
+  border-right: 0 !important;
+}
+.border-y-0 {
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+}
+
+.rounded-left-0 {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+.rounded-right-0 {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+.rounded-top-0 {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+.rounded-bottom-0 {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.flex-grow-0 {
+  flex-grow: 0 !important;
+}
+.flex-grow-1 {
+  flex-grow: 1 !important;
+}
+.flex-grow-2 {
+  flex-grow: 2 !important;
+}
+
+.text-white-soft { color: #fff; }
+.text-muted-soft { color: $text-muted; }
+
+@each $color, $value in $theme-colors {
+  .text-#{$color}-soft { color: $value; }
+}
+
+a.link-secondary {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover, &:active, &:focus {
+    text-decoration: none;
+    color: $link-hover-color;
+
+    * {
+      color: inherit;
+    }
+  }
+}
+
+a.form-control {
+  &, &:hover, &:active, &:focus {
+    text-decoration: none;
+    color: $input-color;
+  }
+}
+
+.text-monospace {
+  font-family: $font-family-monospace;
+}
+
+.text-block {
+  display: block;
+  white-space: pre-wrap;
+}
+
+.dropdown-menu.shadow {
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+.btn.form-control {
+  border: $input-btn-border-width solid $input-border-color;
+  @include form-control-focus();
+}
