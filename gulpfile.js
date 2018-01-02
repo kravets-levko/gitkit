@@ -6,13 +6,14 @@ const runSequence = require('run-sequence');
 const clean = require('gulp-clean');
 const svgSprite = require('gulp-svg-sprite');
 
+const appAssetsPath = path.resolve(__dirname, './src/assets');
 const nodeModulesPath = path.resolve(__dirname, './node_modules');
 const publicPath = path.resolve(__dirname, './public');
 
 gulp.task('default', callback => {
   runSequence(
     'clean',
-    ['octicons'],
+    ['octicons', 'favicon'],
     callback
   );
 });
@@ -27,9 +28,11 @@ gulp.task('octicons', () => {
     'file', 'file-directory', 'mark-github', 'diff', 'key', 'code',
   ];
 
-  gulp.src(
+  gulp.src([
+    path.join(appAssetsPath, 'logo.svg'),
+  ].concat(
     icons.map(icon => path.join(nodeModulesPath, 'octicons/build/svg/' + icon + '.svg'))
-  ).pipe(svgSprite({
+  )).pipe(svgSprite({
     mode: {
       symbol: {
         dest: '',
@@ -38,3 +41,8 @@ gulp.task('octicons', () => {
     },
   })).pipe(gulp.dest(publicPath))
 });
+
+gulp.task('favicon', () => gulp.src([
+    path.join(appAssetsPath, 'favicon.png'),
+  ]).pipe(gulp.dest(publicPath))
+);
