@@ -1,14 +1,14 @@
 {% extends 'layout/main.twig' %}
 
-{% block title %}{{ group }}/{{ name }} - GitKit{% endblock %}
+{% block title %}{{ repository.name }} - GitKit{% endblock %}
 
 {% block content %}
-  <h1>{% include 'components/repository-link.twig' with {group: group, name: name} %}</h1>
+  <h1>{% include 'components/repository-header.twig' with {repository: repository} %}</h1>
   <div class="my-3">
     {% include 'components/repository-stats.twig' with {
       repository: repository,
       ref: ref,
-      base: group ~ '/' ~ name,
+      base: repository.name,
     } %}
   </div>
 
@@ -18,7 +18,7 @@
         ref: ref,
         branches: repository.branches,
         tags: repository.tags,
-        base: group ~ '/' ~ name ~ '/tree',
+        base: repository.name ~ '/tree',
       } %}
     </div>
     <div class="col"></div>
@@ -33,6 +33,7 @@
     <div class="card-header border-0 p-0">
       {% include 'components/latest-commit.twig' with {
         commit: ref.head,
+        base: repository.name,
       } %}
     </div>
 
@@ -41,7 +42,7 @@
         ref: ref,
         defaultBranch: repository.defaultBranch,
         path: path,
-        base: group ~ '/' ~ name,
+        base: repository.name,
       } %}
     </div>
   </div>

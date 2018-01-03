@@ -2,9 +2,9 @@
 
 namespace Actions\Repositories;
 
-use \Actions\Action;
-use \Psr\Http\Message\ServerRequestInterface as Request;
-use \Psr\Http\Message\ResponseInterface as Response;
+use Actions\Action;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
 
 /**
  * Class Commits
@@ -27,14 +27,41 @@ class Commits extends Action {
       $this -> notFound();
     }
 
-    // TODO: Pagination
-    // TODO: Group by date
+    $query = $request -> getQueryParams();
+    list($hash, $count) = explode(' ', $query['from']);
+    $count = (int)trim($count);
+    if ($count <= 0) $count = 30;
+
+    $hash = strtolower(trim($hash));
+    $commits = $ref -> commits;
+    $index = 0;
+    foreach ($commits as $i => $c) {
+      if ($c -> hash == $hash) {
+        $index = $i;
+        break;
+      }
+    }
+
+    $commits = array_slice($ref -> commits, $index, $count);
+    $groups = [];
+    foreach ($commits as $c) {
+      $date = new \DateTime('@' . $c -> info -> committerDate);
+      $date = $date -> format('M d, Y');
+      @$groups[$date][] = $c;
+    }
+
+    $prev = @$ref -> commits[$index - $count];
+    if (!$prev && ($index > 0)) $prev = $ref -> head;
+
+    $next = @$ref -> commits[$index + $count];
 
     return $this -> view -> render($response, 'pages/commits.twig', [
-      'group' => $args['group'],
-      'name' => $args['name'],
       'repository' => $repo,
       'ref' => $ref,
+      'groups' => $groups,
+      'prev' => $prev,
+      'next' => $next,
+      'count' => $count,
     ]);
   }
 

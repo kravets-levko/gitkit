@@ -4,12 +4,12 @@
     <tr>
       <th class="border-0 align-top font-weight-normal">
         <strong title="{{ commit.info.author ~ '<' ~ commit.info.authorEmail ~ '>' }}">{{ commit.info.author }}</strong>
-        <a class="ml-2" href="{{ group }}/{{ name }}/commit/{{ commit.hash }}">{{ commit.info.message }}</a>
+        <a class="ml-2" href="{{ base }}/commit/{{ commit.hash }}">{{ commit.info.message }}</a>
       </th>
       <th class="border-0 align-top text-right font-weight-normal">
         <span class="text-nowrap">
           <span>Latest commit</span>
-          <a class="ml-2" href="{{ group }}/{{ name }}/commit/{{ commit.hash }}">{{ commit.abbreviatedHash }}</a>
+          <a class="ml-2" href="{{ base }}/commit/{{ commit.hash }}">{{ commit.abbreviatedHash }}</a>
         </span>
         <wbr>
         <span class="ml-2 text-nowrap" title="{{ commit.info.committerDate | full_date }}">{{

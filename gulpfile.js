@@ -26,6 +26,7 @@ gulp.task('octicons', () => {
   const icons = [
     'clippy', 'book', 'history', 'git-branch', 'tag', 'law', 'gear',
     'file', 'file-directory', 'mark-github', 'diff', 'key', 'code',
+    'git-commit',
   ];
 
   gulp.src([

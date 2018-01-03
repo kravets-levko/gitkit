@@ -1,19 +1,19 @@
 {% extends 'layout/main.twig' %}
 
-{% block title %}{{ group }}/{{ name }} - GitKit{% endblock %}
+{% block title %}{{ repository.name }} - GitKit{% endblock %}
 
 {% block content %}
-  <h1>{% include 'components/repository-link.twig' with {group: group, name: name} %}</h1>
+  <h1>{% include 'components/repository-header.twig' with {repository: repository} %}</h1>
 
-  {% set rawUrl = group ~ '/' ~ name ~ '/' ~ blob.type ~ '/' ~ ref.name ~ ':' ~ blob.path ~ '?raw' %}
+  {% set rawUrl = repository.name ~ '/' ~ blob.type ~ '/' ~ ref.name ~ ':' ~ blob.path ~ '?raw' %}
 
   <div class="row my-3">
     <div class="col-auto">
       {% include 'components/ref-selector.twig' with {
-      ref: ref,
-      branches: repository.branches,
-      tags: repository.tags,
-      base: group ~ '/' ~ name ~ '/tree',
+        ref: ref,
+        branches: repository.branches,
+        tags: repository.tags,
+        base: repository.name ~ '/tree',
       } %}
     </div>
     <div class="col d-flex align-items-center"><span>{{ blob.path }}</span></div>
@@ -30,6 +30,7 @@
     <div class="card-header border-0 p-0">
       {% include 'components/latest-commit.twig' with {
         commit: blob.commit,
+        base: repository.name
       } %}
     </div>
   </div>
@@ -39,7 +40,7 @@
       {% include 'components/blob-info.twig' with {
         blob: blob,
         ref: ref,
-        base: group ~ '/' ~ name,
+        base: repository.name,
       } %}
     </div>
     <div class="card-body">

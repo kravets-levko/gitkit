@@ -2,7 +2,7 @@
 
 namespace Actions\Repositories;
 
-use \Slim\App;
+use Slim\App;
 
 class Router {
 

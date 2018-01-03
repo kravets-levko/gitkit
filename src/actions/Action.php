@@ -2,11 +2,11 @@
 
 namespace Actions;
 
-use \Psr\Http\Message\ServerRequestInterface as Request;
-use \Psr\Http\Message\ResponseInterface as Response;
-use \Slim\Exception\InvalidMethodException;
-use \Slim\Exception\NotFoundException;
-use \Slim\Container;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
+use Slim\Exception\InvalidMethodException;
+use Slim\Exception\NotFoundException;
+use Slim\Container;
 
 class Action {
   private $currentRequest;

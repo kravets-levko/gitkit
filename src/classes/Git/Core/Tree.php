@@ -2,18 +2,9 @@
 
 namespace Classes\Git\Core;
 
-use \Classes\Properties;
-use \Classes\Git\Repository;
+use Classes\Properties;
+use Classes\Git\Repository;
 
-/**
- * Class Tree
- *
- * @property-read Repository $repository
- * @property-read Ref $ref
- *
- * @property-read string[] $filenames
- * @property-read TreeFolder $root
- */
 class Tree {
   use Properties;
 
@@ -29,6 +20,21 @@ class Tree {
   private $filesByPath = [];
   private $infoByPath = [];
 
+  protected function get_root() {
+    if ($this -> _root === null) {
+      $this -> _root = new TreeFolder($this -> repository, $this, '');
+    }
+    return $this -> _root;
+  }
+
+  protected function get_repository() {
+    return $this -> _repository;
+  }
+
+  protected function get_ref() {
+    return $this -> _ref;
+  }
+
   public function __construct(Repository $repository, Ref $ref) {
     $this -> _repository = $repository;
     $this -> _ref = $ref;
@@ -41,21 +47,6 @@ class Tree {
       'hash' => str_repeat('0', 40),
       'size' => 0,
     ];
-  }
-
-  protected function getRoot() {
-    if ($this -> _root === null) {
-      $this -> _root = new TreeFolder($this -> repository, $this, '');
-    }
-    return $this -> _root;
-  }
-
-  protected function getRepository() {
-    return $this -> _repository;
-  }
-
-  protected function getRef() {
-    return $this -> _ref;
   }
 
   public function filenames(...$globs) {
@@ -168,5 +159,4 @@ class Tree {
     }
     return null;
   }
-
 }

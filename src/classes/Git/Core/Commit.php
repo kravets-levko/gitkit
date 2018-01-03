@@ -2,28 +2,8 @@
 
 namespace Classes\Git\Core;
 
-use \Classes\Git\Repository;
-use \Classes\Git\Utils\Parse;
+use Classes\Git\Utils\Parse;
 
-/**
- * Class Commit
- *
- * @property-read Repository $repository
- * @property-read string $name
- * @property-read string $type
- * @property-read Commit $commit
- * @property-read Commit[] $commits
- * @property-read Commit $head
- * @property-read Tree $tree
- *
- * @property-read string $hash
- * @property-read string $abbreviatedHash
- * @property-read Commit[] $parents
- * @property-read \stdClass $info
- * @property-read Diff $diff
- * @property-read Branch[] $branches
- * @property-read Tag[] $tags
- */
 class Commit extends Ref {
 
   protected $_type = 'commit';
@@ -34,19 +14,19 @@ class Commit extends Ref {
   private $_branches = null;
   private $_tags = null;
 
-  protected function getCommit() {
+  protected function get_commit() {
     return $this;
   }
 
-  protected function getHash() {
+  protected function get_hash() {
     return $this -> name;
   }
 
-  protected function getAbbreviatedHash() {
+  protected function get_abbreviatedHash() {
     return substr($this -> hash, 0, 7);
   }
 
-  protected function getParents() {
+  protected function get_parents() {
     if ($this -> _parents === null) {
       $hashes = $this -> repository -> exec(
         'show', '--no-patch', '--format=%P', $this -> hash
@@ -56,7 +36,7 @@ class Commit extends Ref {
     return $this -> _parents;
   }
 
-  protected function getInfo() {
+  protected function get_info() {
     if ($this -> _info === null) {
       $fields = [
         'author' => '%an',
@@ -80,14 +60,14 @@ class Commit extends Ref {
     return $this -> _info;
   }
 
-  protected function getDiff() {
+  protected function get_diff() {
     if ($this -> _diff === null) {
       $this -> _diff = new Diff($this -> repository, $this);
     }
     return $this -> _diff;
   }
 
-  protected function getBranches() {
+  protected function get_branches() {
     if ($this -> _branches === null) {
       list($names, $defaultName) = Parse::parseBranchList(
         $this -> repository -> exec('branch', '--contains', $this -> hash)
@@ -113,7 +93,7 @@ class Commit extends Ref {
     return $this -> _branches;
   }
 
-  protected function getTags() {
+  protected function get_tags() {
     if ($this -> _tags === null) {
       $names = Parse::parseTagList(
         $this -> repository -> exec('tag', '--contains', $this -> hash)

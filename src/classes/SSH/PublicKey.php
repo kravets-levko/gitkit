@@ -2,9 +2,9 @@
 
 namespace Classes\SSH;
 
-use \Classes\Properties;
-use \Classes\Process\Binary;
-use \Classes\Process\StdPipe;
+use Classes\Properties;
+use Classes\Process\Binary;
+use Classes\Process\StdPipe;
 
 /**
  * Class PublicKey

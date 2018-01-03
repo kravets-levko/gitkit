@@ -2,21 +2,10 @@
 
 namespace Classes\Git;
 
-use \Classes\Git\Utils\Process;
-use \Classes\Git\Utils\Parse;
-use \Classes\Properties;
-use \Classes\Git\Core\Commit;
-use \Classes\Git\Core\Branch;
-use \Classes\Git\Core\Tag;
+use Classes\Git\Utils\{ Process, Parse };
+use Classes\Properties;
+use Classes\Git\Core\{ Commit, Branch, Tag };
 
-/**
- * @property-read string $cloneUrl
- * @property-read Branch[] $branches
- * @property-read Branch $defaultBranch
- * @property-read Tag[] $tags
- * @property-read Commit $latestCommit
- * @property-read \StdClass $info
- */
 class Repository {
   use Properties;
 
@@ -47,36 +36,16 @@ class Repository {
 
   private $_info = null;
 
-  public function __construct($path, $config) {
-    $this -> _config = $config;
-    $this -> _path = $path;
+  protected function get_path() {
+    return $this -> _path;
   }
 
-  static public function getRepositories($config) {
-    $result = [];
-
-    list(, $names) = Process::run('find', '. -mindepth 2 -maxdepth 2 -type d -name *.git',
-      $config -> repositoriesRoot);
-
-    $items = array_filter(array_map('trim', explode("\n", $names)), 'strlen');
-    foreach ($items as $item) {
-      if (preg_match('#([^/]+)/([^/]+)\.git$#', $item, $matches)) {
-        list(, $group, $name) = $matches;
-        $repository = new Repository($config -> repositoriesRoot . '/' . $item, $config);
-        @$result[$group][$name] = $repository;
-      }
-    }
-
-    return $result;
+  protected function get_name() {
+    $path = substr($this -> _path, strlen($this -> _config -> repositoriesRoot) + 1);
+    return preg_replace('#\.git$#i', '', $path);
   }
 
-  static public function getRepository($name, $config) {
-    $path = $config -> repositoriesRoot . '/' . $name . '.git';
-    if (!is_dir($path)) throw new Exception('Path does not exist');
-    return new Repository($path, $config);
-  }
-
-  protected function getCloneUrls() {
+  protected function get_cloneUrls() {
     $path = substr($this -> _path, strlen($this -> _config -> repositoriesRoot) + 1);
     $https = $this -> _config -> https ? 'https' : 'http';
     $host = $this -> _config -> host;
@@ -87,7 +56,7 @@ class Repository {
     ];
   }
 
-  protected function getBranches() {
+  protected function get_branches() {
     if ($this -> _branches === null) {
       $this -> _branches = [];
       list($names, $defaultName) = Parse::parseBranchList(
@@ -103,12 +72,12 @@ class Repository {
     return array_values($this -> _branches);
   }
 
-  protected function getDefaultBranch() {
-    $this -> getBranches();
+  protected function get_defaultBranch() {
+    $this -> get_branches();
     return $this -> _defaultBranch;
   }
 
-  protected function getTags() {
+  protected function get_tags() {
     if ($this -> _tags === null) {
       $this -> _tags = [];
       $names = Parse::parseTagList($this -> exec('tag', '--list'));
@@ -119,7 +88,7 @@ class Repository {
     return array_values($this -> _tags);
   }
 
-  protected function getLatestCommit() {
+  protected function get_latestCommit() {
     if ($this -> _latestCommit === null) {
       $hash = trim($this -> exec(['rev-list', '-1', '--all']));
       $this -> _latestCommit = $this -> commit($hash);
@@ -127,7 +96,7 @@ class Repository {
     return $this -> _latestCommit;
   }
 
-  protected function getInfo() {
+  protected function get_info() {
     if ($this -> _info === null) {
       $this -> _info = @json_decode(file_get_contents($this -> _path . '.json'));
       if (!is_object($this -> _info)) {
@@ -135,6 +104,11 @@ class Repository {
       }
     }
     return $this -> _info;
+  }
+
+  public function __construct($path, $config) {
+    $this -> _config = $config;
+    $this -> _path = realpath($path);
   }
 
   public function exec(...$args) {
@@ -192,12 +166,12 @@ class Repository {
   }
 
   public function branch($name) {
-    $this -> getBranches();
+    $this -> get_branches();
     return array_key_exists($name, $this -> _branches) ? $this -> _branches[$name] : null;
   }
 
   public function tag($name) {
-    $this -> getTags();
+    $this -> get_tags();
     return array_key_exists($name, $this -> _tags) ? $this -> _tags[$name] : null;
   }
 
@@ -214,6 +188,30 @@ class Repository {
       ['init', '--bare', '--shared=0775', $this -> _path]
     );
     return $status === 0;
+  }
+
+  static public function getRepositories($config) {
+    $result = [];
+
+    list(, $names) = Process::run('find', '. -mindepth 2 -maxdepth 2 -type d -name *.git',
+      $config -> repositoriesRoot);
+
+    $items = array_filter(array_map('trim', explode("\n", $names)), 'strlen');
+    foreach ($items as $item) {
+      if (preg_match('#([^/]+)/([^/]+)\.git$#', $item, $matches)) {
+        list(, $group, $name) = $matches;
+        $repository = new Repository($config -> repositoriesRoot . '/' . $item, $config);
+        @$result[$group][$name] = $repository;
+      }
+    }
+
+    return $result;
+  }
+
+  static public function getRepository($name, $config) {
+    $path = $config -> repositoriesRoot . '/' . $name . '.git';
+    if (!is_dir($path)) throw new Exception('Path does not exist');
+    return new Repository($path, $config);
   }
 
 }

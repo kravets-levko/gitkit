@@ -2,8 +2,8 @@
 
 namespace Classes\SSH;
 
-use \Classes\Properties;
-use \Classes\Process\Binary;
+use Classes\Properties;
+use Classes\Process\Binary;
 
 /**
  * Class AuthorizedKeys

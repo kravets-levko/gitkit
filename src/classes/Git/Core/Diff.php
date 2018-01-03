@@ -2,7 +2,7 @@
 
 namespace Classes\Git\Core;
 
-use \Classes\Git\Repository;
+use Classes\Git\Repository;
 
 class Diff {
 

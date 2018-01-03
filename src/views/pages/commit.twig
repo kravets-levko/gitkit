@@ -1,10 +1,10 @@
 {% extends 'layout/main.twig' %}
 
-{% block title %}{{ group }}/{{ name }} - GitKit{% endblock %}
+{% block title %}{{ repository.name }} - GitKit{% endblock %}
 
 {% block content %}
 {% spaceless %}
-  <h1>{% include 'components/repository-link.twig' with {group: group, name: name} %}</h1>
+  <h1>{% include 'components/repository-header.twig' with {repository: repository} %}</h1>
 
   {% set slots = 5 %}
   {% set stats = commit.diff.stats(slots) %}
@@ -14,7 +14,7 @@
       <div class="row">
         <div class="col">{{ commit.info.message }}</div>
         <div class="col-auto">
-          <a class="btn btn-outline-primary" href="{{ group }}/{{ name }}/tree/{{ commit.hash }}">Browse files</a>
+          <a class="btn btn-outline-primary" href="{{ repository.name }}/tree/{{ commit.hash }}">Browse files</a>
         </div>
       </div>
 
@@ -24,14 +24,14 @@
         {% if commit.branches | length > 0 %}
           {% set commitBranch = commit.branches | first %}
             <a class="link-secondary mr-4"
-              href="{{ group }}/{{ name }}{% if commitBranch.name != repository.defaultBranch.name %}/tree/{{ commitBranch.name }}{% endif %}">
+              href="{{ repository.name }}{% if commitBranch.name != repository.defaultBranch.name %}/tree/{{ commitBranch.name }}{% endif %}">
               <span class="text-muted mr-1">{% include 'icon.twig' with { icon: 'git-branch' } %}</span>
               <strong>{{ commitBranch.name }}</strong>
             </a>
         {% endif %}
         {% if commit.tags | length > 0 %}
           {% set commitTag = commit.tags | first %}
-          <a class="link-secondary mr-2" href="{{ group }}/{{ name }}/tree/{{ commitTag.name }}">
+          <a class="link-secondary mr-2" href="{{ repository.name }}/tree/{{ commitTag.name }}">
             <span class="text-muted mr-1">{% include 'icon.twig' with { icon: 'tag' } %}</span>
             <strong>{{ commitTag.name }}</strong>
           </a>
@@ -41,7 +41,7 @@
               {% for commitTag in commit.tags | slice(1) %}
                 {% if not loop.last %}
                 <a class="link-secondary {% if not loop.first %}ml-2{% endif %}"
-                  href="{{ group }}/{{ name }}/tree/{{ commitTag.name }}">
+                  href="{{ repository.name }}/tree/{{ commitTag.name }}">
                   <span class="text-muted-soft">{{ commitTag.name }}</span>
                 </a>
                 {% endif %}
@@ -50,7 +50,7 @@
             {% endif %}
             {% set commitTag = commit.tags | last %}
             <a class="link-secondary {% if commit.tags | length > 2 %}ml-2{% endif %}"
-              href="{{ group }}/{{ name }}/tree/{{ commitTag.name }}">
+              href="{{ repository.name }}/tree/{{ commitTag.name }}">
               <span class="text-muted-soft">{{ commitTag.name }}</span>
             </a>
           {% endif %}
@@ -78,7 +78,7 @@
           {{ commit.parents | length }} parent(s)
           {% for p in commit.parents %}
             {% if not loop.first %}<small class="mx-1 text-muted">+</small>{% endif %}
-            <a href="{{ group }}/{{ name }}/commit/{{ p.hash }}">
+            <a href="{{ repository.name }}/commit/{{ p.hash }}">
               <span>{{ p.abbreviatedHash }}</span>
             </a>
           {% endfor %}
@@ -106,7 +106,7 @@
       {% for item in stats.items %}
       <div class="list-group-item px-0 py-1 border-x-0 {% if loop.first %}border-top-0{% endif %} {% if loop.last %}border-bottom-0{% endif %}">
         <div class="row">
-          <div class="col"><a href="{{ group }}/{{ name }}/{{ item.type }}/{{ commit.hash }}:{{ item.path }}">{{ item.name }}</a></div>
+          <div class="col"><a href="{{ repository.name }}/{{ item.type }}/{{ commit.hash }}:{{ item.path }}">{{ item.name }}</a></div>
           <div class="col-auto text-right">
             {% if item.binary %}
               <strong class="text-primary">BIN</strong>

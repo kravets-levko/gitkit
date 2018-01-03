@@ -4,16 +4,11 @@
   display: inline-block;
   line-height: 1em;
   fill: currentColor;
-  vertical-align: middle;
+  vertical-align: text-top;
 }
 
 .btn .octicon {
   vertical-align: text-top;
-}
-
-.navbar {
-  padding-top: 5px;
-  padding-bottom: 5px;
 }
 
 .card-header.collapsed {
@@ -44,4 +39,22 @@
   color: $gray-300;
   background: currentColor;
   margin: 1px 0 1px 1px;
+}
+
+.commit-history {
+  $icon-size: 16px;
+  $gutter-width: 30px;
+
+  .commit-history-header {
+    .octicon {
+      color: rgba($list-group-border-color, 3 * alpha($list-group-border-color));
+      margin: 0 $gutter-width - $icon-size 0 0;
+    }
+  }
+
+  .commit-history-items {
+    margin: 0 0 0 $icon-size / 2 - 1;
+    padding: 0.25em 0 1em $gutter-width - $icon-size / 2 - 2;
+    border-left: 2px solid $list-group-border-color;
+  }
 }

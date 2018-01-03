@@ -2,10 +2,10 @@
 
 namespace Actions\SSH;
 
-use \Actions\Action;
-use \Classes\SSH\AuthorizedKeys;
-use \Psr\Http\Message\ServerRequestInterface as Request;
-use \Psr\Http\Message\ResponseInterface as Response;
+use Actions\Action;
+use Classes\SSH\AuthorizedKeys;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
 
 /**
  * Class Repository

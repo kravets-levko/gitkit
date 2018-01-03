@@ -2,38 +2,21 @@
 
 namespace Classes\Git\Core;
 
-use \Classes\Git\Repository;
-
-/**
- * Class TreeFile
- *
- * @property-read Repository $repository
- * @property-read Tree $tree
- * @property-read string $path
- * @property-read \stdClass $info
- * @property-read Commit $commit
- * @property-read string $type
- * @property-read string $name
-
- * @property-read string $data
- * @property-read string $ext
- * @property-read string $mime
- */
 class TreeFile extends Blob {
 
-  protected function getData() {
+  protected function get_data() {
     return $this -> repository -> exec(
       'show',
       $this -> commit -> hash . ':' . $this -> path
     );
   }
 
-  protected function getExt() {
+  protected function get_ext() {
     $result = pathinfo($this -> path, PATHINFO_EXTENSION);
     return is_string($result) ? $result : '';
   }
 
-  protected function getMime() {
+  protected function get_mime() {
     return media_type_from_filename($this -> path);
   }
 

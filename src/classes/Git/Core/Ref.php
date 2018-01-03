@@ -2,20 +2,9 @@
 
 namespace Classes\Git\Core;
 
-use \Classes\Properties;
-use \Classes\Git\Repository;
+use Classes\Properties;
+use Classes\Git\Repository;
 
-/**
- * Class Ref
- *
- * @property-read Repository $repository
- * @property-read string $name
- * @property-read string $type
- * @property-read Commit $commit
- * @property-read Commit[] $commits
- * @property-read Commit $head
- * @property-read Tree $tree
- */
 class Ref {
   use Properties;
 
@@ -27,24 +16,19 @@ class Ref {
 
   protected $_type = null;
 
-  public function __construct(Repository $repository, string $name) {
-    $this -> _repository = $repository;
-    $this -> _name = $name;
-  }
-
-  protected function getRepository() {
+  protected function get_repository() {
     return $this -> _repository;
   }
 
-  protected function getName() {
+  protected function get_name() {
     return $this -> _name;
   }
 
-  protected function getType() {
+  protected function get_type() {
     return $this -> _type;
   }
 
-  protected function getCommit() {
+  protected function get_commit() {
     if ($this -> _commit === null) {
       $hash = trim($this -> repository -> exec(['rev-list', '-1', $this -> name]));
       $this -> _commit = $this -> repository -> commit($hash);
@@ -52,7 +36,7 @@ class Ref {
     return $this -> _commit;
   }
 
-  protected function getCommits() {
+  protected function get_commits() {
     if ($this -> _commits === null) {
       $hashes = $this -> repository -> exec('rev-list', $this -> name);
       $this -> _commits = $this -> repository -> commits(explode("\n", $hashes));
@@ -60,14 +44,19 @@ class Ref {
     return $this -> _commits;
   }
 
-  protected function getHead() {
+  protected function get_head() {
     return $this -> commit;
   }
 
-  protected function getTree() {
+  protected function get_tree() {
     if ($this -> _tree === null) {
       $this -> _tree = new Tree($this -> repository, $this);
     }
     return $this -> _tree;
+  }
+
+  public function __construct(Repository $repository, string $name) {
+    $this -> _repository = $repository;
+    $this -> _name = $name;
   }
 }

@@ -2,20 +2,9 @@
 
 namespace Classes\Git\Core;
 
-use \Classes\Properties;
-use \Classes\Git\Repository;
+use Classes\Properties;
+use Classes\Git\Repository;
 
-/**
- * Class Blob
- *
- * @property-read Repository $repository
- * @property-read Tree $tree
- * @property-read string $path
- * @property-read \stdClass $info
- * @property-read Commit $commit
- * @property-read string $type
- * @property-read string $name
- */
 class Blob {
   use Properties;
 
@@ -24,49 +13,49 @@ class Blob {
   private $_path;
   private $_info = null;
 
-  private $commit = null;
+  private $_commit = null;
 
-  public function __construct(Repository $repository, Tree $tree, string $path) {
-    $this -> _repository = $repository;
-    $this -> _tree = $tree;
-    $this -> _path = trim($path, '/');
-  }
-
-  protected function getRepository() {
+  protected function get_repository() {
     return $this -> _repository;
   }
 
-  protected function getTree() {
+  protected function get_tree() {
     return $this -> _tree;
   }
 
-  protected function getPath() {
+  protected function get_path() {
     return $this -> _path;
   }
 
-  protected function getInfo() {
+  protected function get_info() {
     if ($this -> _info === null) {
       $this -> _info = $this -> tree -> nodeInfo($this -> path);
     }
     return $this -> _info;
   }
 
-  protected function getCommit() {
-    if ($this -> commit === null) {
+  protected function get_commit() {
+    if ($this -> _commit === null) {
       $hash = trim($this -> repository -> exec(
         'rev-list', '-1', $this -> tree -> ref -> name, '--', $this -> path
       ));
-      $this -> commit = $this -> repository -> commit($hash);
+      $this -> _commit = $this -> repository -> commit($hash);
     }
-    return $this -> commit;
+    return $this -> _commit;
   }
 
-  protected function getType() {
+  protected function get_type() {
     return $this -> info -> type;
   }
 
-  protected function getName() {
+  protected function get_name() {
     return $this -> info -> name;
+  }
+
+  public function __construct(Repository $repository, Tree $tree, string $path) {
+    $this -> _repository = $repository;
+    $this -> _tree = $tree;
+    $this -> _path = trim($path, '/');
   }
 
   public function matchesGlob(...$globs) {

@@ -2,9 +2,9 @@
 
 namespace Actions\Repositories;
 
-use \Actions\Action;
-use \Psr\Http\Message\ServerRequestInterface as Request;
-use \Psr\Http\Message\ResponseInterface as Response;
+use Actions\Action;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
 
 /**
  * Class Blob
@@ -47,8 +47,6 @@ class Blob extends Action {
 
 
     return $this -> view -> render($response, 'pages/blob.twig', [
-      'group' => $args['group'],
-      'name' => $args['name'],
       'repository' => $repo,
       'ref' => $ref,
       'blob' => $blob,

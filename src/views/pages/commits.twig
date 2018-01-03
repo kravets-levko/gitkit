@@ -1,10 +1,10 @@
 {% extends 'layout/main.twig' %}
 
-{% block title %}{{ group }}/{{ name }} - GitKit{% endblock %}
+{% block title %}{{ repository.name }} - GitKit{% endblock %}
 
 {% block content %}
 {% spaceless %}
-  <h1>{% include 'components/repository-link.twig' with {group: group, name: name} %}</h1>
+  <h1>{% include 'components/repository-header.twig' with {repository: repository} %}</h1>
 
   <div class="row my-3">
     <div class="col-auto">
@@ -12,15 +12,26 @@
         ref: ref,
         branches: repository.branches,
         tags: repository.tags,
-        base: group ~ '/' ~ name ~ '/commits',
+        base: repository.name ~ '/commits',
       } %}
+    </div>
+    <div class="col-auto text-nowrap d-flex align-items-center">
+      <span class="text-muted mr-1">{% include 'icon.twig' with { icon: 'history' } %}</span>
+      <strong class="mr-1">{{ ref.commits | length }}</strong>
+      <span class="text-muted">commit(s)</span>
     </div>
     <div class="col"></div>
   </div>
 
-  <div class="my-3">
+  <div class="my-3 commit-history">
+  {% for date, commits in groups %}
+    <div class="commit-history-header">
+      {% include 'icon.twig' with { icon: 'git-commit' } %}
+      <span class="text-muted">Commits on {{ date }}</span>
+    </div>
+    <div class="commit-history-items">
     <div class="list-group">
-    {% for commit in ref.commits %}
+    {% for commit in commits %}
       <div class="list-group-item p-2 d-flex">
         <div class="flex-grow-0 mr-2">
           <img class="rounded mr-1" src="https://www.gravatar.com/avatar/{{ commit.info.authorEmail | trim | lower | md5 }}?s=30">
@@ -43,17 +54,33 @@
               title="Copy the full hash" data-title-copied="Copied!"
             >{% include 'icon.twig' with { icon: 'clippy' } %}</button>
             <a class="btn form-control"
-              href="{{ group }}/{{ name }}/commit/{{ commit.hash }}">{{ commit.abbreviatedHash }}</a>
+              href="{{ repository.name }}/commit/{{ commit.hash }}">{{ commit.abbreviatedHash }}</a>
           </div>
 
           <a class="btn form-control w-auto ml-3"
             title="Browse the repository at this point in the history"
             data-toggle="tooltip" data-placement="bottom"
-            href="{{ group }}/{{ name }}/tree/{{ commit.hash }}"
+            href="{{ repository.name }}/tree/{{ commit.hash }}"
           >{% include 'icon.twig' with { icon: 'code' } %}</a>
         </div>
       </div>
     {% endfor %}
+    </div>
+    </div>
+  {% endfor %}
+  </div>
+
+  <div class="my-3 text-center">
+    {% set base = repository.name ~ '/commits/' ~ ref.name %}
+
+    {% set prevUrl = prev ? base ~ '?from=' ~ prev.hash ~ '+' ~ count : 'javascript:void(0)' %}
+    {% if prev.hash == ref.head.hash %}{% set prevUrl = base %}{% endif %}
+
+    {% set nextUrl = next ? base ~ '?from=' ~ next.hash ~ '+' ~ count : 'javascript:void(0)' %}
+
+    <div class="btn-group">
+      <a href="{{ prevUrl }}" class="btn form-control {{ prev ? '' : 'disabled' }}">Newer</a>
+      <a href="{{ nextUrl }}" class="btn form-control {{ next ? '' : 'disabled' }}">Older</a>
     </div>
   </div>
 {% endspaceless %}

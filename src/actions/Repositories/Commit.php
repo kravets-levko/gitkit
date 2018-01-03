@@ -2,9 +2,9 @@
 
 namespace Actions\Repositories;
 
-use \Actions\Action;
-use \Psr\Http\Message\ServerRequestInterface as Request;
-use \Psr\Http\Message\ResponseInterface as Response;
+use Actions\Action;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
 
 /**
  * Class Commit
@@ -24,8 +24,6 @@ class Commit extends Action {
     }
 
     return $this -> view -> render($response, 'pages/commit.twig', [
-      'group' => $args['group'],
-      'name' => $args['name'],
       'repository' => $repo,
       'commit' => $commit,
     ]);

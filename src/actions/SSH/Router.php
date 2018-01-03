@@ -2,7 +2,7 @@
 
 namespace Actions\SSH;
 
-use \Slim\App;
+use Slim\App;
 
 class Router {
 
