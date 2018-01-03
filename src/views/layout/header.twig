@@ -1,12 +1,25 @@
 {% spaceless %}
 <nav class="navbar navbar-expand navbar-dark bg-dark sticky-top">
-  <a class="navbar-brand p-0" href="" style="margin: -8px 0;">
+  <a class="navbar-brand p-0" href="">
     {% include 'icon.twig' with { icon: 'logo', size: 45 } %}
+    GitKit
   </a>
 
-  <div class="navbar-nav flex-grow-1">
+  <div class="navbar-nav mr-auto">
     <div class="nav-item">
       <a class="nav-link" href="ssh-keys">SSH Keys</a>
+    </div>
+  </div>
+
+  <div class="navbar-nav">
+    <div class="nav-item">
+      <a class="nav-link" href="javascript:void(0)">About</a>
+    </div>
+    <div class="nav-item">
+      <a class="nav-link" href="https://github.com/kravets-levko/gitkit" target="_blank">Report an issue</a>
+    </div>
+    <div class="nav-item">
+      <a class="nav-link" href="javascript:void(0)">Help</a>
     </div>
   </div>
 </nav>

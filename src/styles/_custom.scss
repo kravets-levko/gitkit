@@ -11,8 +11,9 @@
   vertical-align: text-top;
 }
 
-.navbar .navbar-brand {
-  color: $gray-100;
+.navbar {
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .card-header.collapsed {
