@@ -1,11 +1,5 @@
 <?php
 
-$MIME_TYPES = @json_decode(file_get_contents(__DIR__ . '/mime.json'), true);
-if (!is_array($MIME_TYPES)) {
-  $MIME_TYPES = [];
-}
-$MIME_TYPES = array_change_key_case($MIME_TYPES, CASE_LOWER);
-
 function array_first($array) {
   return reset($array);
 }
@@ -40,13 +34,6 @@ function matches_glob($subject, $glob) {
   }, $glob) . '$/i';
 
   return preg_match($pattern, $subject);
-}
-
-function media_type_from_filename($filename, $default = 'application/octet-stream') {
-  global $MIME_TYPES;
-  $ext = pathinfo($filename, PATHINFO_EXTENSION);
-  $ext = is_string($ext) ? strtolower($ext) : '';
-  return array_key_exists($ext, $MIME_TYPES) ? $MIME_TYPES[$ext] : $default;
 }
 
 function parse_mime($mime) {
@@ -93,7 +80,7 @@ function matches_mime($subject, $pattern) {
 }
 
 function format_bytes($size, $precision = 2) {
-  $units = array('B','kB','MB','GB','TB','PB','EB','ZB','YB');
+  $units = array('B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
   $step = 1024;
   $i = 0;
   while (($size / $step) > 0.9) {
