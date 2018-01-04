@@ -3,19 +3,8 @@
 namespace Classes\SSH;
 
 use Classes\Properties;
-use Classes\Process\Binary;
-use Classes\Process\StdPipe;
+use Classes\Process\{ Binary, StdPipe };
 
-/**
- * Class PublicKey
- *
- * @property-read boolean $valid
- * @property-read string $algorithm
- * @property-read string $key
- * @property-read string $comment
- * @property-read string $fingerprint
- * @property-read string $raw
- */
 class PublicKey {
   use Properties;
 
@@ -61,31 +50,31 @@ class PublicKey {
     }
   }
 
-  protected function getValid() {
+  protected function get_valid() {
     $this -> parse();
     return $this -> _valid;
   }
 
-  protected function getRaw() {
+  protected function get_raw() {
     return $this -> _raw;
   }
 
-  protected function getAlgorithm() {
+  protected function get_algorithm() {
     $this -> parse();
     return $this -> _algorithm;
   }
 
-  protected function getKey() {
+  protected function get_key() {
     $this -> parse();
     return $this -> _key;
   }
 
-  protected function getComment() {
+  protected function get_comment() {
     $this -> parse();
     return $this -> _comment;
   }
 
-  protected function getFingerprint() {
+  protected function get_fingerprint() {
     $this -> parse();
     return $this -> _fingerprint;
   }

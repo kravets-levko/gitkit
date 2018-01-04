@@ -2,12 +2,17 @@
 
 namespace Classes\Git;
 
-use Classes\Git\Utils\{ Process, Parse };
+use Classes\Git\Utils\{ GitBinary, GitException, Parse };
+use Classes\Process\Process;
 use Classes\Properties;
-use Classes\Git\Core\{ Commit, Branch, Tag };
 
 class Repository {
   use Properties;
+
+  /**
+   * @var GitBinary
+   */
+  private $_git = null;
 
   /**
    * @var \stdClass
@@ -36,6 +41,13 @@ class Repository {
 
   private $_info = null;
 
+  protected function get_git() {
+    if ($this -> _git === null) {
+      $this -> _git = new GitBinary($this -> _config -> gitBinary, $this -> _path);
+    }
+    return $this -> _git;
+  }
+
   protected function get_path() {
     return $this -> _path;
   }
@@ -60,7 +72,7 @@ class Repository {
     if ($this -> _branches === null) {
       $this -> _branches = [];
       list($names, $defaultName) = Parse::parseBranchList(
-        $this -> exec('branch', '--list')
+        $this -> git -> execute(['branch', '--list'])
       );
       foreach ($names as $name) {
         $this -> _branches[$name] = new Branch($this, $name);
@@ -80,7 +92,7 @@ class Repository {
   protected function get_tags() {
     if ($this -> _tags === null) {
       $this -> _tags = [];
-      $names = Parse::parseTagList($this -> exec('tag', '--list'));
+      $names = Parse::parseTagList($this -> git -> execute(['tag', '--list']));
       foreach ($names as $name) {
         $this -> _tags[$name] = new Tag($this, $name);
       }
@@ -90,7 +102,7 @@ class Repository {
 
   protected function get_latestCommit() {
     if ($this -> _latestCommit === null) {
-      $hash = trim($this -> exec(['rev-list', '-1', '--all']));
+      $hash = trim($this -> git -> execute(['rev-list', '-1', '--all']));
       $this -> _latestCommit = $this -> commit($hash);
     }
     return $this -> _latestCommit;
@@ -111,44 +123,14 @@ class Repository {
     $this -> _path = realpath($path);
   }
 
-  public function exec(...$args) {
-    if ((count($args) == 1) && is_array($args[0])) {
-      $args = $args[0];
-    }
-    list($status, $stdout, $stderr) = Process::run(
-      $this -> _config -> gitBinary,
-      $args,
-      $this -> _path
-    );
-
-    if ($status != 0) throw new Exception($stderr);
-    return $stdout;
-  }
-
-  public function passthru(...$args) {
-    if ((count($args) == 1) && is_array($args[0])) {
-      $args = $args[0];
-    }
-    list($status, , $stderr) = Process::run(
-      $this -> _config -> gitBinary,
-      $args,
-      $this -> _path,
-      true
-    );
-
-    if ($status != 0) {
-      throw new Exception($stderr);
-    }
-  }
-
   public function commit(string $hash, bool $validate = false) {
     $hash = strtolower(trim($hash));
     if ($hash == '') return null;
 
     if ($validate) {
       try {
-        $this -> exec('branch', '--contains', $hash);
-      } catch (Exception $e) {
+        $this -> git -> execute(['branch', '--contains', $hash]);
+      } catch (GitException $e) {
         $hash = '';
       }
     }
@@ -183,18 +165,18 @@ class Repository {
   }
 
   public function create() {
-    list($status) = Process::run(
-      $this -> _config -> gitBinary,
-      ['init', '--bare', '--shared=0775', $this -> _path]
-    );
-    return $status === 0;
+    $this -> git -> execute([
+      'init', '--bare', '--shared=0775', $this -> _path
+    ]);
   }
 
   static public function getRepositories($config) {
     $result = [];
 
-    list(, $names) = Process::run('find', '. -mindepth 2 -maxdepth 2 -type d -name *.git',
+    $process = new Process('find . -mindepth 2 -maxdepth 2 -type d -name *.git',
       $config -> repositoriesRoot);
+    $names = $process -> stdout() -> read();
+    $process -> close();
 
     $items = array_filter(array_map('trim', explode("\n", $names)), 'strlen');
     foreach ($items as $item) {
@@ -210,7 +192,7 @@ class Repository {
 
   static public function getRepository($name, $config) {
     $path = $config -> repositoriesRoot . '/' . $name . '.git';
-    if (!is_dir($path)) throw new Exception('Path does not exist');
+    if (!is_dir($path)) throw new GitException('Path does not exist');
     return new Repository($path, $config);
   }
 

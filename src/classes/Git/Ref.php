@@ -1,9 +1,8 @@
 <?php
 
-namespace Classes\Git\Core;
+namespace Classes\Git;
 
 use Classes\Properties;
-use Classes\Git\Repository;
 
 class Ref {
   use Properties;
@@ -30,7 +29,7 @@ class Ref {
 
   protected function get_commit() {
     if ($this -> _commit === null) {
-      $hash = trim($this -> repository -> exec(['rev-list', '-1', $this -> name]));
+      $hash = trim($this -> repository -> git -> execute(['rev-list', '-1', $this -> name]));
       $this -> _commit = $this -> repository -> commit($hash);
     }
     return $this -> _commit;
@@ -38,7 +37,7 @@ class Ref {
 
   protected function get_commits() {
     if ($this -> _commits === null) {
-      $hashes = $this -> repository -> exec('rev-list', $this -> name);
+      $hashes = $this -> repository -> git -> execute(['rev-list', $this -> name]);
       $this -> _commits = $this -> repository -> commits(explode("\n", $hashes));
     }
     return $this -> _commits;

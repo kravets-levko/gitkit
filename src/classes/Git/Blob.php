@@ -1,9 +1,8 @@
 <?php
 
-namespace Classes\Git\Core;
+namespace Classes\Git;
 
 use Classes\Properties;
-use Classes\Git\Repository;
 
 class Blob {
   use Properties;
@@ -36,9 +35,9 @@ class Blob {
 
   protected function get_commit() {
     if ($this -> _commit === null) {
-      $hash = trim($this -> repository -> exec(
+      $hash = trim($this -> repository -> git -> execute([
         'rev-list', '-1', $this -> tree -> ref -> name, '--', $this -> path
-      ));
+      ]));
       $this -> _commit = $this -> repository -> commit($hash);
     }
     return $this -> _commit;

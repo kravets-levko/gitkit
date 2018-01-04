@@ -3,6 +3,7 @@
 namespace Actions\Repositories;
 
 use Actions\Action;
+use Classes\Git\Repository as GitRepository;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -15,8 +16,7 @@ class Blob extends Action {
 
   public function get(Request $request, Response $response, $args) {
     $config = $this -> container -> get('config');
-    $repo = \Classes\Git\Repository::getRepository(
-      $args['group'] . '/' . $args['name'], $config);
+    $repo = GitRepository::getRepository($args['group'] . '/' . $args['name'], $config);
 
     if (isset($args['ref'])) {
       $ref = $repo -> ref($args['ref']);
@@ -29,7 +29,7 @@ class Blob extends Action {
     $path = isset($args['path']) && is_string($args['path']) ? $args['path'] : '';
 
     /**
-     * @var \Classes\Git\Core\TreeFile $blob
+     * @var \Classes\Git\TreeFile $blob
      */
     $blob = $ref -> tree -> node($path);
     if (!$blob || ($blob -> type !== 'blob')) {
@@ -41,7 +41,7 @@ class Blob extends Action {
       if (!headers_sent()) {
         header("Content-Type: {$blob -> mime}", true);
       }
-      $blob -> displayData();
+      echo $blob -> displayData() -> read();
       die;
     }
 

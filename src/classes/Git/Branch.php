@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Git\Core;
+namespace Classes\Git;
 
 class Branch extends Ref {
 

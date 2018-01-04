@@ -1,14 +1,14 @@
 <?php
 
-namespace Classes\Git\Core;
+namespace Classes\Git;
 
 class TreeFile extends Blob {
 
   protected function get_data() {
-    return $this -> repository -> exec(
+    return $this -> repository -> git -> execute([
       'show',
       $this -> commit -> hash . ':' . $this -> path
-    );
+    ]);
   }
 
   protected function get_ext() {
@@ -31,10 +31,10 @@ class TreeFile extends Blob {
   }
 
   public function displayData() {
-    $this -> repository -> passthru(
+    return $this -> repository -> git -> getOutputAsStream([
       'show',
       $this -> commit -> hash . ':' . $this -> path
-    );
+    ]);
   }
 
 }

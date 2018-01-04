@@ -3,6 +3,7 @@
 namespace Actions\Repositories;
 
 use Actions\Action;
+use Classes\Git\Repository as GitRepository;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -15,8 +16,7 @@ class Tree extends Action {
 
   public function get(Request $request, Response $response, $args) {
     $config = $this -> container -> get('config');
-    $repo = \Classes\Git\Repository::getRepository(
-      $args['group'] . '/' . $args['name'], $config);
+    $repo = GitRepository::getRepository($args['group'] . '/' . $args['name'], $config);
 
     if (isset($args['ref'])) {
       $ref = $repo -> ref($args['ref']);

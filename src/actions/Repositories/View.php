@@ -3,6 +3,7 @@
 namespace Actions\Repositories;
 
 use Actions\Action;
+use Classes\Git\Repository as GitRepository;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -15,7 +16,7 @@ class View extends Action {
 
   public function get(Request $request, Response $response, $args) {
     $config = $this -> container -> get('config');
-    $repos = \Classes\Git\Repository::getRepositories($config);
+    $repos = GitRepository::getRepositories($config);
 
     $group = isset($args['group']) ? $args['group'] : '';
     if ($group == '') $group = null;

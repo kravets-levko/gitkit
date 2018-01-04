@@ -1,9 +1,8 @@
 <?php
 
-namespace Classes\Git\Core;
+namespace Classes\Git;
 
 use Classes\Properties;
-use Classes\Git\Repository;
 
 class Tree {
   use Properties;
@@ -54,7 +53,9 @@ class Tree {
     if (count($globs) == 0) return [];
 
     if ($this -> _filenames === null) {
-      $lines = $this -> repository -> exec('ls-tree', '--name-only', '-r', '-z', $this -> ref -> name);
+      $lines = $this -> repository -> git -> execute([
+        'ls-tree', '--name-only', '-r', '-z', $this -> ref -> name
+      ]);
       $this -> _filenames = explode("\0", $lines);
     }
     return array_values(array_filter($this -> _filenames, function($name) use ($globs) {
@@ -114,9 +115,9 @@ class Tree {
     if (!array_key_exists($path, $this -> infoByPath)) {
       $pathPrefix = $path == '' ? '' : $path . '/';
 
-      $lines = $this -> repository -> exec(
+      $lines = $this -> repository -> git -> execute([
         'ls-tree', '--long', '-z', $this -> ref -> name . ':' . $path
-      );
+      ]);
       $lines = array_filter(explode("\0", $lines), 'strlen');
 
       $children = [];

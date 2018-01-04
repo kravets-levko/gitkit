@@ -1,8 +1,6 @@
 <?php
 
-namespace Classes\Git\Core;
-
-use Classes\Git\Repository;
+namespace Classes\Git;
 
 class Diff {
 
@@ -33,7 +31,7 @@ class Diff {
 
   public function stats($slots = 7) {
     if ($this -> stats === null) {
-      $data = $this -> _repository -> exec([
+      $data = $this -> _repository -> git -> execute([
         'show', '--format=format:', '--numstat', $this -> getRange(),
       ]);
       $data = array_filter(explode("\n", $data), 'strlen');

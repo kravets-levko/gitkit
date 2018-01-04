@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Git\Core;
+namespace Classes\Git;
 
 use Classes\Git\Utils\Parse;
 
@@ -28,9 +28,9 @@ class Commit extends Ref {
 
   protected function get_parents() {
     if ($this -> _parents === null) {
-      $hashes = $this -> repository -> exec(
+      $hashes = $this -> repository -> git -> execute([
         'show', '--no-patch', '--format=%P', $this -> hash
-      );
+      ]);
       $this -> _parents = $this -> repository -> commits(explode(' ', $hashes));
     }
     return $this -> _parents;
@@ -52,9 +52,9 @@ class Commit extends Ref {
 
       $this -> _info = (object)array_combine(
         array_keys($fields),
-        explode("\n", $this -> repository -> exec(
+        explode("\n", $this -> repository -> git -> execute([
           'show', '--no-patch', '--format=' . $format, $this -> hash
-        ), count($fields)) // commit message may be multiline
+        ]), count($fields)) // commit message may be multiline
       );
     }
     return $this -> _info;
@@ -70,7 +70,9 @@ class Commit extends Ref {
   protected function get_branches() {
     if ($this -> _branches === null) {
       list($names, $defaultName) = Parse::parseBranchList(
-        $this -> repository -> exec('branch', '--contains', $this -> hash)
+        $this -> repository -> git -> execute([
+          'branch', '--contains', $this -> hash
+        ])
       );
 
       $this -> _branches = [];
@@ -96,7 +98,7 @@ class Commit extends Ref {
   protected function get_tags() {
     if ($this -> _tags === null) {
       $names = Parse::parseTagList(
-        $this -> repository -> exec('tag', '--contains', $this -> hash)
+        $this -> repository -> git -> execute(['tag', '--contains', $this -> hash])
       );
       $this -> _tags = [];
       foreach ($names as $name) {

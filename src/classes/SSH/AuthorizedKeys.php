@@ -5,11 +5,6 @@ namespace Classes\SSH;
 use Classes\Properties;
 use Classes\Process\Binary;
 
-/**
- * Class AuthorizedKeys
- *
- * @property-read PublicKey[] $items
- */
 class AuthorizedKeys {
   use Properties;
 
@@ -29,7 +24,7 @@ class AuthorizedKeys {
    */
   public $keygen = null;
 
-  protected function getItems() {
+  protected function get_items() {
     if ($this -> _items === null) {
       $lines = @file_get_contents($this -> _path);
       if (!is_string($lines)) $lines = '';
@@ -79,7 +74,7 @@ class AuthorizedKeys {
     if ($key instanceof PublicKey) {
       $key = $key -> raw;
     }
-    $this -> getItems();
+    $this -> get_items();
     $this -> _items[] = new PublicKey($key, $this -> keygen);
   }
 
@@ -90,7 +85,7 @@ class AuthorizedKeys {
     if ($key instanceof PublicKey) {
       $key = $key -> raw;
     }
-    $this -> getItems();
+    $this -> get_items();
     $this -> _items = array_filter(
       $this -> _items,
       function(PublicKey $item) use ($key) {
@@ -100,7 +95,7 @@ class AuthorizedKeys {
   }
 
   public function save() {
-    $this -> getItems();
+    $this -> get_items();
     @file_put_contents($this -> _path, implode(PHP_EOL, $this -> items) . PHP_EOL, LOCK_EX);
   }
 
