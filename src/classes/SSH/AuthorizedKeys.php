@@ -15,27 +15,20 @@ class AuthorizedKeys {
   private $_path;
 
   /**
-   * @var PublicKey[]
-   */
-  private $_items = null;
-
-  /**
    * @var Binary
    */
   public $keygen = null;
 
-  protected function get_items() {
-    if ($this -> _items === null) {
-      $lines = @file_get_contents($this -> _path);
-      if (!is_string($lines)) $lines = '';
-      $lines = explode("\n", $lines);
+  protected function cached_items() {
+    $lines = @file_get_contents($this -> _path);
+    if (!is_string($lines)) $lines = '';
 
-      $lines = array_filter(array_map('trim', $lines), 'strlen');
-      $this -> _items = array_map(function($line) {
-        return new PublicKey($line, $this -> keygen);
-      }, $lines);
-    }
-    return $this -> _items;
+    $lines = explode("\n", $lines);
+    $lines = array_filter(array_map('trim', $lines), 'strlen');
+
+    return array_map(function($line) {
+      return new PublicKey($line, $this -> keygen);
+    }, $lines);
   }
 
   public function __construct($path, $config) {
@@ -74,8 +67,9 @@ class AuthorizedKeys {
     if ($key instanceof PublicKey) {
       $key = $key -> raw;
     }
-    $this -> get_items();
-    $this -> _items[] = new PublicKey($key, $this -> keygen);
+    $items = $this -> items;
+    $items[] = new PublicKey($key, $this -> keygen);
+    $this -> cachedUpdate('items', $items);
   }
 
   /**
@@ -85,17 +79,16 @@ class AuthorizedKeys {
     if ($key instanceof PublicKey) {
       $key = $key -> raw;
     }
-    $this -> get_items();
-    $this -> _items = array_filter(
-      $this -> _items,
+    $items = array_filter(
+      $this -> items,
       function(PublicKey $item) use ($key) {
         return $item -> raw != $key;
       }
     );
+    $this -> cachedUpdate('items', $items);
   }
 
   public function save() {
-    $this -> get_items();
     @file_put_contents($this -> _path, implode(PHP_EOL, $this -> items) . PHP_EOL, LOCK_EX);
   }
 

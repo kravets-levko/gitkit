@@ -10,9 +10,6 @@ class Blob {
   private $_repository;
   private $_tree;
   private $_path;
-  private $_info = null;
-
-  private $_commit = null;
 
   protected function get_repository() {
     return $this -> _repository;
@@ -26,21 +23,15 @@ class Blob {
     return $this -> _path;
   }
 
-  protected function get_info() {
-    if ($this -> _info === null) {
-      $this -> _info = $this -> tree -> nodeInfo($this -> path);
-    }
-    return $this -> _info;
+  protected function cached_info() {
+    return $this -> tree -> nodeInfo($this -> path);
   }
 
-  protected function get_commit() {
-    if ($this -> _commit === null) {
-      $hash = trim($this -> repository -> git -> execute([
-        'rev-list', '-1', $this -> tree -> ref -> name, '--', $this -> path
-      ]));
-      $this -> _commit = $this -> repository -> commit($hash);
-    }
-    return $this -> _commit;
+  protected function cached_commit() {
+    $hash = trim($this -> repository -> git -> execute([
+      'rev-list', '-1', $this -> tree -> ref -> name, '--', $this -> path
+    ]));
+    return $this -> repository -> commit($hash);
   }
 
   protected function get_type() {

@@ -9,50 +9,51 @@ class PublicKey {
   use Properties;
 
   private $_fingerprintAlgorithm = 'md5';
-  private $_valid = null;
   private $_raw = null;
-  private $_fingerprint = null;
-  private $_algorithm = null;
-  private $_key = null;
-  private $_comment = null;
 
   /**
    * @var Binary
    */
   public $keygen = null;
 
-  private function parse() {
-    if ($this -> _valid === null) {
-      $this -> _valid = false;
+  protected function cached_parsed() {
+    $result = (object)[
+      'valid' => false,
+      'algorithm' => null,
+      'key' => null,
+      'comment' => null,
+      'fingerprint' => null,
+    ];
 
-      $stdin = fopen('data://text/plain;base64,' . base64_encode($this -> raw), 'r');
-      $process = $this -> keygen -> start([
-        '-l', '-E', $this -> _fingerprintAlgorithm, '-f', '-'
-      ], null, null, [
-        StdPipe::STDIN => $stdin,
-      ]);
+    $stdin = fopen('data://text/plain;base64,' . base64_encode($this -> raw), 'r');
+    $process = $this -> keygen -> start([
+      '-l', '-E', $this -> _fingerprintAlgorithm, '-f', '-'
+    ], [
+      StdPipe::STDIN => $stdin,
+    ]);
 
-      $stdout = $process -> stdout() -> read();
-      $exitCode = $process -> close();
+    $stdout = $process -> stdout() -> read();
+    $exitCode = $process -> close();
 
-      if ($exitCode == 0) {
-        $this -> _valid = true;
-        list(, $fingerprint) = explode(' ', $stdout);
-        list(, $fingerprint) = explode(':', $fingerprint, 2);
-        $this -> _fingerprint = $fingerprint;
+    if ($exitCode == 0) {
+      $result -> valid = true;
 
-        $raw = preg_replace('#\s+#', ' ', trim($this -> raw));
-        list($algorithm, $key, $comment) = explode(' ', $raw, 3);
-        $this -> _algorithm = strtolower($algorithm);
-        $this -> _key = $key;
-        $this -> _comment = $comment;
-      }
+      list(, $fingerprint) = explode(' ', $stdout);
+      list(, $fingerprint) = explode(':', $fingerprint, 2);
+      $result -> fingerprint = $fingerprint;
+
+      $raw = preg_replace('#\s+#', ' ', trim($this -> raw));
+      list($algorithm, $key, $comment) = explode(' ', $raw, 3);
+      $result -> algorithm = strtolower($algorithm);
+      $result -> key = $key;
+      $result -> comment = $comment;
     }
+
+    return $result;
   }
 
   protected function get_valid() {
-    $this -> parse();
-    return $this -> _valid;
+    return $this -> parsed -> valid;
   }
 
   protected function get_raw() {
@@ -60,23 +61,19 @@ class PublicKey {
   }
 
   protected function get_algorithm() {
-    $this -> parse();
-    return $this -> _algorithm;
+    return $this -> parsed -> algorithm;
   }
 
   protected function get_key() {
-    $this -> parse();
-    return $this -> _key;
+    return $this -> parsed -> key;
   }
 
   protected function get_comment() {
-    $this -> parse();
-    return $this -> _comment;
+    return $this -> parsed -> comment;
   }
 
   protected function get_fingerprint() {
-    $this -> parse();
-    return $this -> _fingerprint;
+    return $this -> parsed -> fingerprint;
   }
 
   public function __construct(string $raw, Binary $keygen, $fingerprintAlgorithm = 'md5') {
@@ -86,7 +83,6 @@ class PublicKey {
   }
 
   public function __toString() {
-    $this -> parse();
     return implode(' ', array_filter(array_map('trim', [
       $this -> algorithm,
       $this -> key,

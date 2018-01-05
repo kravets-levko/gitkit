@@ -13,17 +13,13 @@ class Tree {
   /**
    * @var TreeFolder
    */
-  private $_root = null;
   private $_rootInfo = null;
   private $_filenames = null;
   private $filesByPath = [];
   private $infoByPath = [];
 
-  protected function get_root() {
-    if ($this -> _root === null) {
-      $this -> _root = new TreeFolder($this -> repository, $this, '');
-    }
-    return $this -> _root;
+  protected function cached_root() {
+    return new TreeFolder($this -> repository, $this, '');
   }
 
   protected function get_repository() {

@@ -10,11 +10,6 @@ class Repository {
   use Properties;
 
   /**
-   * @var GitBinary
-   */
-  private $_git = null;
-
-  /**
    * @var \stdClass
    */
   private $_config;
@@ -23,41 +18,21 @@ class Repository {
    * @var Commit[]
    */
   private $_commits = [];
-  /**
-   * @var Branch[]
-   */
-  private $_branches = null;
-  /**
-   * @var Branch
-   */
-  private $_defaultBranch = null;
 
-  /**
-   * @var Tag[]
-   */
-  private $_tags = null;
-
-  private $_latestCommit = null;
-
-  private $_info = null;
-
-  protected function get_git() {
-    if ($this -> _git === null) {
-      $this -> _git = new GitBinary($this -> _config -> gitBinary, $this -> _path);
-    }
-    return $this -> _git;
+  protected function cached_git() {
+    return new GitBinary($this -> _config -> gitBinary, $this -> _path);
   }
 
   protected function get_path() {
     return $this -> _path;
   }
 
-  protected function get_name() {
+  protected function cached_name() {
     $path = substr($this -> _path, strlen($this -> _config -> repositoriesRoot) + 1);
     return preg_replace('#\.git$#i', '', $path);
   }
 
-  protected function get_cloneUrls() {
+  protected function cached_cloneUrls() {
     $path = substr($this -> _path, strlen($this -> _config -> repositoriesRoot) + 1);
     $https = $this -> _config -> https ? 'https' : 'http';
     $host = $this -> _config -> host;
@@ -68,54 +43,41 @@ class Repository {
     ];
   }
 
-  protected function get_branches() {
-    if ($this -> _branches === null) {
-      $this -> _branches = [];
-      list($names, $defaultName) = Parse::parseBranchList(
-        $this -> git -> execute(['branch', '--list'])
-      );
-      foreach ($names as $name) {
-        $this -> _branches[$name] = new Branch($this, $name);
-      }
-      $this -> _defaultBranch = $defaultName !== null
-        ? $this -> _branches[$defaultName]
-        : array_first($this -> _branches);
-    }
-    return array_values($this -> _branches);
+  protected function cached_branches() {
+    list($names, $defaultName) = Parse::parseBranchList(
+      $this -> git -> execute(['branch', '--list'])
+    );
+
+    return array_map(function($name) use ($defaultName) {
+      $result = new Branch($this, $name);
+      $result -> isDefault = $result -> name === $defaultName;
+      return $result;
+    }, $names);
   }
 
-  protected function get_defaultBranch() {
-    $this -> get_branches();
-    return $this -> _defaultBranch;
+  protected function cached_defaultBranch() {
+    $branches = $this -> branches;
+    foreach ($branches as $branch) {
+      if ($branch -> isDefault) return $branch;
+    }
+    return reset($branches);
   }
 
-  protected function get_tags() {
-    if ($this -> _tags === null) {
-      $this -> _tags = [];
-      $names = Parse::parseTagList($this -> git -> execute(['tag', '--list']));
-      foreach ($names as $name) {
-        $this -> _tags[$name] = new Tag($this, $name);
-      }
-    }
-    return array_values($this -> _tags);
+  protected function cached_tags() {
+    $names = Parse::parseTagList($this -> git -> execute(['tag', '--list']));
+    return array_map(function($name) {
+      return new Tag($this, $name);
+    }, $names);
   }
 
-  protected function get_latestCommit() {
-    if ($this -> _latestCommit === null) {
-      $hash = trim($this -> git -> execute(['rev-list', '-1', '--all']));
-      $this -> _latestCommit = $this -> commit($hash);
-    }
-    return $this -> _latestCommit;
+  protected function cached_latestCommit() {
+    $hash = trim($this -> git -> execute(['rev-list', '-1', '--all']));
+    return $this -> commit($hash);
   }
 
-  protected function get_info() {
-    if ($this -> _info === null) {
-      $this -> _info = @json_decode(file_get_contents($this -> _path . '.json'));
-      if (!is_object($this -> _info)) {
-        $this -> _info = (object)[];
-      }
-    }
-    return $this -> _info;
+  protected function cached_info() {
+    $result = @json_decode(file_get_contents($this -> _path . '.json'));
+    return is_object($result) ? $result : (object)[];
   }
 
   public function __construct($path, $config) {
@@ -148,13 +110,19 @@ class Repository {
   }
 
   public function branch($name) {
-    $this -> get_branches();
-    return array_key_exists($name, $this -> _branches) ? $this -> _branches[$name] : null;
+    $branches = $this -> branches;
+    foreach ($branches as $branch) {
+      if ($branch -> name == $name) return $branch;
+    }
+    return null;
   }
 
   public function tag($name) {
-    $this -> get_tags();
-    return array_key_exists($name, $this -> _tags) ? $this -> _tags[$name] : null;
+    $tags = $this -> tags;
+    foreach ($tags as $tag) {
+      if ($tag -> name == $name) return $tag;
+    }
+    return null;
   }
 
   public function ref($ref) {
