@@ -1,0 +1,19 @@
+{% extends 'layout/main.twig' %}
+
+{% block title %}{{ repository.name }} - GitKit{% endblock %}
+
+{% block content %}
+  {% spaceless %}
+    <h1>{% include 'components/repository-header.twig' with {repository: repository} %}</h1>
+
+    <div class="my-3 list-group">
+      {% for branch in repository.branches %}
+      <div class="list-group-item">
+        <span class="{{ branch.isDefault ? 'text-success' : 'text-muted' }} mr-1"
+        >{% include 'icon.twig' with { icon: 'git-branch' } %}</span>
+        <a href="{{ repository.name }}/tree/{{ branch.name }}">{{ branch.name }}</a>
+      </div>
+      {% endfor %}
+    </div>
+  {% endspaceless %}
+{% endblock %}
