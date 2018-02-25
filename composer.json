@@ -17,7 +17,10 @@
     },
     "autoload": {
         "psr-4": {
-            "Classes\\": "src/classes",
+            "Utils\\": "lib/Utils",
+            "Process\\": "lib/Process",
+            "Git\\": "lib/Git",
+            "SSH\\": "lib/SSH",
             "Actions\\": "src/actions"
         }
     }
