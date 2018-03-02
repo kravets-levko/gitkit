@@ -87,9 +87,9 @@ class Repository {
     });
   }
 
-  public function __construct(mixed $config, string $path) {
-    $this -> _path = $path;
-    $this -> context = new RepositoryContext($config);
+  public function __construct($config, string $path) {
+    $this -> _path = realpath($path);
+    $this -> context = new RepositoryContext($config, $path);
   }
 
   public function branch($name) {

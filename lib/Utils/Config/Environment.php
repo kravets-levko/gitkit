@@ -2,20 +2,24 @@
 
 namespace Utils\Config;
 
-class Environment extends \StdClass {
+class Environment extends Config {
 
-  public function __construct($prefix = 'gitkit') {
+  public function __construct(string $prefix = '') {
+    $values = [];
+
     foreach ($_SERVER as $key => $value) {
       $key = explode('_', strtolower($key));
-      if (reset($key) == $prefix) {
+      if (($prefix == '') || (reset($key) == $prefix)) {
         array_shift($key);
         $key = lcfirst(implode('', array_map('ucfirst', $key)));
-        $this -> {$key} = $value;
+        $values[$key] = $value;
       }
-
-      $this -> https = isset($_SERVER['HTTPS']);
-      $this -> host = $_SERVER['SERVER_NAME'];
     }
+
+    $values['https'] = isset($_SERVER['HTTPS']);
+    $values['host'] = $_SERVER['SERVER_NAME'];
+
+    parent::__construct($values);
   }
 
 }

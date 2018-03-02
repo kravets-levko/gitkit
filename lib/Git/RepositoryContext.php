@@ -13,9 +13,9 @@ class RepositoryContext {
   public $config;
   public $git;
 
-  public function __construct(mixed $config) {
+  public function __construct($config, string $cwd) {
     $this -> config = $config;
-    $this -> git = new Binary($this -> config -> gitBinary);
+    $this -> git = new Binary($this -> config -> gitBinary, $cwd);
   }
 
   public function execute($args, $returnAsStream = false) {

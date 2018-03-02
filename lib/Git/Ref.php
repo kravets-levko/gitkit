@@ -24,7 +24,7 @@ class Ref {
   protected function get_commit() {
     return $this -> cached(__METHOD__, function() {
       $hash = trim($this -> context -> execute(['rev-list', '-1', $this -> name, '--']));
-      return $this -> repository -> commit($hash);
+      return $this -> context -> commit($hash);
     });
   }
 
@@ -37,6 +37,12 @@ class Ref {
 
   protected function get_head() {
     return $this -> commit;
+  }
+
+  protected function get_tree() {
+    return $this -> cached(__METHOD__, function() {
+      return new Tree($this -> context, $this);
+    });
   }
 
   public function __construct(RepositoryContext $context, string $name) {

@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+PROJECT_ROOT=$(dirname $(dirname $(realpath $0)));
+THEMES_PATH=$(realpath ${PROJECT_ROOT}/src/themes);
+PUBLIC_PATH=$(realpath ${PROJECT_ROOT}/public);
+
+# Clear public directory
+rm -rf ${PUBLIC_PATH}
+
+# Build each theme and copy files to /public
+for THEME_PATH in $(ls -d ${THEMES_PATH}/*/); do
+  THEME_NAME=$(basename ${THEME_PATH});
+  echo "Building '${THEME_NAME}' theme...";
+  cd ${THEME_PATH};
+
+  SOURCE_PATH=${THEME_PATH}/public;
+  TARGET_PATH=${PUBLIC_PATH}/${THEME_NAME};
+
+  npm run build;
+  mkdir -p ${TARGET_PATH};
+  cp -r ${SOURCE_PATH}/* ${TARGET_PATH};
+done
+
+echo "Done.";

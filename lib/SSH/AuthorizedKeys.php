@@ -35,8 +35,8 @@ class AuthorizedKeys {
     });
   }
 
-  public function __construct($path, $config) {
-    $this -> context = new Context($this -> _config);
+  public function __construct($config) {
+    $this -> context = new Context($config);
   }
 
   public function create($algorithm, $bits, $comment = '', $passphrase = '') {
@@ -70,7 +70,9 @@ class AuthorizedKeys {
       $key = new PublicKey($this -> context, $key);
     }
     $items = $this -> removeKey($this -> items, $key);
-    $items[] = $key;
+    if ($key -> valid) {
+      $items[] = $key;
+    }
     $this -> cachedSet('items', $items);
   }
 

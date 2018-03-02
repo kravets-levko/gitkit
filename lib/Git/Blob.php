@@ -2,7 +2,7 @@
 
 namespace Git;
 
-use Process\Process;
+use Process\{ Process, StdPipe };
 use Utils\Mixin\{ Properties, Cached };
 
 class Blob {
@@ -11,6 +11,7 @@ class Blob {
 
   protected $context;
   protected $info;
+  private $_ref;
   private $_parent;
 
   protected function get_parent() {
@@ -18,7 +19,7 @@ class Blob {
   }
 
   protected function get_ref() {
-    return $this -> _parent ? $this -> _parent -> ref : null;
+    return $this -> _ref;
   }
 
   protected function get_name() {
@@ -37,6 +38,19 @@ class Blob {
     return $this -> info -> mode;
   }
 
+  protected function get_size() {
+    return $this -> info -> size;
+  }
+
+  protected function get_commit() {
+    return $this -> cached(__METHOD__, function() {
+      $hash = trim($this -> context -> execute([
+        'rev-list', '-1', $this -> ref -> name, '--', $this -> path
+      ]));
+      return $this -> context -> commit($hash);
+    });
+  }
+
   protected function get_ext() {
     $result = pathinfo($this -> info -> path, PATHINFO_EXTENSION);
     return is_string($result) ? $result : '';
@@ -44,20 +58,20 @@ class Blob {
 
   protected function get_data() {
     return $this -> context -> execute([
-      'show', $this -> ref -> hash . ':' . $this -> path
+      'show', $this -> ref -> name . ':' . $this -> path
     ]);
   }
 
   protected function get_mime() {
     return $this -> cached(__METHOD__, function() {
       $process = $this -> context -> git -> start([
-        'show', $this -> ref -> hash . ':' . $this -> path
+        'show', $this -> ref -> name . ':' . $this -> path
       ]);
       $process -> stdin() -> close();
       $process -> stderr() -> close();
 
       $process = new Process('file --brief --mime-type -', null, null, [
-        0 => $process -> stdout(),
+        StdPipe::STDIN => $process -> stdout(),
       ]);
       $result = strtolower(trim($process -> stdout() -> read()));
       $process -> close();
@@ -81,26 +95,26 @@ class Blob {
 
       // Total lines
       $process = $this -> context -> git -> start([
-        'show', $this -> ref -> hash . ':' . $this -> path
+        'show', $this -> ref -> name . ':' . $this -> path
       ]);
       $process -> stdin() -> close();
       $process -> stderr() -> close();
 
-      $process = new Process('wc --lines -', null, null, [
-        0 => $process -> stdout(),
+      $process = new Process('wc --lines', null, null, [
+        StdPipe::STDIN => $process -> stdout(),
       ]);
       $result -> total = (int)(trim($process -> stdout() -> read()));
       $process -> close();
 
       // Non-empty lines
       $process = $this -> context -> git -> start([
-        'show', $this -> commit -> hash . ':' . $this -> path
+        'show', $this -> ref -> name . ':' . $this -> path
       ]);
       $process -> stdin() -> close();
       $process -> stderr() -> close();
 
       $process = new Process('grep --count --invert-match --line-regexp \'^\s*$\'', null, null, [
-        0 => $process -> stdout(),
+        StdPipe::STDIN => $process -> stdout(),
       ]);
       $result -> nonEmpty = (int)(trim($process -> stdout() -> read()));
       $process -> close();
@@ -109,8 +123,9 @@ class Blob {
     });
   }
 
-  public function __construct(RepositoryContext $context, Tree $parent, mixed $info) {
+  public function __construct(RepositoryContext $context, Ref $ref, Tree $parent, $info) {
     $this -> context = $context;
+    $this -> _ref = $ref;
     $this -> _parent = $parent;
     $this -> info = $info;
   }
@@ -128,7 +143,7 @@ class Blob {
   public function displayData() {
     return $this -> context -> execute([
       'show',
-      $this -> commit -> hash . ':' . $this -> path
+      $this -> ref -> name . ':' . $this -> path
     ], true);
   }
 

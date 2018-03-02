@@ -11,9 +11,9 @@ class Context {
   public $config;
   public $keygen;
 
-  public function __construct(mixed $config) {
+  public function __construct($config) {
     $this -> config = $config;
-    $this -> keygen = new Binary($this -> config -> keygenBinary);
+    $this -> keygen = new Binary($this -> config -> sshKeygenBinary);
   }
 
 }

@@ -2,8 +2,6 @@
 
 namespace Actions\Repositories;
 
-use Actions\Action;
-use Classes\Git\Repository as GitRepository;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -15,16 +13,13 @@ use Psr\Http\Message\ResponseInterface as Response;
 class Commit extends Action {
 
   public function get(Request $request, Response $response, $args) {
-    $config = $this -> container -> get('config');
-    $repo = GitRepository::getRepository($args['group'] . '/' . $args['name'], $config);
-
-    $commit = isset($args['commit']) ? $repo -> commit($args['commit'], true) : null;
+    $commit = isset($args['commit']) ? $this -> repository -> commit($args['commit']) : null;
     if (!$commit) {
       $this -> notFound();
     }
 
-    return $this -> view -> render($response, 'pages/commit.twig', [
-      'repository' => $repo,
+    return $this -> view -> render($response, 'pages/repositories/commit.twig', [
+      'repository' => $this -> repository,
       'commit' => $commit,
     ]);
   }

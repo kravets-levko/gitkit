@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <base href="/">
+    <title>{% block title %}{% endblock %}</title>
+
+    <link rel="stylesheet" type="text/css" href="{{ assetsPath }}/app.css">
+
+    <link rel="shortcut icon" type="image/png" href="{{ assetsPath }}/favicon.png">
+  </head>
+  <body>
+    {% include 'layout/header.twig' %}
+
+    <div class="container my-3">{% block content %}{% endblock %}</div>
+
+    {% include 'layout/footer.twig' %}
+
+    <script type="text/javascript" src="{{ assetsPath }}/app.js"></script>
+  </body>
+</html>

@@ -2,8 +2,6 @@
 
 namespace Actions\Repositories;
 
-use Actions\Action;
-use Classes\Git\Repository as GitRepository;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -15,13 +13,10 @@ use Psr\Http\Message\ResponseInterface as Response;
 class Commits extends Action {
 
   public function get(Request $request, Response $response, $args) {
-    $config = $this -> container -> get('config');
-    $repo = GitRepository::getRepository($args['group'] . '/' . $args['name'], $config);
-
     if (isset($args['ref'])) {
-      $ref = $repo -> ref($args['ref']);
+      $ref = $this -> repository -> ref($args['ref']);
     } else {
-      $ref = $repo -> defaultBranch;
+      $ref = $this -> repository -> defaultBranch;
     }
     if (!$ref) {
       $this -> notFound();
@@ -55,8 +50,8 @@ class Commits extends Action {
 
     $next = @$ref -> commits[$index + $count];
 
-    return $this -> view -> render($response, 'pages/commits.twig', [
-      'repository' => $repo,
+    return $this -> view -> render($response, 'pages/repositories/commits.twig', [
+      'repository' => $this -> repository,
       'ref' => $ref,
       'groups' => $groups,
       'prev' => $prev,

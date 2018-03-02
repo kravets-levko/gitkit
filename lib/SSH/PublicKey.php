@@ -28,7 +28,8 @@ class PublicKey {
         $this -> fingerprint();
 
         // parse (if valid)
-        list($algorithm, $key, $comment) = preg_split('#\s+#', ' ', trim($this -> raw), 3);
+        $result -> valid = true;
+        list($algorithm, $key, $comment) = preg_split('#\s+#', trim($this -> _raw), 3);
         $result -> algorithm = strtolower(trim($algorithm));
         $result -> key = trim($key);
         $result -> comment = trim($comment);
@@ -66,7 +67,7 @@ class PublicKey {
 
   public function __construct(Context $context, string $raw) {
     $this -> context = $context;
-    $this -> _raw = trim($raw);
+    $this -> _raw = $raw;
   }
 
   public function __toString() {
@@ -77,9 +78,14 @@ class PublicKey {
     ]));
   }
 
-  public function fingerprint($algorithm = 'md5') {
+  public function fingerprint(string $algorithm = null) {
     return $this -> cached([__METHOD__, $algorithm], function() use ($algorithm) {
-      $stdin = fopen('data://text/plain,' . $this -> raw, 'r');
+      if ($algorithm === null) {
+        $algorithm = $this -> context -> config -> sshFingerprintAlgorithm;
+      }
+
+      $stdin = fopen('data://text/plain,' . urlencode($this -> raw), 'r');
+
       $process = $this -> context -> keygen -> start([
         '-l', '-E', $algorithm, '-f', '-'
       ], [

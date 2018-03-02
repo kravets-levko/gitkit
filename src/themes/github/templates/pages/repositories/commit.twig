@@ -1,0 +1,140 @@
+{% extends 'layout/main.twig' %}
+
+{% block title %}{{ repository.name }} - GitKit{% endblock %}
+
+{% block content %}
+{% spaceless %}
+  <h1>{% include 'components/repository-header.twig' with {repository: repository} %}</h1>
+
+  {% set slots = 5 %}
+  {% set stats = commit.diff.stats(slots) %}
+
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <div class="col">{{ commit.info.message }}</div>
+        <div class="col-auto">
+          <a class="btn btn-outline-primary" href="{{ repository.name }}/tree/{{ commit.hash }}">Browse files</a>
+        </div>
+      </div>
+
+      {% if (commit.branches | length > 0) or (commit.tags | length > 0) %}
+        <hr class="my-2">
+        <div>
+        {% if commit.branches | length > 0 %}
+          {% set commitBranch = commit.branches | first %}
+            <a class="link-secondary mr-4"
+              href="{{ repository.name }}{% if commitBranch.name != repository.defaultBranch.name %}/tree/{{ commitBranch.name }}{% endif %}">
+              <span class="text-muted mr-1">{% include 'icon.twig' with { icon: 'git-branch' } %}</span>
+              <strong>{{ commitBranch.name }}</strong>
+            </a>
+        {% endif %}
+        {% if commit.tags | length > 0 %}
+          {% set commitTag = commit.tags | first %}
+          <a class="link-secondary mr-2" href="{{ repository.name }}/tree/{{ commitTag.name }}">
+            <span class="text-muted mr-1">{% include 'icon.twig' with { icon: 'tag' } %}</span>
+            <strong>{{ commitTag.name }}</strong>
+          </a>
+          {% if commit.tags | length > 1 %}
+            {% if commit.tags | length > 2 %}
+              <div class="d-inline collapsed-list">
+              {% for commitTag in commit.tags | slice(1) %}
+                {% if not loop.last %}
+                <a class="link-secondary {% if not loop.first %}ml-2{% endif %}"
+                  href="{{ repository.name }}/tree/{{ commitTag.name }}">
+                  <span class="text-muted-soft">{{ commitTag.name }}</span>
+                </a>
+                {% endif %}
+              {% endfor %}
+              </div>
+            {% endif %}
+            {% set commitTag = commit.tags | last %}
+            <a class="link-secondary {% if commit.tags | length > 2 %}ml-2{% endif %}"
+              href="{{ repository.name }}/tree/{{ commitTag.name }}">
+              <span class="text-muted-soft">{{ commitTag.name }}</span>
+            </a>
+          {% endif %}
+        {% endif %}
+        </div>
+      {% endif %}
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+          <img class="rounded mr-1" src="https://www.gravatar.com/avatar/{{ commit.info.authorEmail | trim | lower | md5 }}?s=30">
+          <strong title="{{ commit.info.author ~ '<' ~ commit.info.authorEmail ~ '>' }}">{{ commit.info.author }}</strong> comitted
+          {% if commit.info.committerEmail != commit.info.authorEmail %}
+            with
+            <img class="rounded ml-2 mr-1" src="https://www.gravatar.com/avatar/{{ commit.info.committerEmail | trim | lower | md5 }}?s=30">
+            <strong title="{{ commit.info.committer ~ '<' ~ commit.info.committerEmail ~ '>' }}">{{ commit.info.committer }}</strong>
+          {% endif %}
+          <span title="{{ commit.info.committerDate | full_date }}">&nbsp;{{
+            commit.info.committerDate | pretty_date('on %s')
+          }}</span>
+        </div>
+
+        {% if commit.parents | length > 0 %}
+        <div class="col-auto text-nowrap">
+          {{ commit.parents | length }} parent(s)
+          {% for p in commit.parents %}
+            {% if not loop.first %}<small class="mx-1 text-muted">+</small>{% endif %}
+            <a href="{{ repository.name }}/commit/{{ p.hash }}">
+              <span>{{ p.abbreviatedHash }}</span>
+            </a>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="col-auto text-nowrap">
+          <span class="text-muted">commit {{ commit.hash }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="my-3">
+    {% include 'icon.twig' with { icon: 'diff' } %}
+    Showing {% spaceless %}<a href="javascript:void(0)" data-toggle="collapse" data-target="#commit-changes">
+      <strong>{{ stats.items | length }} changed file(s)</strong>
+    </a>{% endspaceless %} with
+    <strong>{{ stats.additions }} addition(s)</strong> and
+    <strong>{{ stats.deletions }} deletion(s)</strong>.
+  </div>
+
+  <div class="collapse" id="commit-changes">
+    <div class="list-group">
+      {% for item in stats.items %}
+      <div class="list-group-item px-0 py-1 border-x-0 {% if loop.first %}border-top-0{% endif %} {% if loop.last %}border-bottom-0{% endif %}">
+        <div class="row">
+          <div class="col"><a href="{{ repository.name }}/{{ item.type }}/{{ commit.hash }}:{{ item.path }}">{{ item.name }}</a></div>
+          <div class="col-auto text-right">
+            {% if item.binary %}
+              <strong class="text-primary">BIN</strong>
+            {% else %}
+              <strong class="text-success">+{{ item.additions }}</strong>
+              <strong class="text-danger">-{{ item.deletions }}</strong>
+            {% endif %}
+            {% spaceless %}
+              {% if item.additions_slots > 0 %}
+                {% for i in 1..item.additions_slots %}<span class="diff-slot text-success"></span>{% endfor %}
+              {% endif %}
+              {% if item.deletions_slots > 0 %}
+                {% for i in 1..item.deletions_slots %}<span class="diff-slot text-danger"></span>{% endfor %}
+              {% endif %}
+              {% set rest_slots = slots - item.additions_slots - item.deletions_slots %}
+              {% if rest_slots > 0 %}
+                {% for i in 1..rest_slots %}<span class="diff-slot"></span>{% endfor %}
+              {% endif %}
+            {% endspaceless %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div>
+    <pre>{{ stats | json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+  </div>
+{% endspaceless %}
+{% endblock %}

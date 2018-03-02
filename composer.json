@@ -21,7 +21,8 @@
             "Process\\": "lib/Process",
             "Git\\": "lib/Git",
             "SSH\\": "lib/SSH",
-            "Actions\\": "src/actions"
+            "Actions\\": "src/actions",
+            "Classes\\": "src/classes"
         }
     }
 }

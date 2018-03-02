@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+PROJECT_ROOT=$(dirname $(dirname $(realpath $0)));
+
+(
+  git tag --list --contains HEAD --sort=-refname:short --format="%(refname:short)";
+  echo "v0.0.0";
+) | head -n 1 > ${PROJECT_ROOT}/VERSION;

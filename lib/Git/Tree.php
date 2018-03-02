@@ -10,6 +10,7 @@ class Tree {
 
   protected $context;
   protected $info;
+  private $_ref;
   private $_parent;
 
   protected function get_parent() {
@@ -17,7 +18,7 @@ class Tree {
   }
 
   protected function get_ref() {
-    return $this -> _parent ? $this -> _parent -> ref : null;
+    return $this -> _ref;
   }
 
   protected function get_name() {
@@ -36,6 +37,15 @@ class Tree {
     return $this -> info -> mode;
   }
 
+  protected function get_commit() {
+    return $this -> cached(__METHOD__, function() {
+      $hash = trim($this -> context -> execute([
+        'rev-list', '-1', $this -> ref -> name, '--', $this -> path
+      ]));
+      return $this -> context -> commit($hash);
+    });
+  }
+
   protected function get_children() {
     return $this -> cached(__METHOD__, function() {
       $path = $this -> path;
@@ -43,9 +53,13 @@ class Tree {
       $lines = $this -> context -> execute([
         'ls-tree', '--long', '-z', $this -> ref -> name . ':' . $path
       ]);
+
       $lines = array_filter(explode("\0", $lines), 'strlen');
 
-      $result = [];
+      $pathPrefix = $path == '' ? '' : $path . '/';
+
+      $tree = [];
+      $blob = [];
       foreach ($lines as $line) {
         list($description, $name) = explode("\t", $line, 2);
         list($mode, $type, $hash, $size) = array_values(array_filter(
@@ -53,29 +67,58 @@ class Tree {
 
         $info = (object)[
           'name' => $name,
-          'path' => $path . '/' . $name,
-          'type' => $type,
+          'path' => $pathPrefix . $name,
+          'type' => strtolower($type),
           'mode' => $mode,
           'hash' => $hash,
           'size' => (int)$size,
         ];
-
         if ($info -> type == 'tree') {
-          $result[$info -> name] = new Tree($this -> context, $this, $info);
+          $tree[$info -> name] = new Tree($this -> context, $this -> ref, $this, $info);
         } elseif ($info -> type == 'blob') {
-          $result[$info -> name] = new Blob($this -> context, $this, $info);
+          $blob[$info -> name] = new Blob($this -> context, $this -> ref, $this, $info);
         }
       }
 
-      ksort($result);
-      return $result;
+      ksort($tree);
+      ksort($blob);
+      return array_merge($tree, $blob);
     });
   }
 
-  public function __construct(RepositoryContext $context, Tree $parent, mixed $info) {
+  public function __construct(RepositoryContext $context, Ref $ref,
+    Tree $parent = null, $info = null) {
     $this -> context = $context;
+    $this -> _ref = $ref;
     $this -> _parent = $parent;
-    $this -> info = $info;
+    $this -> info = is_object($info) ? $info : (object)[];
+  }
+
+  public function find(string $path, bool $detached = false) {
+    if ($path == '') return $this;
+    if ($detached) {
+      $parentPath = pathinfo($path, PATHINFO_DIRNAME);
+      $parentPath = $parentPath == '.' ? '' : $parentPath;
+      $parent = new Tree($this -> context, $this -> ref, null, (object)[
+        'name' => pathinfo($parentPath, PATHINFO_BASENAME),
+        'path' => $parentPath,
+        'type' => 'tree',
+      ]);
+      return $parent -> find(pathinfo($path, PATHINFO_BASENAME), false);
+    } else {
+      $path = explode('/', $path);
+      $result = $this;
+      while (count($path) > 0) {
+        $fragment = array_shift($path);
+        $children = $result -> children;
+        if (array_key_exists($fragment, $children)) {
+          $result = $children[$fragment];
+        } else {
+          return null;
+        }
+      }
+      return $result;
+    }
   }
 
   public function children(...$globs) {

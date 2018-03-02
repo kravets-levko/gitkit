@@ -2,8 +2,6 @@
 
 namespace Actions\Repositories;
 
-use Actions\Action;
-use Classes\Git\Repository as GitRepository;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -15,13 +13,10 @@ use Psr\Http\Message\ResponseInterface as Response;
 class Blob extends Action {
 
   public function get(Request $request, Response $response, $args) {
-    $config = $this -> container -> get('config');
-    $repo = GitRepository::getRepository($args['group'] . '/' . $args['name'], $config);
-
     if (isset($args['ref'])) {
-      $ref = $repo -> ref($args['ref']);
+      $ref = $this -> repository -> ref($args['ref']);
     } else {
-      $ref = $repo -> defaultBranch;
+      $ref = $this -> repository -> defaultBranch;
     }
     if (!$ref) {
       $this -> notFound();
@@ -31,7 +26,7 @@ class Blob extends Action {
     /**
      * @var \Classes\Git\TreeFile $blob
      */
-    $blob = $ref -> tree -> node($path);
+    $blob = $ref -> tree -> find($path, true);
     if (!$blob || ($blob -> type !== 'blob')) {
       $this -> notFound();
     }
@@ -46,8 +41,8 @@ class Blob extends Action {
     }
 
 
-    return $this -> view -> render($response, 'pages/blob.twig', [
-      'repository' => $repo,
+    return $this -> view -> render($response, 'pages/repositories/blob.twig', [
+      'repository' => $this -> repository,
       'ref' => $ref,
       'blob' => $blob,
     ]);

@@ -3,7 +3,6 @@
 namespace Actions\Repositories;
 
 use Actions\Action;
-use Classes\Git\Repository as GitRepository;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -15,8 +14,13 @@ use Psr\Http\Message\ResponseInterface as Response;
 class View extends Action {
 
   public function get(Request $request, Response $response, $args) {
-    $config = $this -> container -> get('config');
-    $repos = GitRepository::getRepositories($config);
+    $repos = $this -> repositories -> getRepositories();
+    $groups = [];
+
+    foreach ($repos as $repo) {
+      list($group, $name) = explode('/', $repo -> name);
+      @$groups[$group][$name] = $repo;
+    }
 
     $group = isset($args['group']) ? $args['group'] : '';
     if ($group == '') $group = null;
@@ -25,8 +29,8 @@ class View extends Action {
       $repos = array_intersect_key($repos, [$group => true]);
     }
 
-    return $this -> view -> render($response, 'pages/home.twig', [
-      'repositories' => $repos,
+    return $this -> view -> render($response, 'pages/repositories/home.twig', [
+      'repositories' => $groups,
       'group' => $group,
     ]);
   }

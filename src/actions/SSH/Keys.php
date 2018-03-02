@@ -3,7 +3,7 @@
 namespace Actions\SSH;
 
 use Actions\Action;
-use Classes\SSH\AuthorizedKeys;
+use SSH\AuthorizedKeys;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -32,7 +32,7 @@ class Keys extends Action {
 
   public function post(Request $request, Response $response) {
     $config = $this -> container -> get('config');
-    $keys = new AuthorizedKeys($config -> sshAuthorizedKeys, $config);
+    $keys = new AuthorizedKeys($config);
     $params = $request -> getParsedBody();
 
     if (isset($params['key'])) {
@@ -54,8 +54,8 @@ class Keys extends Action {
 
   public function get(Request $request, Response $response) {
     $config = $this -> container -> get('config');
-    $keys = new AuthorizedKeys($config -> sshAuthorizedKeys, $config);
-    return $this -> view -> render($response, 'pages/ssh-keys.twig', [
+    $keys = new AuthorizedKeys($config);
+    return $this -> view -> render($response, 'pages/ssh/keys.twig', [
       'keys' => $keys -> items,
     ]);
   }

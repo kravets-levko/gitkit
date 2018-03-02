@@ -1,0 +1,18 @@
+{% spaceless %}
+<div class="bg-dark sticky-top">
+  <div class="container">
+    <nav class="navbar navbar-expand navbar-dark justify-content-start pl-0">
+      <a class="navbar-brand p-0" href="">{% include 'icon.twig' with { icon: 'logo', size: 36 } %}</a>
+
+      <div class="navbar-nav">
+        <div class="nav-item">
+          <a class="nav-link pl-0" href=""><b>Repositories</b></a>
+        </div>
+        <div class="nav-item">
+          <a class="nav-link" href="ssh-keys"><b>SSH Keys</b></a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>
+{% endspaceless %}

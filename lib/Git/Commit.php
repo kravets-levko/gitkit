@@ -43,7 +43,7 @@ class Commit extends Ref {
 
       return (object)array_combine(
         array_keys($fields),
-        explode("\n", $this -> repository -> git -> execute([
+        explode("\n", $this -> context -> execute([
           'show', '--no-patch', '--format=' . $format, $this -> hash
         ]), count($fields)) // commit message may be multiline
       );
@@ -94,6 +94,12 @@ class Commit extends Ref {
       }
 
       return $result;
+    });
+  }
+
+  protected function get_diff() {
+    return $this -> cached(__METHOD__, function() {
+      return new Diff($this -> context, $this);
     });
   }
 

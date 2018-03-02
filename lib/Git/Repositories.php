@@ -9,7 +9,7 @@ class Repositories {
   protected $config;
   protected $repositories = [];
 
-  public function __construct(mixed $config) {
+  public function __construct($config) {
     $this -> config = $config;
   }
 
