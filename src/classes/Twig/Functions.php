@@ -3,7 +3,7 @@
 namespace Classes\Twig;
 
 use Twig\Extension\AbstractExtension;
-use Twig\TwigFilter;
+use Twig\{ TwigFilter, TwigFunction };
 
 class Functions extends AbstractExtension {
 
@@ -40,6 +40,12 @@ class Functions extends AbstractExtension {
       new TwigFilter('format_time_ago', [$this, 'formatTimeAgo']),
       new TwigFilter('pretty_date', [$this, 'prettyDate']),
       new TwigFilter('full_date', [$this, 'fullDate']),
+    ];
+  }
+
+  public function getFunctions() {
+    return [
+      new TwigFunction('source_syntax', [$this, 'sourceSyntax']),
     ];
   }
 
@@ -80,6 +86,16 @@ class Functions extends AbstractExtension {
     }
 
     return sprintf($template, $result);
+  }
+
+  public function sourceSyntax($filename, $mime) {
+    $filename = strtolower($filename);
+    if (matches_mime($mime, 'text/*')) {
+      if ($filename == 'makefile') return 'makefile';
+      if ($filename == 'dockerfile') return 'dockerfile';
+    }
+    $ext = pathinfo($filename, PATHINFO_EXTENSION);
+    return $ext != '' ? $ext : null;
   }
 
 }

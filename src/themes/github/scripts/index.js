@@ -1,10 +1,40 @@
 'use strict';
 
-window.$ = window.jQuery = require('jquery');
-window.Popper = require('popper.js');
-require('bootstrap');
+const $ = require('jquery');
 const Clipboard = require('clipboard');
 const marked = require('marked');
+
+const hljs = require('highlight.js/lib/highlight');
+
+hljs.registerLanguage('cpp', require('highlight.js/lib/languages/cpp'));
+hljs.registerLanguage('xml', require('highlight.js/lib/languages/xml'));
+hljs.registerLanguage('bash', require('highlight.js/lib/languages/bash'));
+hljs.registerLanguage('coffeescript', require('highlight.js/lib/languages/coffeescript'));
+hljs.registerLanguage('css', require('highlight.js/lib/languages/css'));
+hljs.registerLanguage('delphi', require('highlight.js/lib/languages/delphi'));
+hljs.registerLanguage('dockerfile', require('highlight.js/lib/languages/dockerfile'));
+hljs.registerLanguage('ruby', require('highlight.js/lib/languages/ruby'));
+hljs.registerLanguage('go', require('highlight.js/lib/languages/go'));
+hljs.registerLanguage('ini', require('highlight.js/lib/languages/ini'));
+hljs.registerLanguage('java', require('highlight.js/lib/languages/java'));
+hljs.registerLanguage('javascript', require('highlight.js/lib/languages/javascript'));
+hljs.registerLanguage('json', require('highlight.js/lib/languages/json'));
+hljs.registerLanguage('less', require('highlight.js/lib/languages/less'));
+hljs.registerLanguage('lua', require('highlight.js/lib/languages/lua'));
+hljs.registerLanguage('makefile', require('highlight.js/lib/languages/makefile'));
+hljs.registerLanguage('perl', require('highlight.js/lib/languages/perl'));
+hljs.registerLanguage('php', require('highlight.js/lib/languages/php'));
+hljs.registerLanguage('python', require('highlight.js/lib/languages/python'));
+hljs.registerLanguage('scss', require('highlight.js/lib/languages/scss'));
+hljs.registerLanguage('sql', require('highlight.js/lib/languages/sql'));
+hljs.registerLanguage('yaml', require('highlight.js/lib/languages/yaml'));
+hljs.registerLanguage('twig', require('highlight.js/lib/languages/twig'));
+hljs.registerLanguage('typescript', require('highlight.js/lib/languages/typescript'));
+
+window.$ = window.jQuery = $;
+window.Popper = require('popper.js');
+require('bootstrap');
+window.hljs = hljs;
 
 // Tooltips
 $(function () {
@@ -75,5 +105,14 @@ $(function() {
   $('markdown').each(function() {
     const item = $(this);
     item.replaceWith(marked(item.text(), options));
+  });
+
+  // Syntax highlight
+  hljs.configure({
+    tabReplace: '  ',
+    languages: [],
+  });
+  $('.syntax-highlight').each(function() {
+    hljs.highlightBlock(this);
   });
 });

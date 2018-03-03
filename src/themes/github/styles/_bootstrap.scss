@@ -1,6 +1,9 @@
+$card-spacer-x: .75rem;
+$card-spacer-y: .75rem;
+
 @import "~bootstrap/scss/bootstrap";
 
-html {
+:root {
   font-size: 14px;
 }
 
@@ -8,13 +11,7 @@ svg {
   display: inline-block;
 }
 
-.text-wrap {
-  word-break: break-all;
-}
-
-.border-dotted {
-  border-style: dotted;
-}
+.border-dotted { border-style: dotted; }
 
 textarea {
   resize: none;
@@ -31,13 +28,9 @@ textarea {
   }
 }
 
-.cursor-pointer {
-  cursor: pointer;
-}
+.cursor-pointer { cursor: pointer; }
 
-.scrollbox {
-  overflow: auto;
-}
+.scrollbox { overflow: auto; }
 
 .o-0 { opacity: 0 !important; }
 .o-1 { opacity: 0.25 !important; }
@@ -45,12 +38,14 @@ textarea {
 .o-3 { opacity: 0.75 !important; }
 .o-4 { opacity: 1 !important; }
 
-.w-auto {
-  width: auto;
-}
-.h-auto {
-  height: auto;
-}
+.text-large { font-size: 200%; }
+.text-larger { font-size: 125%; }
+.text-small { font-size: $small-font-size; }
+
+.text-wrap { word-break: break-all; }
+
+.w-auto { width: auto; }
+.h-auto { height: auto; }
 
 .border-x-0 {
   border-left: 0 !important;

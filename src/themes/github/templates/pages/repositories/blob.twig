@@ -16,7 +16,14 @@
         base: repository.name ~ '/tree',
       } %}
     </div>
-    <div class="col d-flex align-items-center"><span>{{ blob.path }}</span></div>
+    <div class="col d-flex align-items-center p-0 text-larger">
+      {% include 'components/path-breadcrumbs.twig' with {
+        path: blob.path,
+        repository: repository,
+        ref: ref,
+        base: repository.name,
+      } %}
+    </div>
     <div class="col-auto">
       <button class="form-control" type="button"
         data-clipboard-text="{{ blob.path }}"
@@ -36,7 +43,7 @@
   </div>
 
   <div class="card my-3">
-    <div class="card-header p-0">
+    <div class="card-header">
       {% include 'components/blob-info.twig' with {
         blob: blob,
         ref: ref,
@@ -47,8 +54,8 @@
       {% if blob.info.size <= 2 * 1024 * 1024 %}
         {% if blob.matchesMime('text/markdown', 'text/x-markdown') or blob.matchesGlob('README', 'README.*', 'LICEN[CS]E', 'LICEN[CS]E.*') %}
           <markdown class="text-block">{{ blob.data }}</markdown>
-        {% elseif blob.matchesMime('text/*') or (blob.ext == '') %}
-          <div class="text-block text-monospace">{{ blob.data }}</div>
+        {% elseif blob.matchesMime('text/*') %}
+          <div class="text-block text-monospace p-0 syntax-highlight {{ source_syntax(blob.name, blob.mime) }}">{{ blob.data }}</div>
         {% elseif blob.matchesMime('image/*') %}
           <div class="text-center">
             <img src="{{ rawUrl }}" alt="{{ blob.name }}">
