@@ -38,9 +38,9 @@ textarea {
 .o-3 { opacity: 0.75 !important; }
 .o-4 { opacity: 1 !important; }
 
-.text-large { font-size: 200%; }
-.text-larger { font-size: 125%; }
-.text-small { font-size: $small-font-size; }
+.text-small  { font-size: $small-font-size !important; }
+.text-large  { font-size: 200% !important; }
+.text-larger { font-size: 125% !important; }
 
 .text-wrap { word-break: break-all; }
 

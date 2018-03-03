@@ -8,9 +8,22 @@
 
   <div class="my-3 list-group">
     {% for tag in repository.tags %}
-    <div class="list-group-item">
-      <span class="text-muted mr-1">{% include 'icon.twig' with { icon: 'tag' } %}</span>
-      <a href="{{ repository.name }}/tree/{{ tag.name }}">{{ tag.name }}</a>
+    <div class="list-group-item px-0">
+      <div class="row no-gutters align-items-center">
+        <div class="col pl-3">
+          <span class="text-muted mr-1">{% include 'icon.twig' with { icon: 'tag' } %}</span>
+          <a href="{{ repository.name }}/tree/{{ tag.name }}">{{ tag.name }}</a>
+        </div>
+        <div class="col-auto">
+          <form method="post" class="d-inline-block">
+            <input type="hidden" name="tag" value="{{ tag.name }}">
+            <button class="btn bg-white text-danger border-0 mr-2"
+              name="action" value="delete" type="submit">
+              {% include 'icon.twig' with { icon: 'trashcan' } %}
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
     {% endfor %}
   </div>

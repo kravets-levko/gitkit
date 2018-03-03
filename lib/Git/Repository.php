@@ -121,21 +121,21 @@ class Repository {
     $this -> context = new RepositoryContext($config, $this -> _path);
   }
 
-  public function branch($name) {
+  public function branch($name): Branch {
     $branches = $this -> branches;
     return array_key_exists($name, $branches) ? $branches[$name] : null;
   }
 
-  public function tag($name) {
+  public function tag($name): Tag {
     $tags = $this -> tags;
     return array_key_exists($name, $tags) ? $tags[$name] : null;
   }
 
-  public function commit($hash) {
+  public function commit($hash): Commit {
     return $this -> context -> commit($hash, true);
   }
 
-  public function ref($ref) {
+  public function ref($ref): Ref {
     $result = $this -> branch($ref);
     if (!$result) $result = $this -> tag($ref);
     if (!$result) $result = $this -> commit($ref);
