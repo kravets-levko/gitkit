@@ -32,7 +32,7 @@ class Diff {
   public function stats($slots = 7) {
     if ($this -> stats === null) {
       $data = $this -> context -> execute([
-        'show', '--format=format:', '--numstat', $this -> getRange(),
+        'show', '--format=format:', '--numstat', $this -> getRange(), '--',
       ]);
       $data = array_filter(explode("\n", $data), 'strlen');
 
@@ -94,14 +94,25 @@ class Diff {
     return $result;
   }
 
+  public function get($path) {
+    $data = $this -> context -> execute([
+      'show', '--format=format:%b', $this -> getRange(), '--', $path,
+    ]);
+    // skip first 4 lines
+    $data = explode("\n", ltrim($data));
+    return implode("\n", array_slice($data, 4));
+  }
+
   public function diff() {
-    // TODO: Implement
-    return '';
+    return $this -> context -> execute([
+      'show', '--format=format:%b', $this -> getRange(), '--',
+    ], true);
   }
 
   public function patch() {
-    // TODO: Implement
-    return '';
+    return $this -> context -> execute([
+      'show', '--format=email', '--patch', '--stat', $this -> getRange(), '--',
+    ], true);
   }
 
 }

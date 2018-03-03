@@ -18,9 +18,22 @@ class Commit extends Action {
       $this -> notFound();
     }
 
+    // Diff/patch output
+    foreach (['diff', 'patch'] as $type) {
+      if (array_key_exists($type, $request -> getQueryParams())) {
+        if (!headers_sent()) {
+          header("Content-Type: text/plain", true);
+        }
+        // TODO: do not read entire stream
+        echo $commit -> diff -> {$type}() -> read();
+        die;
+      }
+    }
+
     return $this -> view -> render($response, 'pages/repositories/commit.twig', [
       'repository' => $this -> repository,
       'commit' => $commit,
+      'current_url' => '' . $request -> getUri(),
     ]);
   }
 

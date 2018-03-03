@@ -94,47 +94,40 @@
 
   <div class="my-3">
     {% include 'icon.twig' with { icon: 'diff' } %}
-    Showing {% spaceless %}<a href="javascript:void(0)" data-toggle="collapse" data-target="#commit-changes">
-      <strong>{{ stats.items | length }} changed file(s)</strong>
-    </a>{% endspaceless %} with
+    Showing
+    <strong>{{ stats.items | length }} changed file(s)</strong>
+    with
     <strong>{{ stats.additions }} addition(s)</strong> and
     <strong>{{ stats.deletions }} deletion(s)</strong>.
   </div>
 
-  <div class="collapse" id="commit-changes">
-    <div class="list-group">
-      {% for item in stats.items %}
-      <div class="list-group-item px-0 py-1 border-x-0 {% if loop.first %}border-top-0{% endif %} {% if loop.last %}border-bottom-0{% endif %}">
-        <div class="row">
-          <div class="col"><a href="{{ repository.name }}/{{ item.type }}/{{ commit.hash }}:{{ item.path }}">{{ item.name }}</a></div>
-          <div class="col-auto text-right">
-            {% if item.binary %}
-              <strong class="text-primary">BIN</strong>
-            {% else %}
-              <strong class="text-success">+{{ item.additions }}</strong>
-              <strong class="text-danger">-{{ item.deletions }}</strong>
-            {% endif %}
-            {% spaceless %}
-              {% if item.additions_slots > 0 %}
-                {% for i in 1..item.additions_slots %}<span class="diff-slot text-success"></span>{% endfor %}
-              {% endif %}
-              {% if item.deletions_slots > 0 %}
-                {% for i in 1..item.deletions_slots %}<span class="diff-slot text-danger"></span>{% endfor %}
-              {% endif %}
-              {% set rest_slots = slots - item.additions_slots - item.deletions_slots %}
-              {% if rest_slots > 0 %}
-                {% for i in 1..rest_slots %}<span class="diff-slot"></span>{% endfor %}
-              {% endif %}
-            {% endspaceless %}
-          </div>
+  {% for item in stats.items %}
+  <div class="card my-4">
+    <div class="card-header">
+      <div class="row no-gutters">
+        <div class="col">
+          <a href="{{ repository.name }}/blob/{{ commit.hash }}:{{ item.path }}">{{ item.path }}</a>
+        </div>
+        <div class="col-auto">
+          {% if item.binary %}
+            <strong class="text-primary">BIN</strong>
+          {% else %}
+            <strong class="text-success">{{ item.additions > 0 ? '+' ~ item.additions : '0' }}</strong>
+            <strong class="text-danger ml-2">{{ item.deletions > 0 ? '-' ~ item.deletions : '0' }}</strong>
+          {% endif %}
         </div>
       </div>
-      {% endfor %}
+    </div>
+    <div class="card-body">
+      <div class="text-block text-monospace p-0 syntax-highlight diff">{{ commit.diff.get(item.path) }}</div>
     </div>
   </div>
+  {% endfor %}
 
-  <div>
-    <pre>{{ stats | json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+  <div class="my-3 text-center">
+    Add <a href="{{ current_url }}?patch">?patch</a>
+    or <a href="{{ current_url }}?diff">?diff</a>
+    to the end of URLs for Git's plaintext views.
   </div>
 {% endspaceless %}
 {% endblock %}

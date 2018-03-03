@@ -121,17 +121,29 @@ class Repository {
     $this -> context = new RepositoryContext($config, $this -> _path);
   }
 
-  public function branch($name): Branch {
+  /**
+   * @param string $name
+   * @return Branch | null
+   */
+  public function branch($name) {
     $branches = $this -> branches;
     return array_key_exists($name, $branches) ? $branches[$name] : null;
   }
 
-  public function tag($name): Tag {
+  /**
+   * @param string $name
+   * @return Tag | null
+   */
+  public function tag($name) {
     $tags = $this -> tags;
     return array_key_exists($name, $tags) ? $tags[$name] : null;
   }
 
-  public function commit($hash): Commit {
+  /**
+   * @param string $hash
+   * @return Commit | null
+   */
+  public function commit($hash) {
     return $this -> context -> commit($hash, true);
   }
 

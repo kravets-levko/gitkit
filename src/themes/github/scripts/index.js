@@ -6,6 +6,7 @@ const marked = require('marked');
 
 const hljs = require('highlight.js/lib/highlight');
 
+hljs.registerLanguage('diff', require('highlight.js/lib/languages/diff'));
 hljs.registerLanguage('cpp', require('highlight.js/lib/languages/cpp'));
 hljs.registerLanguage('xml', require('highlight.js/lib/languages/xml'));
 hljs.registerLanguage('bash', require('highlight.js/lib/languages/bash'));

@@ -36,6 +36,7 @@ class Blob extends Action {
       if (!headers_sent()) {
         header("Content-Type: {$blob -> mime}", true);
       }
+      // TODO: do not read entire stream
       echo $blob -> displayData() -> read();
       die;
     }
