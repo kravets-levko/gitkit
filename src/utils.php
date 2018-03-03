@@ -89,3 +89,18 @@ function format_bytes($size, $precision = 2) {
   }
   return round($size, $precision).$units[$i];
 }
+
+function validate_path($path, $basePath) {
+  $path = realpath($path);
+  if ($path === null) return null;
+  $basePath = realpath($basePath);
+  if ($basePath === null) return null;
+
+  $path = rtrim($path, '/');
+  $basePath = rtrim($basePath, '/');
+
+  if ((strpos($path, $basePath . '/') === 0) && ($path != $basePath)) {
+    return $path;
+  }
+  return null;
+}

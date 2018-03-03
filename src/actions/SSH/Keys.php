@@ -14,28 +14,16 @@ use Psr\Http\Message\ResponseInterface as Response;
  */
 class Keys extends Action {
 
-  protected function parseSSHKey($str) {
-    list($type, $key, $description) = array_map('trim', explode(' ', $str, 3));
-    return (object)[
-      'type' => $type,
-      'key' => $key,
-      'description' => $description,
-      'raw' => $str,
-    ];
-  }
-
   protected function beforeRequest(Request $request, Response $response, $args) {
     $config = $this -> container -> get('config');
     if (!isset($config -> sshAuthorizedKeys)) $this -> notFound();
     return parent::beforeRequest($request, $response, $args);
   }
 
-  public function post(Request $request, Response $response) {
+  public function post(Request $request, Response $response, $args) {
     $config = $this -> container -> get('config');
     $keys = new AuthorizedKeys($config);
     $params = $request -> getParsedBody();
-
-    $error = '';
 
     if (isset($params['key'])) {
       $action = $params['action'];
@@ -49,24 +37,23 @@ class Keys extends Action {
           $keys -> add($sshKey);
           $keys -> save();
         } catch (InvalidPublicKey $e) {
-          $error = 'Cannot add public key: ' . $e -> getMessage();
+          return $this -> get($request, $response, array_merge($args, [
+            'error' => 'Cannot add public key: ' . $e -> getMessage(),
+          ]));
         }
       } elseif ($action == 'create') {
         // TODO: Implement using AuthorizedKeys::create()
       }
     }
-    return $response -> withRedirect(
-      $request -> getUri() -> withQuery('error=' . urlencode($error)),
-      302
-    );
+    return $response -> withRedirect($request -> getUri(), 302);
   }
 
-  public function get(Request $request, Response $response) {
+  public function get(Request $request, Response $response, $args) {
     $config = $this -> container -> get('config');
     $keys = new AuthorizedKeys($config);
     return $this -> view -> render($response, 'pages/ssh/keys.twig', [
       'keys' => $keys -> items,
-      'error' => $request -> getParam('error'),
+      'error' => @$args['error'],
     ]);
   }
 

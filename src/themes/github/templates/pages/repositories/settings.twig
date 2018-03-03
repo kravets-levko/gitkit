@@ -1,0 +1,81 @@
+{% extends 'layout/main.twig' %}
+
+{% block title %}{{ repository.name }} - GitKit{% endblock %}
+
+{% block content %}
+  {% spaceless %}
+    <h1>{% include 'components/repository-header.twig' with {repository: repository} %}</h1>
+
+    <div class="card my-3">
+      <h5 class="card-header">Settings</h5>
+      <form method="post" class="card-body">
+        <div class="form-group {{ repository.branches is not empty ? 'mb-4' : 'mb-0' }}">
+          <label for="repository-name">Repository name</label>
+          <div class="d-flex" style="max-width: 400px;">
+            <input class="form-control" value="{{ repository.name | split('/') | last }}"
+              name="name" type="text" id="repository-name">
+            <button type="submit" name="action" value="rename"
+              class="form-control w-auto ml-2">Rename</button>
+          </div>
+        </div>
+
+        <div class="form-group mb-4">
+          <label for="repository-description">Repository description</label>
+          <textarea class="form-control resize-vertical" style="min-height: 50px"
+            name="description" id="repository-description">{{ repository.description }}</textarea>
+          <div class="mt-2">
+            <button type="submit" name="action" value="update_description"
+              class="form-control w-auto">Update</button>
+          </div>
+        </div>
+
+        {% if repository.branches is not empty %}
+        <div class="form-group mb-0">
+          <label class="mb-1">Default branch</label>
+          <small class="form-text text-muted mt-0 mb-2">
+            The default branch is considered the "base" branch in your repository,
+            against which all pull requests and code commits are automatically made,
+            unless you specify a different branch.
+          </small>
+          <div class="d-flex">
+            <div class="dropdown" id="default-branch-select">
+              <button type="button" class="form-control w-auto dropdown-toggle" data-toggle="dropdown">
+                {{ repository.defaultBranch.name }}
+              </button>
+              <input type="hidden" name="default_branch" value="{{ repository.defaultBranch.name }}">
+              <div class="dropdown-menu shadow p-0" style="min-width: 400px; max-height: 350px; overflow: auto;">
+                <div class="nav flex-column nav-pills">
+                  {% for b in repository.branches %}
+                    <a class="nav-link rounded-0 text-nowrap {% if b.name == repository.defaultBranch.name %}active{% endif %}"
+                      href="javascript:void(0)">{{ b.name }}</a>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" name="action" value="set_default_branch"
+              class="form-control w-auto ml-2">Update</button>
+          </div>
+        </div>
+        {% endif %}
+      </form>
+    </div>
+
+    <div class="card my-3 border-danger">
+      <h5 class="card-header">Danger Zone</h5>
+      <form method="post" class="card-body"
+        onsubmit="return confirm('Do you really want to permanently delete the {{ repository.name }}?')"
+      >
+        <div class="d-flex align-items-center">
+          <div class="flex-grow-1 pr-3">
+            Delete this repository.<br>
+            Once you delete a repository, there is no going back. Please be certain.
+          </div>
+          <div>
+            <button class="btn btn-danger" type="submit" name="action" value="delete">Delete this repository</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  {% endspaceless %}
+{% endblock %}

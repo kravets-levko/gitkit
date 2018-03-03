@@ -114,4 +114,12 @@ $(function() {
   $('.syntax-highlight').each(function() {
     hljs.highlightBlock(this);
   });
+
+  // Settings page: default branch select
+  $('#default-branch-select').on('click', '.dropdown-menu a', function() {
+    const branchName = $(this).text();
+    const dropdown = $('#default-branch-select');
+    dropdown.find('input').val(branchName);
+    dropdown.find('button').text(branchName);
+  });
 });

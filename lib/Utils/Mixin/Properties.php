@@ -27,7 +27,7 @@ trait Properties {
   public function __set($name, $value) {
     $setter = 'set_' . $name;
     if (method_exists($this, $setter)) {
-      $this -> {$setter}();
+      $this -> {$setter}($value);
       return;
     }
 

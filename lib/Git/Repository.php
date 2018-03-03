@@ -3,6 +3,7 @@
 namespace Git;
 
 use Utils\Mixin\{ Properties, Cached };
+use Process\Process;
 
 class Repository {
   use Properties;
@@ -17,11 +18,27 @@ class Repository {
   }
 
   protected function get_name() {
-    return $this -> cached(__METHOD__, function() {
+    return $this -> cached('name', function() {
       $path = substr($this -> path,
         strlen($this -> context -> config -> repositoriesRoot) + 1);
       return preg_replace('#\.git$#i', '', $path);
     });
+  }
+
+  protected function set_name($value) {
+    if ($value != '') {
+      $path = explode('/', $this -> _path);
+      $oldName = array_pop($path);
+      if ($value != $oldName) {
+        $path[] = $value . '.git';
+        $path = implode('/', $path);
+
+        rename($this -> _path, $path);
+        $this -> _path = $path;
+        $this -> context -> git -> cwd = $path;
+        $this -> cachedUnset('name');
+      }
+    }
   }
 
   protected function get_description() {
@@ -32,7 +49,7 @@ class Repository {
 
   protected function set_description(string $value) {
     @file_put_contents($this -> path . '/description', $value);
-    $this -> cachedUnset('description');
+    $this -> cachedSet('description', $value);
   }
 
   protected function get_cloneUrls() {
@@ -74,6 +91,17 @@ class Repository {
     return $branches[$this -> _defaultBranchName];
   }
 
+  protected function set_defaultBranch(Branch $branch) {
+    if ($branch -> name != $this -> _defaultBranchName) {
+      if (array_key_exists($branch -> name, $this -> branches)) {
+        $this -> context -> execute([
+          'symbolic-ref', 'HEAD', 'refs/heads/' . $branch -> name
+        ]);
+        $this -> _defaultBranchName = $branch -> name;
+      }
+    }
+  }
+
   protected function get_tags() {
     return $this -> cached(__METHOD__, function() {
       $names = $this -> context -> parseTagList(
@@ -88,8 +116,9 @@ class Repository {
   }
 
   public function __construct($config, string $path) {
-    $this -> _path = realpath($path);
-    $this -> context = new RepositoryContext($config, $path);
+    // TODO: If path does not exist - it should be possible to call `init()` method
+    $this -> _path = validate_path($path, $config -> repositoriesRoot);
+    $this -> context = new RepositoryContext($config, $this -> _path);
   }
 
   public function branch($name) {
@@ -117,6 +146,19 @@ class Repository {
     $this -> git -> execute([
       'init', '--bare', '--shared=0775', $this -> _path
     ]);
+  }
+
+  public function delete() {
+    $path = validate_path($this -> path, $this -> context -> config -> repositoriesRoot);
+    if ($path) {
+      $process = new Process(Process::prepareCommand('rm', ['-rf', $path]));
+      $process -> stdout() -> close();
+      $stderr = $process -> stderr() -> read();
+      $exitCode = $process -> close();
+      if ($exitCode != 0) {
+        throw new Exception($stderr);
+      }
+    }
   }
 
 }

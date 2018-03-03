@@ -14,6 +14,7 @@ class Router {
       $group -> any('/commits[/{ref:.*}]', Commits::class);
       $group -> any('/branches', Branches::class);
       $group -> any('/tags', Tags::class);
+      $group -> any('/settings', Settings::class);
       $group -> any('', Tree::class);
     });
 
