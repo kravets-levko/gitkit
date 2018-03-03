@@ -52,16 +52,20 @@
               data-clipboard-text="{{ commit.hash }}"
               data-toggle="tooltip" data-placement="bottom"
               title="Copy the full hash" data-title-copied="Copied!"
-            >{% include 'icon.twig' with { icon: 'clippy' } %}</button>
+            >{% include 'icon.twig' with { icon: 'clippy', class: 'align-middle' } %}</button>
             <a class="btn form-control"
-              href="{{ repository.name }}/commit/{{ commit.hash }}">{{ commit.abbreviatedHash }}</a>
+              href="{{ repository.name }}/commit/{{ commit.hash }}">
+              <span class="text-monospace align-middle d-inline-block" style="height: 1.2em">
+                {{ commit.abbreviatedHash }}
+              </span>
+            </a>
           </div>
 
           <a class="btn form-control w-auto ml-3"
             title="Browse the repository at this point in the history"
             data-toggle="tooltip" data-placement="bottom"
             href="{{ repository.name }}/tree/{{ commit.hash }}"
-          >{% include 'icon.twig' with { icon: 'code' } %}</a>
+          >{% include 'icon.twig' with { icon: 'code', class: 'align-middle' } %}</a>
         </div>
       </div>
     {% endfor %}
