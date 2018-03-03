@@ -15,6 +15,27 @@
   border-bottom: 0;
 }
 
+.tree-level-up {
+  display: inline-block;
+  padding: 0 0 0 16px;
+
+  &:before {
+    content: "..";
+    display: inline-block;
+    padding: 0 0.5em;
+    border-radius: 0.2em;
+    font-weight: bold;
+    height: $line-height-base;
+    line-height: $line-height-base;
+  }
+
+  &:hover, &:focus, &:active {
+    &:before {
+      background: rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
 .collapsed-list {
   > * {
     display: none;
@@ -56,5 +77,27 @@
     margin: 0 0 0 $icon-size / 2 - 1;
     padding: 0.25em 0 1em $gutter-width - $icon-size / 2 - 2;
     border-left: 2px solid $list-group-border-color;
+  }
+}
+
+.ssh-public-key {
+  display: grid;
+  grid-template-areas:
+    "icon info actions"
+    ". value .";
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto auto;
+
+  .ssh-public-key-icon {
+    grid-area: icon;
+  }
+  .ssh-public-key-info {
+    grid-area: info;
+  }
+  .ssh-public-key-actions {
+    grid-area: actions;
+  }
+  .ssh-public-key-value {
+    grid-area: value;
   }
 }

@@ -22,7 +22,15 @@
         base: repository.name,
       } %}
     </div>
-    <div class="col"></div>
+    <div class="col d-flex align-items-center p-0 text-larger">
+      {% include 'components/path-breadcrumbs.twig' with {
+        path: path,
+        is_tree: true,
+        repository: repository,
+        ref: ref,
+        base: repository.name,
+      } %}
+    </div>
     <div class="col-auto">
       {% include 'components/clone-urls.twig' with {
         cloneUrls: repository.cloneUrls

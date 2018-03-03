@@ -24,9 +24,9 @@ class Blob extends Action {
     $path = isset($args['path']) && is_string($args['path']) ? $args['path'] : '';
 
     /**
-     * @var \Classes\Git\TreeFile $blob
+     * @var \Git\Blob $blob
      */
-    $blob = $ref -> tree -> find($path, true);
+    $blob = $ref -> tree -> node($path, true);
     if (!$blob || ($blob -> type !== 'blob')) {
       $this -> notFound();
     }

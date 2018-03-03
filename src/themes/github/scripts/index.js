@@ -110,7 +110,6 @@ $(function() {
   // Syntax highlight
   hljs.configure({
     tabReplace: '  ',
-    languages: [],
   });
   $('.syntax-highlight').each(function() {
     hljs.highlightBlock(this);

@@ -64,15 +64,15 @@ class AuthorizedKeys {
 
   /**
    * @param PublicKey | string $key
+   * @throws InvalidPublicKey
    */
   public function add($key) {
     if (!($key instanceof PublicKey)) {
       $key = new PublicKey($this -> context, $key);
     }
+    if (!$key -> valid) throw new InvalidPublicKey();
     $items = $this -> removeKey($this -> items, $key);
-    if ($key -> valid) {
-      $items[] = $key;
-    }
+    $items[] = $key;
     $this -> cachedSet('items', $items);
   }
 

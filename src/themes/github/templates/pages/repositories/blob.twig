@@ -19,6 +19,7 @@
     <div class="col d-flex align-items-center p-0 text-larger">
       {% include 'components/path-breadcrumbs.twig' with {
         path: blob.path,
+        is_tree: false,
         repository: repository,
         ref: ref,
         base: repository.name,
@@ -52,10 +53,12 @@
     </div>
     <div class="card-body">
       {% if blob.info.size <= 2 * 1024 * 1024 %}
-        {% if blob.matchesMime('text/markdown', 'text/x-markdown') or blob.matchesGlob('README', 'README.*', 'LICEN[CS]E', 'LICEN[CS]E.*') %}
+        {% if blob.matchesMime('text/markdown', 'text/x-markdown') or blob.matchesGlob('README', 'README.*') %}
           <markdown class="text-block">{{ blob.data }}</markdown>
+        {% elseif blob.matchesGlob('LICEN[CS]E', 'LICEN[CS]E.*') %}
+          <div class="text-block text-monospace p-0">{{ blob.data }}</div>
         {% elseif blob.matchesMime('text/*') %}
-          <div class="text-block text-monospace p-0 syntax-highlight {{ source_syntax(blob.name, blob.mime) }}">{{ blob.data }}</div>
+          <div class="text-block text-monospace p-0 syntax-highlight {{ blob.ext | lower }}">{{ blob.data }}</div>
         {% elseif blob.matchesMime('image/*') %}
           <div class="text-center">
             <img src="{{ rawUrl }}" alt="{{ blob.name }}">

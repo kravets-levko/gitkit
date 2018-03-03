@@ -1,5 +1,5 @@
 {% spaceless %}
-  {% set fragments = path | split('/') %}
+  {% set fragments = path | length > 0 ? path | split('/') : [] %}
   {% if fragments | length > 0 %}
     <a href="{{ base }}{% if ref.name != repository.defaultBranch.name %}/tree/{{ ref.name }}{% endif %}">
       <strong>{{ repository.name | split('/') | last }}</strong>
@@ -14,6 +14,7 @@
       <a href="{{ base }}/tree/{{ ref.name }}:{{ current | join('/') }}">{{ fragment }}</a>
       <span class="mx-1">/</span>
     {% endfor %}
-    <span>{{ last }}</span>
+    <strong>{{ last }}</strong>
+    {% if is_tree %}<span class="mx-1">/</span>{% endif %}
   {% endif %}
 {% endspaceless %}

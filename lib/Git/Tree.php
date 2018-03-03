@@ -94,7 +94,7 @@ class Tree {
     $this -> info = is_object($info) ? $info : (object)[];
   }
 
-  public function find(string $path, bool $detached = false) {
+  public function node(string $path, bool $detached = false) {
     if ($path == '') return $this;
     if ($detached) {
       $parentPath = pathinfo($path, PATHINFO_DIRNAME);
@@ -104,7 +104,7 @@ class Tree {
         'path' => $parentPath,
         'type' => 'tree',
       ]);
-      return $parent -> find(pathinfo($path, PATHINFO_BASENAME), false);
+      return $parent -> node(pathinfo($path, PATHINFO_BASENAME), false);
     } else {
       $path = explode('/', $path);
       $result = $this;

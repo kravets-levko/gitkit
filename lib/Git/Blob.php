@@ -140,6 +140,16 @@ class Blob {
     return false;
   }
 
+  public function matchesGlob(...$globs) {
+    $globs = prepare_string_list($globs, '*');
+    foreach ($globs as $glob) {
+      if (matches_glob($this -> path, $glob)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public function displayData() {
     return $this -> context -> execute([
       'show',

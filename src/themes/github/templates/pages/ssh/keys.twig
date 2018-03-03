@@ -13,6 +13,13 @@
     </div>
   </div>
 
+  {% if error is not empty %}
+    <div class="alert alert-danger my-3" role="alert">
+      {{ error }}
+      <a href="ssh-keys" class="close"><span>&times;</span></a>
+    </div>
+  {% endif %}
+
   <hr>
   <p>
     This is a list of SSH keys allowed to access git repositories on this machine.
@@ -21,12 +28,13 @@
 
   <div class="list-group">
   {% for index, key in keys if key.valid %}
-    <div class="list-group-item d-flex">
-      <div class="flex-grow-0 d-flex d-flex flex-column justify-content-center text-center mr-3" style="max-height: 100px;">
+    <div class="list-group-item ssh-public-key">
+      <div class="ssh-public-key-icon d-flex flex-column justify-content-center text-center mr-3">
         <div class="mb-2">{% include 'icon.twig' with { icon: 'key', size: 32 } %}</div>
         <div><small class="border border-secondary rounded px-2 py-1 text-nowrap">{{ key.algorithm }}</small></div>
       </div>
-      <div class="flex-grow-1">
+
+      <div class="ssh-public-key-info">
         <div class="mb-1">
           <strong>{{ key.comment }}</strong>
         </div>
@@ -35,30 +43,31 @@
           <span class="text-monospace">{{ key.fingerprint }}</span>
         </div>
         <hr class="my-2 border-dotted">
-        <div>
-          <div class="d-flex">
-            <div class="flex-grow-1 d-flex align-items-center">
-              <a href="javascript:void(0)" data-toggle="collapse" data-target="#ssh-key-{{ index }}">Show key</a>
-            </div>
-            <div class="flex-grow-0">
-              <button class="btn btn-sm form-control cursor-pointer" type="button"
-                data-clipboard-text="{{ key }}"
-                data-toggle="tooltip" data-placement="bottom"
-                title="Copy key to clipboard" data-title-copied="Copied!"
-              >{% include 'icon.twig' with { icon: 'clippy' } %}</button>
-            </div>
+
+        <div class="d-flex">
+          <div class="flex-grow-1 d-flex align-items-center">
+            <a href="javascript:void(0)" data-toggle="collapse" data-target="#ssh-key-{{ index }}">Show key</a>
           </div>
-          <div class="collapse" id="ssh-key-{{ index }}">
-            <div class="text-monospace text-wrap pt-2">{{ key }}</div>
+          <div class="flex-grow-0">
+            <button class="btn btn-sm form-control cursor-pointer" type="button"
+              data-clipboard-text="{{ key }}"
+              data-toggle="tooltip" data-placement="bottom"
+              title="Copy key to clipboard" data-title-copied="Copied!"
+            >{% include 'icon.twig' with { icon: 'clippy' } %}</button>
           </div>
         </div>
       </div>
-      <div class="flex-grow-0 d-flex flex-column justify-content-center ml-3" style="max-height: 100px;">
+
+      <div class="ssh-public-key-actions flex-grow-0 d-flex flex-column justify-content-center ml-3">
         <form method="post">
           <input type="hidden" name="action" value="delete">
           <input type="hidden" name="key" value="{{ key.raw }}">
           <button class="btn btn-sm btn-danger" type="submit">Delete</button>
         </form>
+      </div>
+
+      <div class="ssh-public-key-value collapse" id="ssh-key-{{ index }}">
+        <div class="text-monospace text-wrap pt-2">{{ key }}</div>
       </div>
     </div>
   {% endfor %}

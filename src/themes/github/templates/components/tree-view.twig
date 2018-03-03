@@ -6,18 +6,18 @@
       <td colspan="3" class="py-2">
         {% if parentPath == '' %}
           {% if ref.name == defaultBranch.name %}
-            <a href="{{ base }}">..</a>
+            <a href="{{ base }}" class="tree-level-up ml-1"></a>
           {% else %}
-            <a href="{{ base }}/tree/{{ ref.name }}">..</a>
+            <a href="{{ base }}/tree/{{ ref.name }}" class="tree-level-up ml-1"></a>
           {% endif %}
         {% else %}
-          <a href="{{ base }}/tree/{{ ref.name }}:{{ parentPath }}">..</a>
+          <a href="{{ base }}/tree/{{ ref.name }}:{{ parentPath }}" class="tree-level-up ml-1"></a>
         {% endif %}
       </td>
     </tr>
   {% endif %}
   {% spaceless %}
-    {% for node in ref.tree.find(path, true).children %}
+    {% for node in ref.tree.node(path, true).children %}
       <tr>
         <td class="py-2">
             <span class="mr-1 text-secondary">
