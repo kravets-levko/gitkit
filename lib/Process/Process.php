@@ -64,6 +64,10 @@ class Process {
       'bypass_shell' => true,
     ]);
     if (is_resource($this -> handle)) {
+      $pipes[0] = $ownHandle[0] ? $pipes[0] : $descriptors[0];
+      $pipes[1] = $ownHandle[1] ? $pipes[1] : $descriptors[1];
+      $pipes[2] = $ownHandle[2] ? $pipes[2] : $descriptors[2];
+
       $this -> stdin = new StdPipe($pipes[0], $ownHandle[0]);
       $this -> stdout = new StdPipe($pipes[1], $ownHandle[1]);
       $this -> stderr = new StdPipe($pipes[2], $ownHandle[2]);

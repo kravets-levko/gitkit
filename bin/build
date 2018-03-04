@@ -16,6 +16,7 @@ for THEME_PATH in $(ls -d ${THEMES_PATH}/*/); do
   SOURCE_PATH=${THEME_PATH}/public;
   TARGET_PATH=${PUBLIC_PATH}/${THEME_NAME};
 
+  npm install;
   npm run build;
   mkdir -p ${TARGET_PATH};
   cp -r ${SOURCE_PATH}/* ${TARGET_PATH};

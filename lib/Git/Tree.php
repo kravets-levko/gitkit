@@ -91,7 +91,11 @@ class Tree {
     $this -> context = $context;
     $this -> _ref = $ref;
     $this -> _parent = $parent;
-    $this -> info = is_object($info) ? $info : (object)[];
+    $this -> info = is_object($info) ? $info : (object)[
+      'name' => '',
+      'path' => '',
+      'type' => 'tree',
+    ];
   }
 
   public function node(string $path, bool $detached = false) {
