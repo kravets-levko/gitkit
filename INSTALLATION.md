@@ -132,7 +132,7 @@ is username (`git`) and `test.git` is relative path to its home directory.
 
 - Install `git`: `sudo apt-get install git`
 - Check if `git-shell` is available: `which git-shell`
-- Create user: `sudo useradd --create-home --home-dir /home/git --password 1111 --shell $(which git-shell) git`
+- Create user: `sudo useradd --skel /dev/null --create-home --home-dir /home/git --password 1111 --shell $(which git-shell) git`
 - Create directories: 
 ```bash
 cd /home/git
