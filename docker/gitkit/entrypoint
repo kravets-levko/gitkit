@@ -1,19 +1,15 @@
-#!/usr/bin/env bash
-
-REPOSITORIES_ROOT=/home/git
+#!/usr/bin/env ash
 
 echo "Mapping user from host machine"
 
-HOST_UID=$(stat -c "%u" ${REPOSITORIES_ROOT})
-HOST_GID=$(stat -c "%g" ${REPOSITORIES_ROOT})
+HOST_UID=$(stat -c "%u" ${APPLICATION_DATA})
+HOST_GID=$(stat -c "%g" ${APPLICATION_DATA})
 
 echo "Using ${HOST_UID}:${HOST_GID}"
 
-# Update UID of `www-data` user (used by php-fpm)
-usermod -u ${HOST_UID} www-data
-# Update GID of `www-data` group (used by php-fpm)
-groupmod -g ${HOST_GID} www-data
+usermod -u ${HOST_UID} ${WWW_USER}
+groupmod -g ${HOST_GID} ${WWW_GROUP}
 
-chown -R ${HOST_UID}:${HOST_GID} ${REPOSITORIES_ROOT}
+chown -R ${HOST_UID}:${HOST_GID} ${APPLICATION_DATA}
 
 exec "$@"
