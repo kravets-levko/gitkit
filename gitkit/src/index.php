@@ -35,7 +35,7 @@ $container['view'] = function($container) {
     'cache' => false,
   ]);
 
-  $view['assetsPath'] = "/{$theme}";
+  $view['assetsPath'] = "/themes/{$theme}";
   $view['version'] = GITKIT_VERSION;
 
   $view -> addExtension(new \Classes\Twig\Functions());

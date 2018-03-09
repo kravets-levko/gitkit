@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-PROJECT_ROOT=$(dirname $(dirname $(realpath $0)));
+PROJECT_ROOT=$(dirname $(dirname $(realpath $0)))/gitkit;
 
-echo $1 > ${PROJECT_ROOT}/VERSION;
-git add ${PROJECT_ROOT}/VERSION;
+echo $1 > "${PROJECT_ROOT}/VERSION";
+git add "${PROJECT_ROOT}/VERSION";
 git commit -m "Release $1";
 git tag -a -f -m "Release $1" $1;
 

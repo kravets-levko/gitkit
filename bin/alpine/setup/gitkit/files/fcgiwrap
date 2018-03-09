@@ -2,26 +2,22 @@
 
 # spawn-fcgi variables
 SPAWN_FCGI="/usr/bin/spawn-fcgi"
-DAEMON="/usr/bin/fcgiwrap"
-DAEMON_OPTIONS="-f"
-NAME="fcgiwrap"
-DESC="FastCGI wrapper"
-PIDFILE="/var/run/${NAME}.pid"
+FCGIWRAP="/usr/bin/fcgiwrap"
+FCGIWRAP_OPTIONS="-f"
+PIDFILE="${FCGIWRAP_PID}"
 
 # fcgi app variables
 FCGI_CHILDREN="5"
-FCGI_SOCKET="/var/run/${NAME}.socket"
+FCGI_SOCKET="${FCGIWRAP_SOCKET}"
 FCGI_SOCKET_MODE="660"
-FCGI_USER="www-data"
-FCGI_GROUP="www-data"
+FCGI_USER="${WWW_USER}"
+FCGI_GROUP="${WWW_GROUP}"
 
 # Socket owner/group
-FCGI_SOCKET_OWNER=${FCGI_USER}
-FCGI_SOCKET_GROUP=${FCGI_GROUP}
-
-set -e
+FCGI_SOCKET_OWNER="${WWW_USER}"
+FCGI_SOCKET_GROUP="${WWW_GROUP}"
 
 exec ${SPAWN_FCGI} \
  -s ${FCGI_SOCKET} -M ${FCGI_SOCKET_MODE} -F ${FCGI_CHILDREN} -P ${PIDFILE} \
  -u ${FCGI_USER} -g ${FCGI_GROUP} -U ${FCGI_SOCKET_OWNER} -G ${FCGI_SOCKET_OWNER} \
- -- ${DAEMON} ${DAEMON_OPTIONS}
+ -- ${FCGIWRAP} ${FCGIWRAP_OPTIONS}

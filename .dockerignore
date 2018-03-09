@@ -1,8 +1,7 @@
-.git
 .gitignore
+.git
 .idea
-vendor
-public
-src/**/public
-node_modules
-src/**/node_modules
+gitkit/vendor
+gitkit/public
+gitkit/src/**/public
+gitkit/src/**/node_modules

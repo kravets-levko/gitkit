@@ -1,0 +1,4 @@
+set "/files${NGINX_CONFIG}/user" "${WWW_USER}"
+set "/files${NGINX_CONFIG}/pid" "${NGINX_PID}"
+
+save
