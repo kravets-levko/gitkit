@@ -16,11 +16,10 @@ const plugins = [
   }),
   new ExtractTextPlugin({
     filename: '[name].css',
-    disable: process.env.NODE_ENV === 'development',
   }),
 ];
 
-if (process.env.BUNDLE_OPTIMISE !== undefined) {
+if (process.env.NODE_ENV === 'production') {
   plugins.push(new UglifyJsPlugin({
     sourceMap: true,
     uglifyOptions: {

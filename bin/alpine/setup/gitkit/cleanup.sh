@@ -2,7 +2,7 @@
 
 # Remove unnecessary dependencies
 apk del --purge \
-  augeas gettext nodejs php7 php7-phar
+  augeas nodejs php7 php7-phar
 
 rm -f /usr/bin/composer
 

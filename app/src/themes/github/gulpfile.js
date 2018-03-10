@@ -19,7 +19,8 @@ gulp.task('default', callback => {
 });
 
 gulp.task('clean', () => gulp.src([
-  targetPath,
+  targetPath + '/*',
+  '!' + targetPath + '/.git*',
 ], {read: false}).pipe(clean({force: true})));
 
 gulp.task('octicons', () => {

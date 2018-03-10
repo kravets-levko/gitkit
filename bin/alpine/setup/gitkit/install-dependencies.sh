@@ -20,7 +20,7 @@ apk add \
 apk add mc
 
 # Install fcgiwrap daemon
-cat "${BINARIES_PATH}/files/fcgiwrap" | \
+cat "${SETUP_PATH}/files/fcgiwrap" | \
   envsubst "${_ENVSUBST_WHITELIST}" > "/usr/sbin/fcgiwrap"
 chmod ugo+x "/usr/sbin/fcgiwrap"
 

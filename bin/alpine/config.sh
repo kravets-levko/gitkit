@@ -1,8 +1,5 @@
 #!/usr/bin/env ash
 
-export BINARIES_PATH=${BINARIES_PATH:-'/gitkit/bin'}
-export APPLICATION_PATH=${APPLICATION_PATH:-'/gitkit/app'}
-
 export WWW_USER=${WWW_USER:-'www-data'}
 export WWW_GROUP=${WWW_GROUP:-'www-data'}
 

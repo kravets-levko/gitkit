@@ -8,31 +8,16 @@ HOME=$(eval echo ~$(id -un))
 echo "Installing dependencies..."
 cd "${APPLICATION_PATH}"
 composer install --no-scripts --no-plugins
+rm -f "${APPLICATION_PATH}/composer.json"
+rm -f "${APPLICATION_PATH}/composer.lock"
 
-## build themes
-THEMES_PATH="${APPLICATION_PATH}/src/themes"
-PUBLIC_PATH="${APPLICATION_PATH}/public"
-
-## Clear public directory
-rm -rf "${PUBLIC_PATH}"
-
-## Build each theme and copy files to /public
-for THEME_PATH in $(ls -d ${THEMES_PATH}/*/); do
-  THEME_PATH=$(realpath "${THEME_PATH}")
-  THEME_NAME=$(basename "${THEME_PATH}")
-
-  echo "Building '${THEME_NAME}' theme..."
-
-  rm -rf "${THEME_PATH}/node_modules"
-  SOURCE_PATH="${THEME_PATH}/public"
-  TARGET_PATH="${PUBLIC_PATH}/themes/${THEME_NAME}"
-
+## themes
+cd "${APPLICATION_PATH}/src/themes"
+for THEME_PATH in $(find "$(pwd)" -mindepth 1 -maxdepth 1 -type d); do
+  echo "Building '$(basename "${THEME_PATH}")' theme..."
   cd "${THEME_PATH}"
   npm install
-  BUNDLE_OPTIMISE=yes npm run build
-  mkdir -p "${TARGET_PATH}"
-  cp -R "${SOURCE_PATH}/." "${TARGET_PATH}"
-
-  rm -rf "${SOURCE_PATH}"
+  NODE_ENV=production npm run build
+  rm -f "${THEME_PATH}/package-lock.json"
   rm -rf "${THEME_PATH}/node_modules"
 done

@@ -5,7 +5,7 @@ services:
     ports:
       - "7080:80"
     volumes:
-      - "./gitkit:/gitkit/app"
+      - "./app:/app"
       - "/home/git:/var/lib/gitkit/repositories"
       - "/home/git/.ssh/authorized_keys:/var/lib/gitkit/authorized_keys"
 #  gitssh:

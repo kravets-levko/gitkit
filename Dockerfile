@@ -1,35 +1,27 @@
 FROM alpine:latest
 
-ENV \
-  BINARIES_PATH="/gitkit/bin" \
-  APPLICATION_PATH="/gitkit/app"
+ARG SETUP_PATH="/tmp/gitkit/setup"
+ARG APPLICATION_PATH="/app"
 
-COPY ./bin/alpine/setup/gitkit "${BINARIES_PATH}"
-COPY ./bin/alpine/config.sh "${BINARIES_PATH}/"
-COPY ./bin/alpine/docker-entrypoint.sh "${BINARIES_PATH}/"
-COPY ./gitkit "${APPLICATION_PATH}"
+COPY ./bin/alpine/setup/gitkit "${SETUP_PATH}"
+COPY ./bin/alpine/config.sh "${SETUP_PATH}/"
+COPY ./bin/alpine/docker-entrypoint.sh "${SETUP_PATH}/"
+COPY ./app "${APPLICATION_PATH}"
 
 RUN \
-  . "${BINARIES_PATH}/config.sh"; \
-  . "${BINARIES_PATH}/setup.sh";
-
-# Create entrypoint script:
-# - common config file (`config.sh`)
-# - additional config variables needed for `docker-entrypoint.sh`
-# - `docker-entrypoint.sh` itself
-RUN \
+  . "${SETUP_PATH}/config.sh"; \
+  export DOCKER_APP_USER="${WWW_USER}"; \
+  export DOCKER_APP_GROUP="${WWW_GROUP}"; \
+  . "${SETUP_PATH}/setup.sh"; \
+  # create entrypoint script (all variables from setup script are still available)
+  set -x; \
   _ENTRYPOINT='/docker-entrypoint'; \
-  cat "${BINARIES_PATH}/config.sh" >> "${_ENTRYPOINT}"; \
-  echo 'export DOCKER_APP_USER="${WWW_USER}"' >> "${_ENTRYPOINT}"; \
-  echo 'export DOCKER_APP_GROUP="${WWW_GROUP}"' >> "${_ENTRYPOINT}"; \
-  cat "${BINARIES_PATH}/docker-entrypoint.sh" >> "${_ENTRYPOINT}"; \
+  cat "${SETUP_PATH}/docker-entrypoint.sh" | envsubst "${_ENVSUBST_WHITELIST}" > "${_ENTRYPOINT}"; \
   chmod ugo+rx "${_ENTRYPOINT}"; \
-  rm -rf "${BINARIES_PATH}"
-
-COPY ./bin/alpine/docker-start-gitkit.sh "${BINARIES_PATH}/"
+  rm -rf "${SETUP_PATH}";
 
 EXPOSE 80
 
 ENTRYPOINT ["/docker-entrypoint"]
 
-CMD "${BINARIES_PATH}/docker-start-gitkit.sh"
+CMD php-fpm7 && fcgiwrap && nginx -g 'daemon off; error_log /dev/stdout info;'
