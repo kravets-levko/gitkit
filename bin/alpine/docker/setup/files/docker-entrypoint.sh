@@ -5,8 +5,8 @@
 
 echo 'Mapping user from host machine'
 
-HOST_UID="$(stat -c '%u' '${GIT_REPOSITORIES_PATH}')"
-HOST_GID="$(stat -c '%g' '${GIT_REPOSITORIES_PATH}')"
+HOST_UID="$(stat -c '%u' '${DOCKER_DATA_PATH}')"
+HOST_GID="$(stat -c '%g' '${DOCKER_DATA_PATH}')"
 
 if [ "${HOST_UID}" == '0' ]; then
   echo 'Application files cannot be owned by root'
@@ -21,7 +21,5 @@ echo "Using ${HOST_UID}:${HOST_GID}"
 
 usermod -u "${HOST_UID}" '${DOCKER_APP_USER}'
 groupmod -g "${HOST_GID}" '${DOCKER_APP_GROUP}'
-
-set -x
 
 exec "$@"

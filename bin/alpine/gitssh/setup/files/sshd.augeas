@@ -1,0 +1,6 @@
+set "/files${SSHD_CONFIG}/PubkeyAuthentication" yes
+set "/files${SSHD_CONFIG}/PasswordAuthentication" no
+set "/files${SSHD_CONFIG}/StrictModes" no
+set "/files${SSHD_CONFIG}/PidFile" "${SSHD_PID}"
+
+save

@@ -4,10 +4,10 @@
 apk update
 ## tools needed for setup (composer will be installed later)
 apk add \
-  augeas gettext nodejs php7 php7-phar
+  augeas nodejs php7 php7-phar
 ## server and utilities
 apk add \
-  file git nginx openssh-keygen shadow
+  file gettext shadow git nginx openssh-keygen
 ## php and modules
 apk add \
   php7-fpm php7-calendar php7-ctype php7-dom php7-exif php7-fileinfo php7-gd php7-gettext \
@@ -16,8 +16,6 @@ apk add \
 ## git access via http
 apk add \
   fcgiwrap git-daemon spawn-fcgi
-
-apk add mc
 
 # Install fcgiwrap daemon
 cat "${SETUP_PATH}/files/fcgiwrap" | \

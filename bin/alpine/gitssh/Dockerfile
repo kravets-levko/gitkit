@@ -1,26 +1,24 @@
-FROM ubuntu:xenial
+FROM alpine:latest
 
-# Install utilities
-RUN apt-get update
-RUN apt-get install --yes mc git openssh-server
+ARG SETUP_PATH="/tmp/gitssh/setup"
 
-# Fix openssh-server
-RUN mkdir -p /var/run/sshd
+COPY ./bin/alpine/docker/setup "${SETUP_PATH}/"
+COPY ./bin/alpine/gitssh/setup "${SETUP_PATH}/"
+COPY ./bin/alpine/gitssh/config.sh "${SETUP_PATH}/"
+COPY ./app "${APPLICATION_PATH}"
 
-## Check installed software
-RUN git --version && (sshd -V || true)
-
-## Add user `git` and create necessary files and directories
-RUN useradd --skel /dev/null --create-home --home-dir /home/git --shell $(which git-shell) git
-RUN cd /home/git
-RUN mkdir git-shell-commands
-RUN mkdir .ssh
-RUN touch .ssh/authorized_keys
-RUN chown -R git:git /home/git
-RUN chmod -R g+rw /home/git
+RUN \
+  . "${SETUP_PATH}/config.sh"; \
+  export DOCKER_APP_USER="${GIT_USER}"; \
+  export DOCKER_APP_GROUP="${GIT_GROUP}"; \
+  # GIT user does not exist at this moment, therefore hard-code path
+  export DOCKER_DATA_PATH="/home/${GIT_USER}"; \
+  . "${SETUP_PATH}/setup.sh"; \
+  . "${SETUP_PATH}/create-entrypoint.sh"; \
+  rm -rf "${SETUP_PATH}";
 
 EXPOSE 22
 
-ENTRYPOINT ["/app/docker/gitssh/entrypoint"]
+ENTRYPOINT ["/docker-entrypoint"]
 
 CMD /usr/sbin/sshd -D -e

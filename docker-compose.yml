@@ -10,10 +10,11 @@ services:
       - "./app:/app"
       - "/home/git:/var/lib/gitkit/repositories"
       - "/home/git/.ssh/authorized_keys:/var/lib/gitkit/authorized_keys"
-#  gitssh:
-#    build: ./docker/gitssh
-#    ports:
-#      - "7022:22"
-#    volumes:
-#      - ".:/app"
-#      - "/home/git:/home/git"
+  gitssh:
+    build:
+      context: .
+      dockerfile: ./bin/alpine/gitssh/Dockerfile
+    ports:
+      - "7022:22"
+    volumes:
+      - "/home/git:/home/git"
