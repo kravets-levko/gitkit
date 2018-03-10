@@ -1,7 +1,9 @@
 version: "3.2"
 services:
   gitkit:
-    build: .
+    build:
+      context: .
+      dockerfile: ./bin/alpine/gitkit/Dockerfile
     ports:
       - "7080:80"
     volumes:
