@@ -131,7 +131,7 @@ class Tree {
 
     return array_filter($this -> children, function($node) use ($globs) {
       foreach ($globs as $glob) {
-        if (matches_glob($node -> path, $glob)) {
+        if (matches_glob($node -> name, $glob)) {
           return true;
         }
       }

@@ -15,11 +15,4 @@ useradd --create-home --home-dir "/home/${GIT_USER}" --skel /dev/null \
 _GIT_HOME="$(eval echo ~"${GIT_USER}")"
 
 mkdir "${_GIT_HOME}/git-shell-commands"
-mkdir "${_GIT_HOME}/.ssh"
-touch "${_GIT_HOME}/.ssh/authorized_keys"
-
 chown -R "${GIT_USER}:${GIT_GROUP}" "${_GIT_HOME}"
-
-chmod 700 "${_GIT_HOME}"
-chmod 755 "${_GIT_HOME}/.ssh"
-chmod 644 "${_GIT_HOME}/.ssh/authorized_keys"

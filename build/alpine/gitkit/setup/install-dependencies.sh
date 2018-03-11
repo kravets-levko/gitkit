@@ -17,6 +17,10 @@ apk add \
 apk add \
   fcgiwrap git-daemon spawn-fcgi
 
+# `useradd`: do not create mail folders for new users
+augtool --autosave --noload --transform="Shellvars incl ${USERADD_CONFIG}" \
+ set "/files${USERADD_CONFIG}/CREATE_MAIL_SPOOL" 'no'
+
 # Install fcgiwrap daemon
 cat "${SETUP_PATH}/files/fcgiwrap" | \
   envsubst "${_ENVSUBST_WHITELIST}" > "/usr/sbin/fcgiwrap"

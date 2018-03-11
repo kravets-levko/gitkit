@@ -23,15 +23,18 @@ class Tree extends Action {
     }
     $path = isset($args['path']) && is_string($args['path']) ? $args['path'] : '';
 
-    $parentPath = explode('/', $path);
-    array_pop($parentPath);
-    $parentPath = implode('/', $parentPath);
+    /**
+     * @var \Git\Tree $tree
+     */
+    $tree = $ref -> tree -> node($path, true);
+    if (!$tree || ($tree -> type !== 'tree')) {
+      $this -> notFound();
+    }
 
     return $this -> view -> render($response, 'pages/repositories/tree.twig', [
       'repository' => $this -> repository,
       'ref' => $ref,
-      'path' => $path,
-      'parentPath' => $parentPath,
+      'tree' => $tree,
     ]);
   }
 

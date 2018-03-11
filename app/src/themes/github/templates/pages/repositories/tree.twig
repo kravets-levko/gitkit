@@ -24,7 +24,7 @@
     </div>
     <div class="col d-flex align-items-center p-0 text-larger">
       {% include 'components/path-breadcrumbs.twig' with {
-        path: path,
+        path: tree.path,
         is_tree: true,
         repository: repository,
         ref: ref,
@@ -50,13 +50,13 @@
       {% include 'components/tree-view.twig' with {
         ref: ref,
         defaultBranch: repository.defaultBranch,
-        path: path,
+        tree: tree,
         base: repository.name,
       } %}
     </div>
   </div>
 
   <div class="my-3">
-    {% include 'components/readme.twig' with {tree: ref.tree} %}
+    {% include 'components/readme.twig' with {tree: tree} %}
   </div>
 {% endblock %}

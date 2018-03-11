@@ -27,7 +27,7 @@ class Functions extends AbstractExtension {
     } elseif ($interval -> h > 0) {
       return $interval -> h > 1 ? $interval -> h . ' hours ago' : 'an hour ago';
     } elseif ($interval -> i > 0) {
-      return $interval > 1 ? $interval -> i . ' minutes ago' : 'a minute ago';
+      return $interval -> i > 1 ? $interval -> i . ' minutes ago' : 'a minute ago';
     } else {
       return 'just now';
     }

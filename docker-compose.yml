@@ -3,18 +3,20 @@ services:
   gitkit:
     build:
       context: .
-      dockerfile: ./bin/alpine/gitkit/Dockerfile
+      dockerfile: ./build/alpine/gitkit/Dockerfile
     ports:
       - "7080:80"
     volumes:
       - "./app:/app"
-      - "/home/git:/var/lib/gitkit/repositories"
-      - "/home/git/.ssh/authorized_keys:/var/lib/gitkit/authorized_keys"
+      - "./temp/repositories:/var/lib/gitkit/repositories"
+      - "./temp/authorized_keys:/var/lib/gitkit/authorized_keys"
   gitssh:
     build:
       context: .
-      dockerfile: ./bin/alpine/gitssh/Dockerfile
+      dockerfile: ./build/alpine/gitssh/Dockerfile
     ports:
       - "7022:22"
     volumes:
-      - "/home/git:/home/git"
+      - "./temp/repositories:/home/git"
+      - "./temp/server_keys:/etc/ssh/host_keys"
+      - "./temp/authorized_keys:/etc/ssh/authorized_keys"

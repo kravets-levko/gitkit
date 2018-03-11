@@ -22,4 +22,6 @@ echo "Using ${HOST_UID}:${HOST_GID}"
 usermod -u "${HOST_UID}" '${DOCKER_APP_USER}'
 groupmod -g "${HOST_GID}" '${DOCKER_APP_GROUP}'
 
+${DOCKER_ENTRYPOINT_ENV}
+
 exec "$@"

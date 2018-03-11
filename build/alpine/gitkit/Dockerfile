@@ -3,9 +3,10 @@ FROM alpine:latest
 ARG SETUP_PATH="/tmp/gitkit/setup"
 ARG APPLICATION_PATH="/app"
 
-COPY ./bin/alpine/docker/setup "${SETUP_PATH}/"
-COPY ./bin/alpine/gitkit/setup "${SETUP_PATH}/"
-COPY ./bin/alpine/gitkit/config.sh "${SETUP_PATH}/"
+COPY ./build/alpine/docker/setup "${SETUP_PATH}/"
+COPY ./build/alpine/gitkit/setup "${SETUP_PATH}/"
+COPY ./build/alpine/gitkit/config.sh "${SETUP_PATH}/"
+COPY ./build/alpine/gitkit/docker-start.sh "/"
 COPY ./app "${APPLICATION_PATH}"
 
 RUN \
@@ -21,4 +22,4 @@ EXPOSE 80
 
 ENTRYPOINT ["/docker-entrypoint"]
 
-CMD php-fpm7 && fcgiwrap && nginx -g 'daemon off; error_log /dev/stdout info;'
+CMD "/docker-start.sh"

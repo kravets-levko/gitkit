@@ -100,7 +100,7 @@ class Blob {
       $process -> stdin() -> close();
       $process -> stderr() -> close();
 
-      $process = new Process('wc --lines', null, null, [
+      $process = new Process('wc -l', null, null, [
         StdPipe::STDIN => $process -> stdout(),
       ]);
       $result -> total = (int)(trim($process -> stdout() -> read()));
@@ -113,7 +113,7 @@ class Blob {
       $process -> stdin() -> close();
       $process -> stderr() -> close();
 
-      $process = new Process('grep --count --invert-match --line-regexp \'^\s*$\'', null, null, [
+      $process = new Process('grep -cvx \'^\s*$\'', null, null, [
         StdPipe::STDIN => $process -> stdout(),
       ]);
       $result -> nonEmpty = (int)(trim($process -> stdout() -> read()));

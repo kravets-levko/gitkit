@@ -21,3 +21,5 @@ export PHPFPM_SOCKET=${PHPFPM_SOCKET:-'/var/run/php-fpm7.sock'}
 export NGINX_PID=${NGINX_PID:-'/var/run/nginx.pid'}
 export NGINX_CONFIG=${NGINX_CONFIG:-'/etc/nginx/nginx.conf'}
 export NGINX_SITE_CONFIG=${NGINX_SITE_CONFIG:-'/etc/nginx/conf.d/default.conf'}
+
+export USERADD_CONFIG=${USERADD_CONFIG:-'/etc/default/useradd'}
