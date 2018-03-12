@@ -14,7 +14,7 @@ $app = new \Slim\App([
   ],
 ]);
 
-new \Actions\SSH\Router($app);
+new \Actions\Settings\Router($app);
 new \Actions\Repositories\Router($app);
 
 $container = $app -> getContainer();

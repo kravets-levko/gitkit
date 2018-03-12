@@ -1,8 +1,8 @@
-{% extends 'layout/main.twig' %}
+{% extends 'pages/settings/layout.twig' %}
 
-{% block title %}SSH Keys - GitKit{% endblock %}
+{% block title %}SSH keys - GitKit{% endblock %}
 
-{% block content %}
+{% block settings_page %}
 {% spaceless %}
 
   <div class="d-flex">
@@ -36,11 +36,11 @@
         <div><small class="border border-secondary rounded px-2 py-1 text-nowrap">{{ key.algorithm }}</small></div>
       </div>
 
-      <div class="ssh-public-key-info">
+      <div class="ssh-public-key-info" style="overflow: hidden;">
         <div class="mb-1">
           <strong>{{ key.comment }}</strong>
         </div>
-        <div class="mb-1">
+        <div class="mb-1 text-wrap">
           <strong class="mr-2">Fingerprint:</strong>
           <span class="text-monospace">{{ key.fingerprint }}</span>
         </div>

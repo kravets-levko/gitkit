@@ -11,6 +11,10 @@ svg {
   display: inline-block;
 }
 
+@each $color, $value in $theme-colors {
+  @include bg-variant(".bg-o-#{$color}", rgba($value, 0.1));
+}
+
 .border-dotted { border-style: dotted; }
 
 textarea {
@@ -42,7 +46,11 @@ textarea {
 .text-large  { font-size: 200% !important; }
 .text-larger { font-size: 125% !important; }
 
-.text-wrap { word-break: break-all; }
+.text-wrap {
+  word-break: break-all;
+  // Supported by some browsers, may look better
+  word-break: break-word;
+}
 
 .w-auto { width: auto; }
 .h-auto { height: auto; }

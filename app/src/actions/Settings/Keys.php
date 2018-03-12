@@ -1,6 +1,6 @@
 <?php
 
-namespace Actions\SSH;
+namespace Actions\Settings;
 
 use Actions\Action;
 use SSH\{ AuthorizedKeys, InvalidPublicKey };
@@ -51,7 +51,7 @@ class Keys extends Action {
   public function get(Request $request, Response $response, $args) {
     $config = $this -> container -> get('config');
     $keys = new AuthorizedKeys($config);
-    return $this -> view -> render($response, 'pages/ssh/keys.twig', [
+    return $this -> view -> render($response, 'pages/settings/keys.twig', [
       'keys' => $keys -> items,
       'error' => @$args['error'],
     ]);
