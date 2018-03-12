@@ -54,7 +54,7 @@
     <div class="card-body">
       {% if blob.info.size <= 2 * 1024 * 1024 %}
         {% if blob.matchesMime('text/markdown', 'text/x-markdown') or blob.matchesGlob('README', 'README.*') %}
-          <markdown class="text-block">{{ blob.data }}</markdown>
+          <markdown class="text-block text-monospace p-0 m-0 mb-3">{{ blob.data }}</markdown>
         {% elseif blob.matchesGlob('LICEN[CS]E', 'LICEN[CS]E.*') %}
           <div class="text-block text-monospace p-0">{{ blob.data }}</div>
         {% elseif blob.matchesMime('text/*') %}
