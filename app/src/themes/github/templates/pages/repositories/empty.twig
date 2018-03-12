@@ -1,0 +1,10 @@
+{% extends 'layout/main.twig' %}
+
+{% block title %}{{ repository.name }} - GitKit{% endblock %}
+
+{% block content %}
+{% spaceless %}
+  <div>{% include 'components/repository-header.twig' with {repository: repository} %}</div>
+  <div>This repository is empty</div>
+{% endspaceless %}
+{% endblock %}

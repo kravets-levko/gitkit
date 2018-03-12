@@ -13,6 +13,12 @@ use Psr\Http\Message\ResponseInterface as Response;
 class Tree extends Action {
 
   public function get(Request $request, Response $response, $args) {
+    if ($this -> repository -> isEmpty) {
+      return $this -> view -> render($response, 'pages/repositories/empty.twig', [
+        'repository' => $this -> repository,
+      ]);
+    }
+
     if (isset($args['ref'])) {
       $ref = $this -> repository -> ref($args['ref']);
     } else {

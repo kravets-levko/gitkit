@@ -37,4 +37,15 @@ class Repositories {
     return $result;
   }
 
+  public function createRepository($path) {
+    @mkdir($path, 0777, true);
+    $repositoryPath = realpath($path);
+    if (!$repositoryPath) {
+      throw new Exception("Cannot create repository at '${path}'");
+    }
+    $result = $this -> getRepository($repositoryPath);
+    $result -> init();
+    return $result;
+  }
+
 }

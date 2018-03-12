@@ -64,6 +64,18 @@ class Repository {
     ];
   }
 
+  protected function get_isEmpty() {
+    return $this -> cached(__METHOD__, function() {
+      // Try to find any commit
+      list($exitCode, $stdout, $stderr) = $this -> context -> git -> execute([
+        'rev-list', '-1', '--all'
+      ]);
+      // When running from terminal, `git-rev-list` exists with non-zero code.
+      // But here it exists with zero code, but empty output. Weird
+      return ($exitCode != 0) || (trim($stdout) == '') || (trim($stderr) != '');
+    });
+  }
+
   protected function get_latestCommit() {
     return $this -> cached(__METHOD__, function() {
       $hash = trim($this -> context -> execute(['rev-list', '-1', '--all']));
@@ -155,8 +167,8 @@ class Repository {
   }
 
   public function init() {
-    $this -> git -> execute([
-      'init', '--bare', '--shared=0775', $this -> _path
+    $this -> context -> execute([
+      'init', '--bare', '--shared=0775', $this -> path
     ]);
   }
 

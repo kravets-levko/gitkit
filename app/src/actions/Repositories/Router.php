@@ -7,6 +7,8 @@ use Slim\App;
 class Router {
 
   public function __construct(App $app) {
+    $app -> any('/new', Create::class);
+    $app -> any('/[{group}]', View::class);
     $app -> group('/{group}/{name}', function(App $group) {
       $group -> any('/commit/{commit}', Commit::class);
       $group -> any('/tree/{ref:[^:]*}[:{path:.*}]', Tree::class);
@@ -17,8 +19,6 @@ class Router {
       $group -> any('/settings', Settings::class);
       $group -> any('', Tree::class);
     });
-
-    $app -> any('/[{group}]', View::class);
   }
 
 }

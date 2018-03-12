@@ -3,7 +3,7 @@
 {% block title %}{{ repository.name }} - GitKit{% endblock %}
 
 {% block content %}
-  <h1>{% include 'components/repository-header.twig' with {repository: repository} %}</h1>
+  <div>{% include 'components/repository-header.twig' with {repository: repository} %}</div>
   <div class="my-3">
     {% include 'components/repository-stats.twig' with {
       repository: repository,

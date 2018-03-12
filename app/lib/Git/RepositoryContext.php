@@ -48,6 +48,10 @@ class RepositoryContext {
 
     sort($branches);
 
+    if (!in_array($default, $branches) && (count($branches) > 0)) {
+      $default = $branches[0];
+    }
+
     return [$branches, $default];
   }
 

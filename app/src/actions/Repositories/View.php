@@ -25,8 +25,12 @@ class View extends Action {
     }
 
     usort($repos, function($a, $b) {
-      $a = $a -> latestCommit -> info -> committerDate -> format('U');
-      $b = $b -> latestCommit -> info -> committerDate -> format('U');
+      $a = $a -> latestCommit -> info -> committerDate;
+      $a = $a instanceof \DateTime ? $a -> format('U') : 0;
+
+      $b = $b -> latestCommit -> info -> committerDate;
+      $b = $b instanceof \DateTime ? $b -> format('U') : 0;
+
       return $b - $a;
     });
 
