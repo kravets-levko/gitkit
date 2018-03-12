@@ -26,7 +26,7 @@ class View extends Action {
     if ($group == '') $group = null;
 
     if ($group) {
-      $repos = array_intersect_key($repos, [$group => true]);
+      $groups = array_intersect_key($groups, [$group => true]);
     }
 
     return $this -> view -> render($response, 'pages/repositories/home.twig', [
