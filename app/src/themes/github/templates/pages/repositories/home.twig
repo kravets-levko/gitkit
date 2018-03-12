@@ -8,34 +8,34 @@
     <div class="my-3">
       <a href="new{% if group %}?group={{ group | escape('url') }}{% endif %}" class="btn btn-success">New repository</a>
     </div>
-    {% for group in repositories | keys %}
-      {% for name, repository in repositories[group] %}
-        <hr>
-        <div class="my-3">
-          {% include 'components/repository-header.twig' with {repository: repository} %}
-          {% if repository.latestCommit %}
-          <div>
-            <strong>Latest commit:</strong>
-            <a class="ml-2" href="{{ repository.name }}/commit/{{ repository.latestCommit.hash }}"
-            >{{ repository.latestCommit.abbreviatedHash }}</a>
-            {% if repository.latestCommit.branches | length > 0 %}
-              {% set commitBranch = repository.latestCommit.branches | first %}
-              <a class="ml-2"
-                href="{{ repository.name }}{% if commitBranch.name != repository.defaultBranch.name %}/tree/{{ commitBranch.name }}{% endif %}">
-                <span class="text-muted">{% include 'icon.twig' with { icon: 'git-branch' } %}</span>
-                <span>{{ commitBranch.name }}</span>
-              </a>
-              <span class="ml-2" title="{{ repository.latestCommit.info.committerDate | full_date }}">{{
-                repository.latestCommit.info.committerDate | format_time_ago
-              }}</span>
-            {% endif %}
-          </div>
-          <div>
-            <markdown class="d-block m-0 mb-3">{{ repository.latestCommit.info.message }}</markdown>
-          </div>
+    {% for repository in repositories %}
+      {% set group = repository.name | split('/') | first %}
+      {% set name = repository.name | split('/') | last %}
+      <hr>
+      <div class="my-3">
+        {% include 'components/repository-header.twig' with {repository: repository} %}
+        {% if repository.latestCommit %}
+        <div>
+          <strong>Latest commit:</strong>
+          <a class="ml-2" href="{{ repository.name }}/commit/{{ repository.latestCommit.hash }}"
+          >{{ repository.latestCommit.abbreviatedHash }}</a>
+          {% if repository.latestCommit.branches | length > 0 %}
+            {% set commitBranch = repository.latestCommit.branches | first %}
+            <a class="ml-2"
+              href="{{ repository.name }}{% if commitBranch.name != repository.defaultBranch.name %}/tree/{{ commitBranch.name }}{% endif %}">
+              <span class="text-muted">{% include 'icon.twig' with { icon: 'git-branch' } %}</span>
+              <span>{{ commitBranch.name }}</span>
+            </a>
+            <span class="ml-2" title="{{ repository.latestCommit.info.committerDate | full_date }}">{{
+              repository.latestCommit.info.committerDate | format_time_ago
+            }}</span>
           {% endif %}
         </div>
-      {% endfor %}
+        <div>
+          <markdown class="d-block m-0 mb-3">{{ repository.latestCommit.info.message }}</markdown>
+        </div>
+        {% endif %}
+      </div>
     {% endfor %}
   </div>
 {% endspaceless %}

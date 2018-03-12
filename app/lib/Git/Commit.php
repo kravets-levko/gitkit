@@ -41,12 +41,17 @@ class Commit extends Ref {
 
       $format = implode("%n", array_values($fields));
 
-      return (object)array_combine(
+      $result = (object)array_combine(
         array_keys($fields),
         explode("\n", $this -> context -> execute([
           'show', '--no-patch', '--format=' . $format, $this -> hash
         ]), count($fields)) // commit message may be multiline
       );
+
+      $result -> authorDate = new \DateTime('@' . $result -> authorDate);
+      $result -> committerDate = new \DateTime('@' . $result -> committerDate);
+
+      return $result;
     });
   }
 
