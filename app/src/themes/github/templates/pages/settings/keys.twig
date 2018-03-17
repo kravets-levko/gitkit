@@ -52,8 +52,8 @@
           </div>
           <div class="flex-grow-0">
             <button class="btn btn-sm form-control cursor-pointer" type="button"
-              data-clipboard-text="{{ key }}"
-              data-toggle="tooltip" data-placement="bottom"
+              v-bs-clipboard data-clipboard-text="{{ key }}"
+              v-bs-tooltip data-placement="bottom"
               title="Copy key to clipboard" data-title-copied="Copied!"
             >{% include 'icon.twig' with { icon: 'clippy', class: 'align-top' } %}</button>
           </div>

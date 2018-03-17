@@ -49,8 +49,8 @@
         <div class="flex-grow-0 ml-2 text-nowrap">
           <div class="btn-group">
             <button class="btn form-control cursor-pointer" type="button"
-              data-clipboard-text="{{ commit.hash }}"
-              data-toggle="tooltip" data-placement="bottom"
+              v-bs-clipboard data-clipboard-text="{{ commit.hash }}"
+              v-bs-tooltip data-placement="bottom"
               title="Copy the full hash" data-title-copied="Copied!"
             >{% include 'icon.twig' with { icon: 'clippy', class: 'align-middle' } %}</button>
             <a class="btn form-control"
@@ -63,7 +63,7 @@
 
           <a class="btn form-control w-auto ml-3"
             title="Browse the repository at this point in the history"
-            data-toggle="tooltip" data-placement="bottom"
+            v-bs-tooltip data-placement="bottom"
             href="{{ repository.name }}/tree/{{ commit.hash }}"
           >{% include 'icon.twig' with { icon: 'code', class: 'align-middle' } %}</a>
         </div>

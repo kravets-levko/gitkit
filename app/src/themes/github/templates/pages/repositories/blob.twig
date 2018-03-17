@@ -27,8 +27,8 @@
     </div>
     <div class="col-auto">
       <button class="form-control" type="button"
-        data-clipboard-text="{{ blob.path }}"
-        data-toggle="tooltip" data-placement="bottom"
+        v-bs-clipboard data-clipboard-text="{{ blob.path }}"
+        v-bs-tooltip data-placement="bottom"
         title="Copy file path to clipboard" data-title-copied="Copied!"
       >Copy path</button>
     </div>
@@ -54,11 +54,11 @@
     <div class="card-body">
       {% if blob.info.size <= 2 * 1024 * 1024 %}
         {% if blob.matchesMime('text/markdown', 'text/x-markdown') or blob.matchesGlob('README', 'README.*') %}
-          <markdown class="text-block text-monospace p-0 m-0 mb-3">{{ blob.data }}</markdown>
+          <markdown>{{ blob.data }}</markdown>
         {% elseif blob.matchesGlob('LICEN[CS]E', 'LICEN[CS]E.*') %}
           <div class="text-block text-monospace p-0">{{ blob.data }}</div>
         {% elseif blob.matchesMime('text/*') %}
-          <div class="text-block text-monospace p-0 syntax-highlight {{ blob.ext | lower }}">{{ blob.data }}</div>
+          <syntax-highlight language="{{ blob.ext | lower }}" detect="true">{{ blob.data }}</syntax-highlight>
         {% elseif blob.matchesMime('image/*') %}
           <div class="text-center">
             <img src="{{ rawUrl }}" alt="{{ blob.name }}">

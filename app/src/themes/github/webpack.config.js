@@ -48,7 +48,11 @@ if (process.env.NODE_ENV === 'production') {
 
 module.exports = {
   entry: {
-    'app': ['./scripts/index.js', './styles/main.scss', './assets/logo.svg'],
+    'app': [
+      './scripts/index.vue',
+      './styles/main.scss',
+      './assets/logo.svg',
+    ],
     'octicons': [
       'clippy', 'book', 'history', 'git-branch', 'tag', 'law', 'gear', 'file',
       'file-directory', 'mark-github', 'diff', 'key', 'code', 'git-commit', 'trashcan',
@@ -61,6 +65,11 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.js$/,
+        exclude: /\/node_modules\//,
+        use: 'babel-loader',
+      },
+      {
         test: /\.s[ac]ss$/,
         use: ExtractTextPlugin.extract({
           use: [
@@ -69,12 +78,6 @@ module.exports = {
             'sass-loader',
           ],
         }),
-      },
-      {
-        test: /\.html$/,
-        use: [
-          'raw-loader',
-        ],
       },
       {
         test: /\.svg$/,
@@ -87,9 +90,19 @@ module.exports = {
         }, {
           loader: 'svg-fill-loader',
           options: 'fill=currentColor&selector=path',
-        }]
+        }] ,
+      },
+      {
+        test: /\.vue$/,
+        use: 'vue-loader',
       }
     ],
+  },
+  resolve: {
+    extensions: ['.js', '.json', '.vue'],
+    alias: {
+      'vue$': 'vue/dist/vue.common.js'
+    },
   },
   devtool: 'source-map',
   plugins: plugins,

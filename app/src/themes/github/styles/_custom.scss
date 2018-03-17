@@ -101,3 +101,13 @@
     grid-area: value;
   }
 }
+
+markdown,
+syntax-highlight,
+.hljs {
+  display: block;
+  padding: 0;
+  margin: 0;
+  font-family: $font-family-monospace;
+  white-space: pre-wrap;
+}

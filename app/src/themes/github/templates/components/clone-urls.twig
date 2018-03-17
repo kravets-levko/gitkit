@@ -29,8 +29,8 @@
                 <input type="text" class="form-control" id="resource-clone-url-{{ key }}" value="{{ cloneUrls[key] }}">
                 <span class="input-group-append">
                   <button class="btn form-control cursor-pointer" type="button"
-                    data-clipboard-target="#resource-clone-url-{{ key }}"
-                    data-toggle="tooltip" data-placement="bottom"
+                    v-bs-clipboard data-clipboard-target="#resource-clone-url-{{ key }}"
+                    v-bs-tooltip data-placement="bottom"
                     title="Copy to clipboard" data-title-copied="Copied!"
                   >{% include 'icon.twig' with { icon: 'clippy' } %}</button>
                 </span>

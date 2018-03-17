@@ -119,7 +119,7 @@
       </div>
     </div>
     <div class="card-body">
-      <div class="text-block text-monospace p-0 syntax-highlight diff">{{ commit.diff.get(item.path) }}</div>
+      <syntax-highlight language="diff">{{ commit.diff.get(item.path) }}</syntax-highlight>
     </div>
   </div>
   {% endfor %}
