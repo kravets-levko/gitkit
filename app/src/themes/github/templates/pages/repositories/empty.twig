@@ -5,6 +5,14 @@
 {% block content %}
 {% spaceless %}
   <div>{% include 'components/repository-header.twig' with {repository: repository} %}</div>
+  <div class="my-3">
+    {% include 'components/repository-stats.twig' with {
+      repository: repository,
+      ref: ref,
+      base: repository.name,
+    } %}
+  </div>
+
   <div>This repository is empty</div>
 {% endspaceless %}
 {% endblock %}

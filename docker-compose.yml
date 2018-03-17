@@ -9,7 +9,5 @@ services:
       - "7022:22"
     volumes:
       - "./app:/app"
-      - "/var/lib/gitkit/repositories:/var/lib/gitkit/repositories"
-      - "/var/lib/gitkit/server_keys:/var/lib/gitkit/server_keys"
-      - "/var/lib/gitkit/authorized_keys:/var/lib/gitkit/authorized_keys"
+      - "/var/lib/gitkit:/var/lib/gitkit"
     tty: true
