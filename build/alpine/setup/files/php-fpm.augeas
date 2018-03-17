@@ -1,0 +1,8 @@
+set "/files${PHPFPM_CONFIG}/www/user" "${GITKIT_USER}"
+set "/files${PHPFPM_CONFIG}/www/group" "${GITKIT_GROUP}"
+
+set "/files${PHPFPM_CONFIG}/www/listen" "${PHPFPM_SOCKET}"
+set "/files${PHPFPM_CONFIG}/www/listen.owner" "${GITKIT_USER}"
+set "/files${PHPFPM_CONFIG}/www/listen.group" "${GITKIT_GROUP}"
+
+save

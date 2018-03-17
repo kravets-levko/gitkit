@@ -1,8 +1,0 @@
-set "/files${PHPFPM_CONFIG}/www/user" "${WWW_USER}"
-set "/files${PHPFPM_CONFIG}/www/group" "${WWW_GROUP}"
-
-set "/files${PHPFPM_CONFIG}/www/listen" "${PHPFPM_SOCKET}"
-set "/files${PHPFPM_CONFIG}/www/listen.owner" "${WWW_USER}"
-set "/files${PHPFPM_CONFIG}/www/listen.group" "${WWW_GROUP}"
-
-save

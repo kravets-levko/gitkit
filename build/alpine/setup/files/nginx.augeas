@@ -1,0 +1,7 @@
+set "/files${NGINX_CONFIG}/user" "${GITKIT_USER}"
+set "/files${NGINX_CONFIG}/pid" "${NGINX_PID}"
+set "/files${NGINX_CONFIG}/error_log" '/var/log/nginx/error.log info'
+set "/files${NGINX_CONFIG}/http/client_max_body_size" '50M'
+set "/files${NGINX_CONFIG}/http/client_body_temp_path" '/tmp/nginx/client_temp 1 2'
+
+save
