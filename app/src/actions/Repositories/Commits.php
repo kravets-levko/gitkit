@@ -23,7 +23,7 @@ class Commits extends Action {
     }
 
     $query = $request -> getQueryParams();
-    list($hash, $count) = explode(' ', $query['from']);
+    @list($hash, $count) = explode(' ', trim(@$query['from']));
     $count = (int)trim($count);
     if ($count <= 0) $count = 30;
 
@@ -40,8 +40,7 @@ class Commits extends Action {
     $commits = array_slice($ref -> commits, $index, $count);
     $groups = [];
     foreach ($commits as $c) {
-      $date = new \DateTime('@' . $c -> info -> committerDate);
-      $date = $date -> format('M d, Y');
+      $date = $c -> info -> committerDate -> format('M d, Y');
       @$groups[$date][] = $c;
     }
 
