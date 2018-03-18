@@ -1,9 +1,9 @@
 import markdown from './markdown';
 import syntaxHighlight from './syntax-highlight';
-import customInput from './custom-input';
+import inputAutocomplete from './input-autocomplete';
 
 export {
   markdown,
   syntaxHighlight,
-  customInput,
+  inputAutocomplete,
 };
