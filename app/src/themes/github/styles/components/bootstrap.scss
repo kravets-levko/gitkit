@@ -17,6 +17,12 @@ svg {
   display: inline-block;
 }
 
+code {
+  padding: 0.25rem;
+  background: $light;
+  border-radius: $border-radius;
+}
+
 // New utility classes
 
 .resize-vertical {
@@ -101,14 +107,10 @@ svg {
   border-bottom-right-radius: 0 !important;
 }
 
-.flex-grow-0 {
-  flex-grow: 0 !important;
-}
-.flex-grow-1 {
-  flex-grow: 1 !important;
-}
-.flex-grow-2 {
-  flex-grow: 2 !important;
+@for $i from 0 through 12 {
+  .flex-grow-#{$i} {
+    flex-grow: $i !important;
+  }
 }
 
 // Overrides for components
@@ -137,6 +139,10 @@ a.form-control {
 .btn.form-control {
   border: $input-btn-border-width solid $input-border-color;
   @include form-control-focus();
+
+  &:hover, &:active, &:focus {
+    background: $gray-100;
+  }
 }
 
 .navbar-brand svg {

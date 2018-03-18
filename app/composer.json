@@ -21,8 +21,9 @@
             "Process\\": "lib/Process",
             "Git\\": "lib/Git",
             "SSH\\": "lib/SSH",
+            "Classes\\": "src/classes",
             "Actions\\": "src/actions",
-            "Classes\\": "src/classes"
+            "Models\\": "src/models"
         }
     }
 }

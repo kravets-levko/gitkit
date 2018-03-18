@@ -166,12 +166,6 @@ class Repository {
     return $result;
   }
 
-  public function init() {
-    $this -> context -> execute([
-      'init', '--bare', '--shared=0775', $this -> path
-    ]);
-  }
-
   public function delete() {
     $path = validate_path($this -> path, $this -> context -> config -> repositoriesRoot);
     if ($path) {

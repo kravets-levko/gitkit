@@ -15,7 +15,7 @@
             <input class="form-control" value="{{ repository.name | split('/') | last }}"
               name="name" type="text" id="repository-name">
             <button type="submit" name="action" value="rename"
-              class="form-control w-auto ml-2">Rename</button>
+              class="btn form-control w-auto ml-2">Rename</button>
           </div>
         </div>
 
@@ -25,7 +25,7 @@
             name="description" id="repository-description">{{ repository.description }}</textarea>
           <div class="mt-2">
             <button type="submit" name="action" value="update_description"
-              class="form-control w-auto">Update</button>
+              class="btn form-control w-auto">Update</button>
           </div>
         </div>
 
@@ -39,7 +39,7 @@
           </small>
           <div class="d-flex">
             <div class="dropdown" id="default-branch-select">
-              <button type="button" class="form-control w-auto dropdown-toggle" data-toggle="dropdown">
+              <button type="button" class="btn form-control w-auto dropdown-toggle" data-toggle="dropdown">
                 {{ repository.defaultBranch.name }}
               </button>
               <input type="hidden" name="default_branch" value="{{ repository.defaultBranch.name }}">
@@ -54,7 +54,7 @@
             </div>
 
             <button type="submit" name="action" value="set_default_branch"
-              class="form-control w-auto ml-2">Update</button>
+              class="btn form-control w-auto ml-2">Update</button>
           </div>
         </div>
         {% endif %}

@@ -1,6 +1,6 @@
 {% spaceless %}
   <div class="dropdown" data-close-outside>
-    <button class="form-control dropdown-toggle" data-toggle="dropdown" type="button">
+    <button class="btn form-control dropdown-toggle" data-toggle="dropdown" type="button">
       {{ {branch: 'Branch', 'tag': 'Tag', 'commit': 'Tree'}[ref.type] }}:
       <strong>{{ ref.type == 'commit' ? ref.abbreviatedHash : ref.name }}</strong>
     </button>

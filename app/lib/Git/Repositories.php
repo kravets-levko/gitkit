@@ -2,7 +2,7 @@
 
 namespace Git;
 
-use Process\Process;
+use Process\{ Process, Binary };
 
 class Repositories {
 
@@ -38,14 +38,16 @@ class Repositories {
   }
 
   public function createRepository($path) {
-    @mkdir($path, 0777, true);
+    $git = new Binary($this -> config -> gitBinary, $path);
+    list($exitCode, , $stderr) = $git -> execute([
+      'init', '--bare', '--shared=0775', $path
+    ]);
+    if ($exitCode != 0) throw new Exception($stderr);
     $repositoryPath = realpath($path);
     if (!$repositoryPath) {
       throw new Exception("Cannot create repository at '${path}'");
     }
-    $result = $this -> getRepository($repositoryPath);
-    $result -> init();
-    return $result;
+    return $this -> getRepository($repositoryPath);
   }
 
 }

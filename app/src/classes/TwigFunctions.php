@@ -1,11 +1,11 @@
 <?php
 
-namespace Classes\Twig;
+namespace Classes;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
-class Functions extends AbstractExtension {
+class TwigFunctions extends AbstractExtension {
 
   private function prepareDateTime($date) {
     if (!$date instanceof \DateTimeInterface) {
