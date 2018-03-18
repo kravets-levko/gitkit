@@ -7,11 +7,11 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
 /**
- * Class View
+ * Class Index
  *
  * @property \Slim\Views\Twig $view
  */
-class View extends Action {
+class Index extends Action {
 
   public function get(Request $request, Response $response, $args) {
     $repos = $this -> repositories -> getRepositories();
@@ -34,7 +34,7 @@ class View extends Action {
       return $b - $a;
     });
 
-    return $this -> view -> render($response, 'pages/repositories/home.twig', [
+    return $this -> view -> render($response, 'pages/repositories/index.twig', [
       'repositories' => $repos,
       'group' => $group,
     ]);
