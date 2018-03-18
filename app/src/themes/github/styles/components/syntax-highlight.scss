@@ -1,0 +1,71 @@
+@import "~bootstrap/scss/variables";
+
+syntax-highlight,
+.hljs {
+  display: block;
+  padding: 0;
+  background: none;
+  font-family: $font-family-monospace;
+  white-space: pre;
+}
+
+.source-view {
+  display: table;
+
+  .source-line {
+    display: table-row;
+    .source-line-number,
+    .source-line-text {
+      display: table-cell;
+      padding: 0 0.5em;
+    }
+
+    .source-line-number {
+      width: 1%;
+      min-width: 50px;
+      text-align: right;
+      color: $gray-400;
+      user-select: none;
+    }
+  }
+
+  .source-line.highlighted {
+    .source-line-text, .source-line-text * {
+      background: mix($yellow, #ffffff, 20%);
+    }
+  }
+
+  &.highlight-whole-line {
+    .source-line.highlighted {
+      .source-line-number {
+        background: mix($yellow, #ffffff, 30%);
+        color: mix($yellow, $gray-500, 40%);
+
+        * {
+          color: inherit !important;
+          background: inherit !important;
+        }
+      }
+    }
+  }
+
+  &.selecting-enabled {
+    .source-line-number {
+      cursor: pointer;
+
+      &:hover, &:active, &:focus {
+        color: $gray-600;
+      }
+    }
+
+    &.highlight-whole-line {
+      .source-line.highlighted {
+        .source-line-number {
+          &:hover, &:active, &:focus {
+            color: mix($yellow, $gray-600, 40%);
+          }
+        }
+      }
+    }
+  }
+}

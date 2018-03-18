@@ -1,0 +1,29 @@
+@import "~bootstrap/scss/variables";
+
+markdown {
+  display: block;
+  padding: 0;
+  background: none;
+  font-family: $font-family-monospace;
+  white-space: pre;
+}
+
+.markdown {
+  &:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  .hljs {
+    margin: 1rem 0;
+    padding: 0.75rem;
+    background: $light;
+    border-radius: $border-radius;
+    overflow-x: auto;
+  }
+
+  code {
+    padding: 0.25rem;
+    background: $light;
+    border-radius: $border-radius;
+  }
+}

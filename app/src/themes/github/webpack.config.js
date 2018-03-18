@@ -49,7 +49,7 @@ if (process.env.NODE_ENV === 'production') {
 module.exports = {
   entry: {
     'app': [
-      './scripts/index.vue',
+      './scripts/index.js',
       './styles/main.scss',
       './assets/logo.svg',
     ],

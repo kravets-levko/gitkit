@@ -1,20 +1,5 @@
 @import "~bootstrap/scss/variables";
 
-.octicon {
-  display: inline-block;
-  line-height: 1em;
-  fill: currentColor;
-  vertical-align: text-top;
-}
-
-.btn .octicon {
-  vertical-align: text-top;
-}
-
-.card-header.collapsed {
-  border-bottom: 0;
-}
-
 .tree-level-up {
   display: inline-block;
   padding: 0 0 0 16px;
@@ -50,16 +35,6 @@
     border-radius: 0.2em;
     cursor: pointer;
   }
-}
-
-.diff-slot {
-  display: inline-block;
-  width: 0.7em;
-  height: 0.7em;
-  border: none;
-  color: $gray-300;
-  background: currentColor;
-  margin: 1px 0 1px 1px;
 }
 
 .commit-history {
@@ -100,14 +75,4 @@
   .ssh-public-key-value {
     grid-area: value;
   }
-}
-
-markdown,
-syntax-highlight,
-.hljs {
-  display: block;
-  padding: 0;
-  margin: 0;
-  font-family: $font-family-monospace;
-  white-space: pre-wrap;
 }

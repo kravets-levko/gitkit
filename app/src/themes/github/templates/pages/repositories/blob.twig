@@ -51,14 +51,15 @@
         base: repository.name,
       } %}
     </div>
-    <div class="card-body">
+    <div class="card-body scrollbox">
       {% if blob.info.size <= 2 * 1024 * 1024 %}
         {% if blob.matchesMime('text/markdown', 'text/x-markdown') or blob.matchesGlob('README', 'README.*') %}
           <markdown>{{ blob.data }}</markdown>
         {% elseif blob.matchesGlob('LICEN[CS]E', 'LICEN[CS]E.*') %}
           <div class="text-block text-monospace p-0">{{ blob.data }}</div>
         {% elseif blob.matchesMime('text/*') %}
-          <syntax-highlight language="{{ blob.ext | lower }}" detect="true">{{ blob.data }}</syntax-highlight>
+          <syntax-highlight language="{{ blob.ext | lower }}" detect="true"
+            selection="multiline" gutter="true">{{ blob.data }}</syntax-highlight>
         {% elseif blob.matchesMime('image/*') %}
           <div class="text-center">
             <img src="{{ rawUrl }}" alt="{{ blob.name }}">

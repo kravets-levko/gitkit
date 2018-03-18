@@ -118,8 +118,9 @@
         </div>
       </div>
     </div>
-    <div class="card-body">
-      <syntax-highlight language="diff">{{ commit.diff.get(item.path) }}</syntax-highlight>
+    <div class="card-body scrollbox">
+      <syntax-highlight language="diff" class="highlight-whole-line"
+        gutter="true">{{ commit.diff.get(item.path) }}</syntax-highlight>
     </div>
   </div>
   {% endfor %}

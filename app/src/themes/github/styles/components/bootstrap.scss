@@ -3,12 +3,31 @@ $card-spacer-y: .75rem;
 
 @import "~bootstrap/scss/bootstrap";
 
+// Globals
+
 :root {
   font-size: 14px;
 }
 
+* {
+  resize: none;
+}
+
 svg {
   display: inline-block;
+}
+
+// New utility classes
+
+.resize-vertical {
+  resize: vertical;
+}
+.resize-horizontal {
+  resize: horizontal;
+}
+.resize-vertical.resize-horizontal,
+.resize-both {
+  resize: both;
 }
 
 @each $color, $value in $theme-colors {
@@ -16,21 +35,6 @@ svg {
 }
 
 .border-dotted { border-style: dotted; }
-
-textarea {
-  resize: none;
-
-  &.resize-vertical {
-    resize: vertical;
-  }
-  &.resize-horizontal {
-    resize: horizontal;
-  }
-  &.resize-vertical.resize-horizontal,
-  &.resize-both {
-    resize: both;
-  }
-}
 
 .cursor-pointer { cursor: pointer; }
 
@@ -50,6 +54,22 @@ textarea {
   word-break: break-all;
   // Supported by some browsers, may look better
   word-break: break-word;
+}
+
+.text-monospace {
+  font-family: $font-family-monospace;
+}
+
+.text-block {
+  display: block;
+  white-space: pre-wrap;
+}
+
+.text-white-soft { color: #fff; }
+.text-muted-soft { color: $text-muted; }
+
+@each $color, $value in $theme-colors {
+  .text-#{$color}-soft { color: $value; }
 }
 
 .w-auto { width: auto; }
@@ -91,12 +111,7 @@ textarea {
   flex-grow: 2 !important;
 }
 
-.text-white-soft { color: #fff; }
-.text-muted-soft { color: $text-muted; }
-
-@each $color, $value in $theme-colors {
-  .text-#{$color}-soft { color: $value; }
-}
+// Overrides for components
 
 a.link-secondary {
   color: inherit;
@@ -119,13 +134,9 @@ a.form-control {
   }
 }
 
-.text-monospace {
-  font-family: $font-family-monospace;
-}
-
-.text-block {
-  display: block;
-  white-space: pre-wrap;
+.btn.form-control {
+  border: $input-btn-border-width solid $input-border-color;
+  @include form-control-focus();
 }
 
 .navbar-brand svg {
@@ -136,16 +147,6 @@ a.form-control {
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
 }
 
-.btn.form-control {
-  border: $input-btn-border-width solid $input-border-color;
-  @include form-control-focus();
-}
-
-.show-on-demand {
-  visibility: hidden;
-}
-*:hover {
-  > .show-on-demand {
-    visibility: visible;
-  }
+.card-header.collapsed {
+  border-bottom: 0;
 }

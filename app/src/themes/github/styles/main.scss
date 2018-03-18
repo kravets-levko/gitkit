@@ -1,4 +1,8 @@
 @import "~highlight.js/styles/github-gist";
 
-@import "bootstrap";
-@import "custom";
+@import "components/bootstrap";
+@import "components/octicon";
+@import "components/markdown";
+@import "components/syntax-highlight";
+
+@import "gitkit";

@@ -35,11 +35,15 @@ function isString(value) {
     (Object.prototype.toString.call(value) === '[object String]');
 }
 
+function isNonEmptyString(value) {
+  return isString(value) && (value !== '');
+}
+
 export default function(text, language, detectLanguage) {
   let result;
   if (isString(language)) {
     result = hljs.highlightAuto(text, [language]);
-    if (!isString(result.language) && detectLanguage) {
+    if (!isNonEmptyString(result.language) && detectLanguage) {
       result = hljs.highlightAuto(text);
     }
   } else {
@@ -49,5 +53,7 @@ export default function(text, language, detectLanguage) {
       result = hljs.highlightAuto(text, []); // empty list - no highlight
     }
   }
+  result.classes = isNonEmptyString(result.language) ? ['hljs', result.language] : [];
+  result.value = hljs.fixMarkup(result.value);
   return result;
 }
