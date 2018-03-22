@@ -21,12 +21,19 @@ $container = $app -> getContainer();
 
 $container['version'] = GITKIT_VERSION;
 
-$container['config'] = (new \Utils\Config\Environment('gitkit'))
-  -> extendWith([
+$container['config'] = function($container) {
+  $result = new \Utils\Config\Environment('gitkit');
+
+  if (isset($result -> envFile)) {
+    $result -> extendWith(new \Utils\Config\EnvFile($result -> envFile));
+  }
+
+  return $result -> extendWith([
     'version' => GITKIT_VERSION,
     'theme' => 'github',
     'sshFingerprintAlgorithm' => 'md5',
   ]);
+};
 
 $container['view'] = function($container) {
   $theme = $container -> config -> theme;

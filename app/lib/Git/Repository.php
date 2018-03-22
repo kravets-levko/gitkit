@@ -53,15 +53,10 @@ class Repository {
   }
 
   protected function get_cloneUrls() {
-    $config = $this -> context -> config;
-    $path = substr($this -> path, strlen($config -> repositoriesRoot) + 1);
-    $https = $config -> https ? 'https' : 'http';
-    $host = $config -> host;
-    $user = $config -> gitUser;
-    return [
-      'ssh' => "{$user}@{$host}:{$path}",
-      'http' => "{$https}://{$host}/{$path}",
-    ];
+    return array_filter([
+      'ssh' => $this -> context -> getSSHCloneUrl($this -> path),
+      'http' => $this -> context -> getHTTPCloneUrl($this -> path),
+    ], 'strlen');
   }
 
   protected function get_isEmpty() {
@@ -128,7 +123,6 @@ class Repository {
   }
 
   public function __construct($config, string $path) {
-    // TODO: If path does not exist - it should be possible to call `init()` method
     $this -> _path = validate_path($path, $config -> repositoriesRoot);
     $this -> context = new RepositoryContext($config, $this -> _path);
   }
@@ -159,7 +153,7 @@ class Repository {
     return $this -> context -> commit($hash, true);
   }
 
-  public function ref($ref): Ref {
+  public function ref($ref): ?Ref {
     $result = $this -> branch($ref);
     if (!$result) $result = $this -> tag($ref);
     if (!$result) $result = $this -> commit($ref);

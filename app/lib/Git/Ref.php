@@ -49,4 +49,10 @@ class Ref {
     $this -> context = $context;
     $this -> _name = $name;
   }
+
+  public function export(string $format) {
+    return $this -> context -> execute([
+      'archive', '--format=' . $format, '--', $this -> name
+    ], true);
+  }
 }

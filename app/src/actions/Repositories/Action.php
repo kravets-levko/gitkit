@@ -13,13 +13,13 @@ class Action extends BaseAction {
    */
   protected $repository;
 
-  protected function beforeRequest(Request $request, Response $response, $args) {
+  protected function beforeRequest(Request $request, Response $response, &$args) {
     $path = realpath($this -> config -> repositoriesRoot . '/' .
       $args['group'] . '/' . $args['name'] . '.git');
     if (!$path) $this -> notFound();
 
     $this -> repository = $this -> repositories -> getRepository($path);
-    return $response;
+    return parent::beforeRequest($request, $response, $args);
   }
 
   protected function afterRequest(Request $request, Response $response, $args) {

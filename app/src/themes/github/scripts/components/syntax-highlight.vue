@@ -40,9 +40,12 @@
         return result;
       },
       compiled() {
+        // TODO: Detect slot changes
+        const content = this.$slots.default
+          ? this.$slots.default.map(vnode => vnode.text).join('\n')
+          : '';
         return highlight(
-          // TODO: Detect slot changes
-          this.$slots.default.map(vnode => vnode.text).join('\n'),
+          content,
           this.$props.language,
           this.$props.detect
         );

@@ -22,7 +22,7 @@ class Action {
     return $this -> container -> get($name);
   }
 
-  protected function beforeRequest(Request $request, Response $response, $args) {
+  protected function beforeRequest(Request $request, Response $response, &$args) {
     return $response;
   }
 
@@ -42,7 +42,7 @@ class Action {
       try {
         $response = $this -> beforeRequest($request, $response, $args);
         $response = $this -> {$method}($request, $response, $args);
-        $response = $this -> beforeRequest($request, $response, $args);
+        $response = $this -> afterRequest($request, $response, $args);
       } finally {
         $this -> currentRequest = null;
         $this -> currentResponse = null;

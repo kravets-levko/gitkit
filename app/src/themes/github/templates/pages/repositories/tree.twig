@@ -33,7 +33,9 @@
     </div>
     <div class="col-auto">
       {% include 'components/clone-urls.twig' with {
-        cloneUrls: repository.cloneUrls
+        cloneUrls: repository.cloneUrls,
+        ref: ref,
+        base: repository.name,
       } %}
     </div>
   </div>

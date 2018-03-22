@@ -4,8 +4,13 @@ namespace Utils\Config;
 
 class Config extends \StdClass {
 
-  public function __construct(array $values = []) {
+  protected function transformKey(string $key, string $delimiter = '_'): string {
+    return lcfirst(implode('', array_map('ucfirst', explode($delimiter, strtolower($key)))));
+  }
+
+  public function __construct(array $values = [], $transformKeys = false, $delimiter = '_') {
     foreach ($values as $key => $value) {
+      if ($transformKeys) $key = $this -> transformKey($key, $delimiter);
       $this -> {$key} = $value;
     }
   }

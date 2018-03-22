@@ -8,6 +8,6 @@
     <a href="{{ group }}/{{ name }}"><strong>{{ name }}</strong></a>
   </h3>
   {% if repository.description %}
-    <div><markdown class="mb-3">{{ repository.description }}</markdown></div>
+    <div vue-widget><markdown class="mb-3">{{ repository.description }}</markdown></div>
   {% endif %}
 {% endspaceless %}

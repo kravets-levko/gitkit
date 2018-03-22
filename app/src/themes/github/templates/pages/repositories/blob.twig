@@ -25,7 +25,7 @@
         base: repository.name,
       } %}
     </div>
-    <div class="col-auto">
+    <div vue-widget class="col-auto">
       <button class="btn form-control" type="button"
         v-bs-clipboard data-clipboard-text="{{ blob.path }}"
         v-bs-tooltip data-placement="bottom"
@@ -51,7 +51,7 @@
         base: repository.name,
       } %}
     </div>
-    <div class="card-body scrollbox">
+    <div vue-widget class="card-body scrollbox">
       {% if blob.info.size <= 2 * 1024 * 1024 %}
         {% if blob.matchesMime('text/markdown', 'text/x-markdown') or blob.matchesGlob('README', 'README.*') %}
           <markdown>{{ blob.data }}</markdown>

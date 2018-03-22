@@ -6,7 +6,7 @@
         <span class="mr-1">{% include 'icon.twig' with { icon: 'book' } %}</span>
         <span>{{ node.name }}</span>
       </div>
-      <div class="card-body">
+      <div vue-widget class="card-body">
         <markdown>{{ node.data }}</markdown>
       </div>
     </div>

@@ -2,6 +2,7 @@
 
 # global config variables
 export GIT_BINARY=${GIT_BINARY:-'/usr/bin/git'}
+export GITKIT_ENV_FILE=${GITKIT_ENV_FILE:-"${GITKIT_DATA_PATH}/.env"}
 
 # install git and tools to build application (php cli, composer, node.js)
 apk add \
@@ -15,14 +16,19 @@ php -r "unlink('composer-setup.php');"
 # update config files
 cat "${SETUP_PATH}/files/nginx.conf" | \
   envsubst '
-    ${GITKIT_USER} ${GITKIT_GROUP} ${APPLICATION_PATH} ${GIT_REPOSITORIES_PATH}
+    ${GITKIT_USER} ${GITKIT_GROUP} ${GITKIT_ENV_FILE} ${APPLICATION_PATH} ${GIT_REPOSITORIES_PATH}
     ${GIT_BINARY} ${GIT_HTTP_BACKEND} ${SSH_KEYGEN_BINARY} ${SSHD_AUTHORISED_KEYS}
     ${PHPFPM_SOCKET} ${FCGIWRAP_SOCKET}
   ' \
   > "${NGINX_SITE_CONFIG}"
 
+cat "${SETUP_PATH}/files/.env" | \
+  envsubst '${GITKIT_USER} ${GITKIT_GROUP}' \
+  > "${GITKIT_ENV_FILE}"
+
 # prepare files and directories
 chown -R "${GITKIT_USER}:${GITKIT_GROUP}" "${APPLICATION_PATH}"
+chown -R "${GITKIT_USER}:${GITKIT_GROUP}" "${GITKIT_ENV_FILE}"
 
 # build application
 su --shell /bin/ash --login "${GITKIT_USER}" \

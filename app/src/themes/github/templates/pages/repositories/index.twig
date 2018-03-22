@@ -4,7 +4,7 @@
 
 {% block content %}
 {% spaceless %}
-  <div>
+  <div vue-widget>
     <div class="my-3">
       <a href="new{% if group %}?group={{ group | escape('url') }}{% endif %}" class="btn btn-success">New repository</a>
     </div>

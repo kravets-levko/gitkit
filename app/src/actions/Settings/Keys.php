@@ -14,7 +14,7 @@ use Psr\Http\Message\ResponseInterface as Response;
  */
 class Keys extends Action {
 
-  protected function beforeRequest(Request $request, Response $response, $args) {
+  protected function beforeRequest(Request $request, Response $response, &$args) {
     $config = $this -> container -> get('config');
     if (!isset($config -> sshAuthorizedKeys)) $this -> notFound();
     return parent::beforeRequest($request, $response, $args);

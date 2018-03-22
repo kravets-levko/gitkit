@@ -1,8 +1,9 @@
 {% spaceless %}
-  <div class="dropdown" data-close-outside>
+  <div vue-widget class="dropdown" data-close-outside>
     <button class="btn btn-success dropdown-toggle" data-toggle="dropdown" type="button">Clone or download</button>
     <div class="dropdown-menu dropdown-menu-right shadow p-0">
       <div class="card border-0">
+        {% if cloneUrls is not empty %}
         <div class="card-header">
           <ul class="nav nav-tabs card-header-tabs flex-nowrap">
             {% for key in cloneUrls | keys %}
@@ -14,9 +15,11 @@
             {% endfor %}
           </ul>
         </div>
+        {% endif %}
         <div class="card-body p-0">
+          {% if cloneUrls is not empty %}
           <div class="tab-content p-3">
-            {% for key in cloneUrls | keys %}
+            {% for key, url in cloneUrls %}
             <div class="tab-pane {% if loop.first %}show active{% endif %}" id="repository-clone-{{ key }}">
               {% if key == 'ssh' %}
                 <h5 class="text-nowrap">Clone with SSH</h5>
@@ -26,7 +29,7 @@
                 <p>Use Git or checkout with SVN using the web URL.</p>
               {% endif %}
               <div class="input-group" style="min-width: 350px;">
-                <input type="text" class="form-control" id="resource-clone-url-{{ key }}" value="{{ cloneUrls[key] }}">
+                <input type="text" class="form-control" id="resource-clone-url-{{ key }}" value="{{ url }}">
                 <span class="input-group-append">
                   <button class="btn form-control cursor-pointer" type="button"
                     v-bs-clipboard data-clipboard-target="#resource-clone-url-{{ key }}"
@@ -38,9 +41,21 @@
             </div>
             {% endfor %}
           </div>
+          {% else %}
+            <div class="p-3" style="min-width: 350px">
+              <p>
+                Seems that GitKit is missing some options needed to create clone URLs.
+                Go to the <a href="settings/system">settings page</a> and check
+                <code>SSH host</code> and <code>HTTP host</code> options.
+              </p>
+              <p class="mb-0">
+                Alternatively you can download sources as an archive.
+              </p>
+            </div>
+          {% endif %}
         </div>
         <div class="card-footer text-center">
-          <a href="javascript:void(0)"><strong>Download ZIP</strong></a>
+          <a href="{{ base }}/archive/{{ ref.name }}.zip"><strong>Download ZIP</strong></a>
         </div>
       </div>
     </div>

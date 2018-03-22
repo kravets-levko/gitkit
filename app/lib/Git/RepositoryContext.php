@@ -3,6 +3,7 @@
 namespace Git;
 
 use Process\Binary;
+use Git\Url\UrlComponents;
 
 class RepositoryContext {
 
@@ -69,7 +70,7 @@ class RepositoryContext {
     if ($validate) {
       try {
         // TODO: use rev-list
-        $this -> git -> execute(['branch', '--contains', $hash]);
+        $this -> execute(['branch', '--contains', $hash]);
       } catch (Exception $e) {
         $hash = '';
       }
@@ -99,6 +100,26 @@ class RepositoryContext {
       $this -> tags[$name] = new Tag($this, $name);
     }
     return $this -> tags[$name];
+  }
+
+  public function getSSHCloneUrl($path): ?string {
+    $components = new UrlComponents($this -> config -> sshHost);
+    if (is_string($components -> host) && ($components -> host != '')) {
+      $components -> scheme = 'ssh';
+      $components -> path = '/~/' . substr($path, strlen($this -> config -> repositoriesRoot) + 1);
+      return Url ::ssh() -> create($components);
+    }
+    return null;
+  }
+
+  public function getHTTPCloneUrl($path): ?string {
+    $components = new UrlComponents($this -> config -> httpHost);
+    if (is_string($components -> host) && ($components -> host != '')) {
+      $components -> scheme = $this -> config -> https ? 'https' : 'http';
+      $components -> path = '/' . substr($path, strlen($this -> config -> repositoriesRoot) + 1);
+      return Url ::http() -> create($components);
+    }
+    return null;
   }
 
 }
