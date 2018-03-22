@@ -19,29 +19,21 @@
           {% set class = '' %}
         {% endif %}
         <label for="group">Group</label>
-        <input-autocomplete class="dropdown position-relative">
-          <input slot="input" type="text" class="form-control {{ class }}"
-            id="group" name="group" value="{{ model.get('group') }}"
-            {% if model.get('group') is empty %}v-autofocus{% endif %}
-            {% if groups is not empty %}data-toggle="dropdown"{% endif %}
-            list="groups" v-bind:list="null" autocomplete="off" placeholder="Group name">
+        <input type="text" id="group" class="form-control {{ class }}"
+          name="group" value="{{ model.get('group') }}"
+          {% if model.get('group') is empty %}v-autofocus{% endif %}
+          list="groups" autocomplete="off" placeholder="Group name"
+          is="input-autocomplete">
 
-          {% if groups is not empty %}
-            <div slot="dropdown" slot-scope="{ setValue }" class="dropdown-menu w-100">
-              {% for name, count in groups %}
-                <a class="dropdown-item d-flex justify-content-between align-items-center" href="javascript:void(0)"
-                  v-on:click="setValue({{ name | json_encode }})">
-                  <span>{{ name }}</span><span class="badge bg-o-primary text-primary">{{ count }}</span>
-                </a>
-              {% endfor %}
-            </div>
-            <datalist id="groups">
-              {% for name, count in groups %}
-                <option>{{ name }}</option>
-              {% endfor %}
-            </datalist>
-          {% endif %}
-        </input-autocomplete>
+        <datalist id="groups">
+          {% for name, count in groups %}
+            <option label="{{ name }}" value="{{ name }}">
+              <div class="d-flex justify-content-between align-items-center">
+                <span>{{ name }}</span><span class="badge bg-o-primary text-primary">{{ count }}</span>
+              </div>
+            </option>
+          {% endfor %}
+        </datalist>
       </div>
       <div class="form-group mb-0 pl-3 pr-3 d-none d-sm-block d-md-block d-lg-block d-xl-block">
         <label>&nbsp;</label>
