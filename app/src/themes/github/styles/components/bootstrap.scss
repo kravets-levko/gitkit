@@ -156,3 +156,32 @@ a.form-control {
 .card-header.collapsed {
   border-bottom: 0;
 }
+
+.hr {
+  height: 1px;
+  border: 0;
+  border-top: $hr-border-width solid $hr-border-color;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+hr[data-content] {
+  background: $white;
+  color: $text-muted;
+
+  margin: $spacer + 1rem 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:before {
+    content: attr(data-content);
+    border: $hr-border-width solid $hr-border-color;
+    border-radius: $border-radius;
+    padding: 0.1rem 0.5rem;
+    color: inherit;
+    background: inherit;
+  }
+}

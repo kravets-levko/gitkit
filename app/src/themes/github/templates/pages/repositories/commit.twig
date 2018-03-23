@@ -120,7 +120,7 @@
     </div>
     <div vue-widget class="card-body scrollbox">
       <syntax-highlight language="diff" class="highlight-whole-line"
-        gutter="true">{{ commit.diff.get(item.path) }}</syntax-highlight>
+        v-bind:gutter="true">{{ commit.diff.get(item.path) }}</syntax-highlight>
     </div>
   </div>
   {% endfor %}

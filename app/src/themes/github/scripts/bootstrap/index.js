@@ -8,8 +8,10 @@ window.Popper = Popper;
 import 'bootstrap';
 
 $(() => {
+  const body = $('body');
+
   // Dropdown: allow to stay visible if click inside and close on click outside
-  $('body').on('hide.bs.dropdown', '.dropdown[data-close-outside]', function(event) {
+  body.on('hide.bs.dropdown', '.dropdown[data-close-outside]', function(event) {
     const nodes = document.querySelectorAll(':hover');
     const elementUnderCursor = nodes[nodes.length - 1];
     const list = this.querySelector('.dropdown-menu');
@@ -17,6 +19,17 @@ $(() => {
       event.preventDefault();
       event.returnValue = false;
       return false;
+    }
+  });
+
+  // Tab-alike behaviour when toggle is not `nav-tabs`
+  body.on('click', '[data-toggle="xtab"][data-target]', function() {
+    const emitter = $(this);
+    const target = $(emitter.attr('data-target'));
+    if (target.length > 0) {
+      const tabs = target.parents('.tab-content').find('.tab-pane')
+        .removeClass('show active');
+      target.addClass('show active');
     }
   });
 });

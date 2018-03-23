@@ -53,7 +53,7 @@ export default function(text, language, detectLanguage) {
       result = hljs.highlightAuto(text, []); // empty list - no highlight
     }
   }
-  result.classes = isNonEmptyString(result.language) ? ['hljs', result.language] : [];
+  result.classes = isNonEmptyString(result.language) ? ['hljs', result.language] : ['hljs'];
   result.value = hljs.fixMarkup(result.value);
   return result;
 }

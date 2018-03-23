@@ -1,11 +1,13 @@
 <?php
 
-namespace Classes;
+namespace Classes\Twig\Extension;
 
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFilter;
+use Twig_Extension as TwigExtension;
+use Twig_Filter as TwigFilter;
 
-class TwigFunctions extends AbstractExtension {
+use Classes\Twig\TokenParser\Pre as TwigTokenParserPre;
+
+class GitKit extends TwigExtension {
 
   private function prepareDateTime($date) {
     if (!$date instanceof \DateTimeInterface) {
@@ -31,6 +33,12 @@ class TwigFunctions extends AbstractExtension {
     } else {
       return 'just now';
     }
+  }
+
+  public function getTokenParsers() {
+    return [
+      new TwigTokenParserPre(),
+    ];
   }
 
   public function getFilters() {

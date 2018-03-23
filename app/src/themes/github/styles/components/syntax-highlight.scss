@@ -11,13 +11,14 @@ syntax-highlight,
 
 .source-view {
   display: table;
+  width: 100%;
 
   .source-line {
     display: table-row;
     .source-line-number,
     .source-line-text {
       display: table-cell;
-      padding: 0 0.5em;
+      padding: 0;
     }
 
     .source-line-number {
@@ -26,6 +27,7 @@ syntax-highlight,
       text-align: right;
       color: $gray-400;
       user-select: none;
+      padding-right: 0.75rem;
     }
   }
 

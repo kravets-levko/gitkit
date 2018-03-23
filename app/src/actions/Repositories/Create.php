@@ -21,6 +21,7 @@ class Create extends Action {
       $path = $config -> repositoriesRoot . '/' . $model -> get('group') . '/' .
         $model -> get('name') . '.git';
       $repository = $this -> repositories -> createRepository($path);
+      $repository -> description = $model -> get('description');
       return $response -> withRedirect('/' . $repository -> name, 302);
     }
 

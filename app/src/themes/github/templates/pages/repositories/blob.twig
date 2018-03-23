@@ -58,8 +58,8 @@
         {% elseif blob.matchesGlob('LICEN[CS]E', 'LICEN[CS]E.*') %}
           <div class="text-block text-monospace p-0">{{ blob.data }}</div>
         {% elseif blob.matchesMime('text/*') %}
-          <syntax-highlight language="{{ blob.ext | lower }}" detect="true"
-            selection="multiline" gutter="true">{{ blob.data }}</syntax-highlight>
+          <syntax-highlight language="{{ blob.ext | lower }}" v-bind:detect="true"
+            selection="multiline" v-bind:gutter="true">{{ blob.data }}</syntax-highlight>
         {% elseif blob.matchesMime('image/*') %}
           <div class="text-center">
             <img src="{{ rawUrl }}" alt="{{ blob.name }}">

@@ -45,7 +45,7 @@ $container['view'] = function($container) {
   $view['assetsPath'] = "/themes/{$theme}";
   $view['version'] = GITKIT_VERSION;
 
-  $view -> addExtension(new \Classes\TwigFunctions());
+  $view -> addExtension(new \Classes\Twig\Extension\GitKit());
 
   return $view;
 };
