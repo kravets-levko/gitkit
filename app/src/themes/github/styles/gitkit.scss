@@ -21,6 +21,26 @@
   }
 }
 
+.table.table-bordered {
+  &.no-outer-borders {
+    border: 0;
+
+    td:first-child {
+      border-left: 0;
+    }
+    td:last-child {
+      border-right: 0;
+    }
+
+    tr:first-child td {
+      border-top: 0;
+    }
+    tr:last-child td {
+      border-bottom: 0;
+    }
+  }
+}
+
 .collapsed-list {
   > * {
     display: none;

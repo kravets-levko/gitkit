@@ -21,6 +21,7 @@
             "Process\\": "lib/Process",
             "Git\\": "lib/Git",
             "SSH\\": "lib/SSH",
+            "System\\": "lib/System",
             "Classes\\": "src/classes",
             "Actions\\": "src/actions",
             "Models\\": "src/models"

@@ -21,7 +21,7 @@ $container = $app -> getContainer();
 
 $container['version'] = GITKIT_VERSION;
 
-$container['config'] = function($container) {
+$container['config'] = function() {
   $result = new \Utils\Config\Environment('gitkit');
 
   if (isset($result -> envFile)) {

@@ -7,5 +7,33 @@
 
   <h1 class="mb-0">System settings</h1>
 
+  <form method="post">
+    <div class="my-3 border rounded">
+    <table class="m-0 table table-bordered no-outer-borders">
+      <tr>
+        <td width="1%">
+          <label class="form-text text-nowrap mr-3" for="env-http-host">HTTP host</label>
+        </td>
+        <td>
+          <input id="env-http-host" type="text" class="form-control"
+            name="HTTP_HOST" value="{{ env.HTTP_HOST }}">
+        </td>
+      </tr>
+      <tr>
+        <td width="1%">
+          <label class="form-text text-nowrap mr-3" for="env-ssh-host">SSH host</label>
+        </td>
+        <td>
+          <input id="env-ssh-host" type="text" class="form-control"
+            name="SSH_HOST" value="{{ env.SSH_HOST }}">
+        </td>
+      </tr>
+    </table>
+    </div>
+    <div class="my-3">
+      <button type="submit" class="btn btn-success">Update settings</button>
+    </div>
+  </form>
+
 {% endspaceless %}
 {% endblock %}
