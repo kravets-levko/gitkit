@@ -150,7 +150,7 @@ class Blob {
     return false;
   }
 
-  public function displayData() {
+  public function raw() {
     return $this -> context -> execute([
       'show',
       $this -> ref -> name . ':' . $this -> path

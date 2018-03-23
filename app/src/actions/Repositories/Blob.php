@@ -4,6 +4,7 @@ namespace Actions\Repositories;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Classes\HttpStreamAdapter;
 
 /**
  * Class Blob
@@ -33,12 +34,26 @@ class Blob extends Action {
 
     // Raw output
     if (array_key_exists('raw', $request -> getQueryParams())) {
-      if (!headers_sent()) {
-        header("Content-Type: {$blob -> mime}", true);
-      }
-      // TODO: do not read entire stream
-      echo $blob -> displayData() -> read();
-      die;
+      $stdout = $blob -> raw();
+      return $response
+        -> withHeader('Content-Type', $blob -> mime)
+        -> withBody(new HttpStreamAdapter(
+        // read
+          function($length = -1) use ($stdout) {
+            trigger_error("Read `${length}`", E_USER_NOTICE);
+            return $stdout -> read($length);
+          },
+          // eof
+          function() use ($stdout) {
+            trigger_error("Eof", E_USER_NOTICE);
+            return $stdout -> eof();
+          },
+          // close
+          function() use ($stdout) {
+            trigger_error("Close", E_USER_NOTICE);
+            $stdout -> close();
+          }
+        ));
     }
 
 

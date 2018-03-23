@@ -4,6 +4,7 @@ namespace Actions\Repositories;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Classes\HttpStreamAdapter;
 
 /**
  * Class Download
@@ -39,12 +40,26 @@ class Download extends Action {
       $this -> notFound();
     }
 
-    if (!headers_sent()) {
-      header('Content-Type: application/zip', true);
-    }
-    // TODO: do not read entire stream
-    echo $ref -> export($args['type']) -> read();
-    die;
+    $stdout = $ref -> export($args['type']);
+    return $response
+      -> withHeader('Content-Type', 'application/zip')
+      -> withBody(new HttpStreamAdapter(
+        // read
+        function($length = -1) use ($stdout) {
+          trigger_error("Read `${length}`", E_USER_NOTICE);
+          return $stdout -> read($length);
+        },
+        // eof
+        function() use ($stdout) {
+          trigger_error("Eof", E_USER_NOTICE);
+          return $stdout -> eof();
+        },
+        // close
+        function() use ($stdout) {
+          trigger_error("Close", E_USER_NOTICE);
+          $stdout -> close();
+        }
+      ));
   }
 
 }
