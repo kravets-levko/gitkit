@@ -1,12 +1,12 @@
-{% extends 'layout/main.twig' %}
+{% extends '/layout/main.twig' %}
 
 {% block title %}{{ repository.name }} - GitKit{% endblock %}
 
 {% block content %}
 {% spaceless %}
-  <div>{% include 'components/repository-header.twig' with {repository: repository} %}</div>
+  <div>{% include '/components/repository-header.twig' with {repository: repository} %}</div>
   <div class="my-3">
-    {% include 'components/repository-stats.twig' with {
+    {% include '/components/repository-stats.twig' with {
       repository: repository,
       ref: ref,
       base: repository.name,
@@ -42,7 +42,7 @@
                 v-bs-clipboard data-clipboard-text="{{ url }}"
                 v-bs-tooltip data-placement="bottom"
                 title="Copy to clipboard" data-title-copied="Copied!"
-              >{% include 'icon.twig' with { icon: 'clippy' } %}</button>
+              >{% include '/icon.twig' with { icon: 'clippy' } %}</button>
             </span>
           </div>
           <div>

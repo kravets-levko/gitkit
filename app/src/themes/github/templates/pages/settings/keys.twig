@@ -1,4 +1,4 @@
-{% extends 'pages/settings/layout.twig' %}
+{% extends 'layout.twig' %}
 
 {% block title %}SSH keys - GitKit{% endblock %}
 
@@ -32,7 +32,7 @@
   {% for index, key in keys if key.valid %}
     <div class="list-group-item ssh-public-key">
       <div class="ssh-public-key-icon d-flex flex-column justify-content-center text-center mr-3">
-        <div class="mb-2">{% include 'icon.twig' with { icon: 'key', size: 32 } %}</div>
+        <div class="mb-2">{% include '/icon.twig' with { icon: 'key', size: 32 } %}</div>
         <div><small class="border border-secondary rounded px-2 py-1 text-nowrap">{{ key.algorithm }}</small></div>
       </div>
 
@@ -55,7 +55,7 @@
               v-bs-clipboard data-clipboard-text="{{ key }}"
               v-bs-tooltip data-placement="bottom"
               title="Copy key to clipboard" data-title-copied="Copied!"
-            >{% include 'icon.twig' with { icon: 'clippy', class: 'align-top' } %}</button>
+            >{% include '/icon.twig' with { icon: 'clippy', class: 'align-top' } %}</button>
           </div>
         </div>
       </div>

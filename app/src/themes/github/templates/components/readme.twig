@@ -3,7 +3,7 @@
   {% if node.type == 'blob' %}
     <div class="card m-0">
       <div class="card-header">
-        <span class="mr-1">{% include 'icon.twig' with { icon: 'book' } %}</span>
+        <span class="mr-1">{% include '/icon.twig' with { icon: 'book' } %}</span>
         <span>{{ node.name }}</span>
       </div>
       <div vue-widget class="card-body">

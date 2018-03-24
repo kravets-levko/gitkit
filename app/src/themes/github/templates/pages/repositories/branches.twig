@@ -1,10 +1,10 @@
-{% extends 'layout/main.twig' %}
+{% extends '/layout/main.twig' %}
 
 {% block title %}{{ repository.name }} - GitKit{% endblock %}
 
 {% block content %}
   {% spaceless %}
-    <h1>{% include 'components/repository-header.twig' with {repository: repository} %}</h1>
+    <h1>{% include '/components/repository-header.twig' with {repository: repository} %}</h1>
 
     <div class="my-3 list-group">
       {% for branch in repository.branches %}
@@ -13,7 +13,7 @@
         <div class="row no-gutters align-items-center">
           <div class="col pl-3">
             <span class="{{ is_default ? 'text-success' : 'text-muted' }} mr-1"
-            >{% include 'icon.twig' with { icon: 'git-branch' } %}</span>
+            >{% include '/icon.twig' with { icon: 'git-branch' } %}</span>
             <a href="{{ repository.name }}/tree/{{ branch.name }}">{{ branch.name }}</a>
           </div>
           <div class="col-auto">
@@ -26,7 +26,7 @@
                 <input type="hidden" name="branch" value="{{ branch.name }}">
                 <button class="btn bg-white text-danger border-0 mr-2"
                   name="action" value="delete" type="submit">
-                  {% include 'icon.twig' with { icon: 'trashcan' } %}
+                  {% include '/icon.twig' with { icon: 'trashcan' } %}
                 </button>
               </form>
             {% endif %}

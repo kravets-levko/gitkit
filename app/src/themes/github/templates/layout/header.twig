@@ -2,7 +2,7 @@
 <div class="bg-dark sticky-top">
   <div class="container">
     <nav class="navbar navbar-expand navbar-dark justify-content-start pl-0 pr-0">
-      <a class="navbar-brand p-0" href="">{% include 'icon.twig' with {
+      <a class="navbar-brand p-0" href="">{% include '/icon.twig' with {
         icon: 'logo', size: 36, iconset: 'app'
       } %}</a>
 
@@ -17,7 +17,7 @@
       <div class="navbar-nav">
         <div class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)">
-            {% include 'icon.twig' with { icon: 'gear', size: 20, class: 'align-top' } %}
+            {% include '/icon.twig' with { icon: 'gear', size: 20, class: 'align-top' } %}
           </a>
           <div class="dropdown-menu dropdown-menu-right">
             <a class="dropdown-item" href="new">Create repository</a>

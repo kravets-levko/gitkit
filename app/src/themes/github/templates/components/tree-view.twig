@@ -21,8 +21,8 @@
       <tr>
         <td class="py-2">
             <span class="mr-1 text-secondary">
-              {% if node.type == 'blob' %}{% include 'icon.twig' with { icon: 'file' } %}{% endif %}
-              {% if node.type == 'tree' %}{% include 'icon.twig' with { icon: 'file-directory' } %}{% endif %}
+              {% if node.type == 'blob' %}{% include '/icon.twig' with { icon: 'file' } %}{% endif %}
+              {% if node.type == 'tree' %}{% include '/icon.twig' with { icon: 'file-directory' } %}{% endif %}
             </span>
           <a href="{{ base }}/{{ node.type }}/{{ ref.name }}:{{ node.path }}">{{ node.name }}</a>
         </td>

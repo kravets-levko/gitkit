@@ -6,6 +6,7 @@ use Twig_Extension as TwigExtension;
 use Twig_Filter as TwigFilter;
 
 use Classes\Twig\TokenParser\Pre as TwigTokenParserPre;
+use Classes\Twig\NodeVisitor\RelativePath as TwigNodeVisitorRelativePath;
 
 class GitKit extends TwigExtension {
 
@@ -38,6 +39,12 @@ class GitKit extends TwigExtension {
   public function getTokenParsers() {
     return [
       new TwigTokenParserPre(),
+    ];
+  }
+
+  public function getNodeVisitors() {
+    return [
+      new TwigNodeVisitorRelativePath(),
     ];
   }
 

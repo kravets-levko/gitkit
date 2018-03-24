@@ -25,13 +25,13 @@ final class Pre extends TwigTokenParser {
     $lineno = $token -> getLine();
 
     $this -> parser -> getStream() -> expect(TwigToken::BLOCK_END_TYPE);
-    $body = $this -> parser -> subparse(array($this, 'decideSpacelessEnd'), true);
+    $body = $this -> parser -> subparse([$this, 'decidePreEnd'], true);
     $this -> parser -> getStream() -> expect(TwigToken::BLOCK_END_TYPE);
 
     return new TwigNodePre($body, $lineno, $this -> getTag());
   }
 
-  public function decideSpacelessEnd(TwigToken $token) {
+  public function decidePreEnd(TwigToken $token) {
     return $token -> test('endpre');
   }
 
