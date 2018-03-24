@@ -5,11 +5,6 @@ namespace Actions\Repositories;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-/**
- * Class Commits
- *
- * @property \Slim\Views\Twig $view
- */
 class Commits extends Action {
 
   public function get(Request $request, Response $response, $args) {
@@ -49,7 +44,7 @@ class Commits extends Action {
 
     $next = @$ref -> commits[$index + $count];
 
-    return $this -> view -> render($response, 'pages/repositories/commits.twig', [
+    return $this -> render('repositories/commits', [
       'repository' => $this -> repository,
       'ref' => $ref,
       'groups' => $groups,

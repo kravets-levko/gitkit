@@ -30,8 +30,22 @@ class Action {
     return $response;
   }
 
-  public function notFound() {
+  protected function notFound() {
     throw new NotFoundException($this -> currentRequest, $this -> currentResponse);
+  }
+
+  protected function render(string $template, array $data = null) {
+    if (!$this -> currentResponse) {
+      throw new \RuntimeException('Cannot render template when not handling request');
+    }
+    if (!is_string($template) || ($template === '')) {
+      throw new \RuntimeException('Template not specified');
+    }
+    return $this -> view -> render(
+      $this -> currentResponse,
+      trim($template, '/') . '/main.twig',
+      is_array($data) ? $data : []
+    );
   }
 
   public function __invoke(Request $request, Response $response, $args) {

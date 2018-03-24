@@ -1,10 +1,10 @@
-{% extends '/layout/main.twig' %}
+{% extends '/layouts/default/main.twig' %}
 
 {% block title %}{{ repository.name }} - GitKit{% endblock %}
 
 {% block content %}
   {% spaceless %}
-    <h1>{% include '/components/repository-header.twig' with {repository: repository} %}</h1>
+    <h1>{% include '../repository-header.twig' with {repository: repository} %}</h1>
 
     <div class="card my-3">
       <h5 class="card-header">Settings</h5>

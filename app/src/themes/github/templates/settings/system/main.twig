@@ -1,8 +1,10 @@
-{% extends 'layout.twig' %}
+{% extends '/layouts/sidebar/main.twig' %}
 
 {% block title %}System settings - GitKit{% endblock %}
 
-{% block settings_page %}
+{% block sidebar %}{% include '../menu.twig' %}{% endblock %}
+
+{% block content %}
 {% spaceless %}
 
   <h1 class="mb-0">System settings</h1>

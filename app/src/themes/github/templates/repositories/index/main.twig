@@ -1,4 +1,4 @@
-{% extends '/layout/main.twig' %}
+{% extends '/layouts/default/main.twig' %}
 
 {% block title %}GitKit{% endblock %}
 
@@ -13,7 +13,7 @@
       {% set name = repository.name | split('/') | last %}
       <hr>
       <div class="my-3">
-        {% include '/components/repository-header.twig' with {repository: repository} %}
+        {% include '../repository-header.twig' with {repository: repository} %}
         {% if repository.latestCommit %}
         <div>
           <strong>Latest commit:</strong>

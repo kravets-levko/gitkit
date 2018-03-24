@@ -6,11 +6,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Classes\HttpStreamAdapter;
 
-/**
- * Class Blob
- *
- * @property \Slim\Views\Twig $view
- */
 class Blob extends Action {
 
   public function get(Request $request, Response $response, $args) {
@@ -57,7 +52,7 @@ class Blob extends Action {
     }
 
 
-    return $this -> view -> render($response, 'pages/repositories/blob.twig', [
+    return $this -> render('repositories/blob', [
       'repository' => $this -> repository,
       'ref' => $ref,
       'blob' => $blob,

@@ -1,0 +1,22 @@
+{% extends '/layouts/default/main.twig' %}
+
+{% block title %}{{ repository.name }} - GitKit{% endblock %}
+
+{% block content %}
+{% spaceless %}
+  <div>{% include '../repository-header.twig' with {repository: repository} %}</div>
+  <div class="my-3">
+    {% include 'repository-stats.twig' with {
+      repository: repository,
+      ref: ref,
+      base: repository.name,
+    } %}
+  </div>
+
+  {% if repository.isEmpty %}
+    {% include 'empty.twig' %}
+  {% else %}
+    {% include 'default.twig' %}
+  {% endif %}
+{% endspaceless %}
+{% endblock %}

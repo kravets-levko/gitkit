@@ -5,11 +5,6 @@ namespace Actions\Repositories;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-/**
- * Class Settings
- *
- * @property \Slim\Views\Twig $view
- */
 class Settings extends Action {
 
   public function post(Request $request, Response $response) {
@@ -39,7 +34,7 @@ class Settings extends Action {
   }
 
   public function get(Request $request, Response $response) {
-    return $this -> view -> render($response, 'pages/repositories/settings.twig', [
+    return $this -> render('repositories/settings', [
       'repository' => $this -> repository,
     ]);
   }

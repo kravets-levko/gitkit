@@ -1,8 +1,10 @@
-{% extends 'layout.twig' %}
+{% extends '/layouts/sidebar/main.twig' %}
 
 {% block title %}SSH keys - GitKit{% endblock %}
 
-{% block settings_page %}
+{% block sidebar %}{% include '../menu.twig' %}{% endblock %}
+
+{% block content %}
 {% spaceless %}
 
   <div class="d-flex">

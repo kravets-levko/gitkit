@@ -1,18 +1,19 @@
-{% extends '/layout/main.twig' %}
+{% extends '/layouts/default/main.twig' %}
 
 {% block title %}{{ repository.name }} - GitKit{% endblock %}
 
 {% block content %}
 {% spaceless %}
-  <h1>{% include '/components/repository-header.twig' with {repository: repository} %}</h1>
+  <h1>{% include '../repository-header.twig' with {repository: repository} %}</h1>
 
   <div class="row my-3">
     <div class="col-auto">
-      {% include '/components/ref-selector.twig' with {
+      {% include '../ref-selector.twig' with {
         ref: ref,
         branches: repository.branches,
         tags: repository.tags,
-        base: repository.name ~ '/commits',
+        base: repository.name,
+        prefix: '/commits/',
       } %}
     </div>
     <div class="col-auto text-nowrap d-flex align-items-center">

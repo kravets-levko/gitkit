@@ -6,11 +6,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Classes\HttpStreamAdapter;
 
-/**
- * Class Download
- *
- * @property \Slim\Views\Twig $view
- */
 class Download extends Action {
 
   protected function beforeRequest(Request $request, Response $response, &$args) {

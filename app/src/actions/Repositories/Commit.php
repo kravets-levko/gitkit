@@ -5,11 +5,6 @@ namespace Actions\Repositories;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-/**
- * Class Commit
- *
- * @property \Slim\Views\Twig $view
- */
 class Commit extends Action {
 
   public function get(Request $request, Response $response, $args) {
@@ -30,7 +25,7 @@ class Commit extends Action {
       }
     }
 
-    return $this -> view -> render($response, 'pages/repositories/commit.twig', [
+    return $this -> render('repositories/commit', [
       'repository' => $this -> repository,
       'commit' => $commit,
       'current_url' => '' . $request -> getUri(),

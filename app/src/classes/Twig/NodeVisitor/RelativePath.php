@@ -35,20 +35,27 @@ final class RelativePath extends TwigBaseNodeVisitor {
       // {% extends %}
       if ($node -> hasNode('parent')) {
         $parent = $node -> getNode('parent');
-        $relative = $parent -> getAttribute('value');
-        if (is_string($relative)) {
-          $resolved = resolve_path($relative, pathinfo($baseName, PATHINFO_DIRNAME));
-          $parent -> setAttribute('value', $resolved);
+        if ($parent -> hasAttribute('value')) {
+          $relative = $parent -> getAttribute('value');
+          if (is_string($relative)) {
+            $resolved = resolve_path($relative, pathinfo($baseName, PATHINFO_DIRNAME));
+            $parent -> setAttribute('value', $resolved);
+          }
         }
       }
 
-      // {% include %}
-      if (($node -> getNodeTag() == 'include') && $node -> hasNode('expr')) {
+      // {% include %} {% import %}
+      if (
+        in_array($node -> getNodeTag(), ['include', 'import']) &&
+        $node -> hasNode('expr')
+      ) {
         $expr = $node -> getNode('expr');
-        $relative = $expr -> getAttribute('value');
-        if (is_string($relative)) {
-          $resolved = resolve_path($relative, pathinfo($baseName, PATHINFO_DIRNAME));
-          $expr -> setAttribute('value', $resolved);
+        if ($expr -> hasAttribute('value')) {
+          $relative = $expr -> getAttribute('value');
+          if (is_string($relative)) {
+            $resolved = resolve_path($relative, pathinfo($baseName, PATHINFO_DIRNAME));
+            $expr -> setAttribute('value', $resolved);
+          }
         }
       }
     }

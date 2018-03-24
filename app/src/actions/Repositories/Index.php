@@ -6,11 +6,6 @@ use Actions\Action;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-/**
- * Class Index
- *
- * @property \Slim\Views\Twig $view
- */
 class Index extends Action {
 
   public function get(Request $request, Response $response, $args) {
@@ -34,7 +29,7 @@ class Index extends Action {
       return $b - $a;
     });
 
-    return $this -> view -> render($response, 'pages/repositories/index.twig', [
+    return $this -> render('repositories/index', [
       'repositories' => $repos,
       'group' => $group,
     ]);

@@ -1,23 +1,25 @@
-{% extends '/layout/main.twig' %}
+{% extends '/layouts/default/main.twig' %}
 
 {% block title %}{{ repository.name }} - GitKit{% endblock %}
 
 {% block content %}
-  <h1>{% include '/components/repository-header.twig' with {repository: repository} %}</h1>
+  <h1>{% include '../repository-header.twig' with {repository: repository} %}</h1>
 
   {% set rawUrl = repository.name ~ '/' ~ blob.type ~ '/' ~ ref.name ~ ':' ~ blob.path ~ '?raw' %}
 
   <div class="row my-3">
     <div class="col-auto">
-      {% include '/components/ref-selector.twig' with {
+      {% include '../ref-selector.twig' with {
         ref: ref,
         branches: repository.branches,
         tags: repository.tags,
-        base: repository.name ~ '/tree',
+        base: repository.name,
+        prefix: '/blob/',
+        suffix: ':' ~ blob.path,
       } %}
     </div>
     <div class="col d-flex align-items-center p-0 text-larger">
-      {% include '/components/path-breadcrumbs.twig' with {
+      {% include '../path-breadcrumbs.twig' with {
         path: blob.path,
         is_tree: false,
         repository: repository,
@@ -36,7 +38,7 @@
 
   <div class="card my-3">
     <div class="card-header border-0 p-0">
-      {% include '/components/latest-commit.twig' with {
+      {% include '../latest-commit.twig' with {
         commit: blob.commit,
         base: repository.name
       } %}
@@ -45,7 +47,7 @@
 
   <div class="card my-3">
     <div class="card-header">
-      {% include '/components/blob-info.twig' with {
+      {% include 'blob-info.twig' with {
         blob: blob,
         ref: ref,
         base: repository.name,

@@ -7,11 +7,6 @@ use SSH\{ AuthorizedKeys, InvalidPublicKey };
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-/**
- * Class Repository
- *
- * @property \Slim\Views\Twig $view
- */
 class Keys extends Action {
 
   protected function beforeRequest(Request $request, Response $response, &$args) {
@@ -51,7 +46,7 @@ class Keys extends Action {
   public function get(Request $request, Response $response, $args) {
     $config = $this -> container -> get('config');
     $keys = new AuthorizedKeys($config);
-    return $this -> view -> render($response, 'pages/settings/keys.twig', [
+    return $this -> render('settings/keys', [
       'keys' => $keys -> items,
       'error' => @$args['error'],
     ]);

@@ -7,11 +7,6 @@ use Models\Repositories\Create as CreateModel;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-/**
- * Class View
- *
- * @property \Slim\Views\Twig $view
- */
 class Create extends Action {
 
   public function post(Request $request, Response $response, $args) {
@@ -46,7 +41,7 @@ class Create extends Action {
     }
     ksort($groups);
 
-    return $this -> view -> render($response, 'pages/repositories/create.twig', [
+    return $this -> render('repositories/create', [
       'groups' => $groups,
       'model' => $model,
     ]);
