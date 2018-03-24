@@ -16,8 +16,8 @@
   {% set cloneUrls = repository.cloneUrls %}
 
   {% if cloneUrls | length > 1 %}
-  <div class="py-1">
-    <div class="btn-group hr my-4" role="group" aria-label="Basic example">
+  <div>
+    <div class="btn-group separator mb-2">
       {% for key, url in cloneUrls %}
         <button type="button" class="btn btn-light border"
           data-toggle="xtab" data-target="#repository-setup-{{ key }}">Use {{ key | upper }}</button>
@@ -54,7 +54,7 @@
         </div>
       </div>
 
-      <hr data-content="OR">
+      <div class="separator"><span class="separator-badge">OR</span></div>
 
       <div class="my-3">
         <h5><strong>Create a new repository on the command line:</strong></h5>
@@ -70,7 +70,7 @@
         </div>
       </div>
 
-      <hr data-content="OR">
+      <div class="separator"><span class="separator-badge">OR</span></div>
 
       <div class="mt-3">
         <h5><strong>Push an existing repository from the command line:</strong></h5>

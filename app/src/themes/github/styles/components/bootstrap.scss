@@ -153,35 +153,28 @@ a.form-control {
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
 }
 
-.card-header.collapsed {
-  border-bottom: 0;
-}
+.separator {
+  // strip units - we need just a value
+  // example: 10px / (10px * 0 + 1) => 10px / (0px + 1) => 10px / 1px => 10
+  $size: $hr-border-width / ($hr-border-width * 0 + 1);
 
-.hr {
-  height: 1px;
-  border: 0;
-  border-top: $hr-border-width solid $hr-border-color;
+  margin: $hr-margin-y 0;
   display: flex;
-  justify-content: center;
   align-items: center;
-}
-
-hr[data-content] {
-  background: $white;
-  color: $text-muted;
-
-  margin: $spacer + 1rem 0;
-
-  display: flex;
   justify-content: center;
-  align-items: center;
+  background: url('data:image/svg+xml,' +
+    '<svg version="1.1" standalone="no" ' +
+      'xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" ' +
+      'viewBox="0 0 #{$size} #{$size}" height="#{$size}" width="#{$size}">' +
+      '<rect style="fill:#{$hr-border-color}" y="0" x="0" height="#{$size}" width="#{$size}" />' +
+    '</svg>'
+  ) left center repeat-x;
 
-  &:before {
-    content: attr(data-content);
+  .separator-badge {
     border: $hr-border-width solid $hr-border-color;
     border-radius: $border-radius;
     padding: 0.1rem 0.5rem;
-    color: inherit;
-    background: inherit;
+    color: $text-muted;
+    background: $white;
   }
 }
