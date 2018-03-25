@@ -1,33 +1,35 @@
 {% spaceless %}
-<div class="container">
-  <hr class="mt-4">
-  <div class="row no-gutters mb-3">
-    <div class="col-5">
-      <nav class="navbar navbar-expand justify-content-start p-0">
-        <div class="navbar-nav">
-          <div class="nav-item">
-            <a class="nav-link pl-0" href="https://github.com/kravets-levko/gitkit/">GitKit</a>
+  {% from '/macros.twig' import icon %}
+
+  <div class="container">
+    <hr class="mt-4">
+    <div class="row no-gutters mb-3">
+      <div class="col-5">
+        <nav class="navbar navbar-expand justify-content-start p-0">
+          <div class="navbar-nav">
+            <div class="nav-item">
+              <a class="nav-link pl-0" href="https://github.com/kravets-levko/gitkit/">GitKit</a>
+            </div>
+            <div class="navbar-text">{{ version }}</div>
           </div>
-          <div class="navbar-text">{{ version }}</div>
-        </div>
-      </nav>
-    </div>
-    <div class="col-2 d-flex">
-      <nav class="navbar navbar-expand justify-content-center w-100 p-0">
-        <a class="navbar-brand text-secondary m-0 p-0 o-2" href="">
-          {% include '/icon.twig' with { icon: 'logo', size: 28, iconset: 'app' } %}
-        </a>
-      </nav>
-    </div>
-    <div class="col-5">
-      <nav class="navbar navbar-expand justify-content-end p-0">
-        <div class="navbar-nav">
-          <div class="nav-item">
-            <a class="nav-link pr-0" href="https://github.com/kravets-levko/gitkit/issues/new" target="_blank">Report an issue</a>
+        </nav>
+      </div>
+      <div class="col-2 d-flex">
+        <nav class="navbar navbar-expand justify-content-center w-100 p-0">
+          <a class="navbar-brand text-secondary m-0 p-0 o-2" href="">
+            {{ icon(assetsPath, 'logo@app', 28) }}
+          </a>
+        </nav>
+      </div>
+      <div class="col-5">
+        <nav class="navbar navbar-expand justify-content-end p-0">
+          <div class="navbar-nav">
+            <div class="nav-item">
+              <a class="nav-link pr-0" href="https://github.com/kravets-levko/gitkit/issues/new" target="_blank">Report an issue</a>
+            </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      </div>
     </div>
   </div>
-</div>
 {% endspaceless %}

@@ -1,3 +1,5 @@
+{% from '/macros.twig' import icon %}
+
 {% set cloneUrls = repository.cloneUrls %}
 
 {% if cloneUrls | length > 1 %}
@@ -27,7 +29,7 @@
               v-bs-clipboard data-clipboard-text="{{ url }}"
               v-bs-tooltip data-placement="bottom"
               title="Copy to clipboard" data-title-copied="Copied!"
-            >{% include '/icon.twig' with { icon: 'clippy' } %}</button>
+            >{{ icon(assetsPath, 'clippy') }}</button>
           </span>
         </div>
         <div>

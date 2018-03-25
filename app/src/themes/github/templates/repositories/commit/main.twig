@@ -4,6 +4,8 @@
 
 {% block content %}
 {% spaceless %}
+  {% from '/macros.twig' import icon %}
+
   <h1>{% include '../repository-header.twig' with {repository: repository} %}</h1>
 
   {% set slots = 5 %}
@@ -25,14 +27,14 @@
           {% set commitBranch = commit.branches | first %}
             <a class="link-secondary mr-4"
               href="{{ repository.name }}{% if commitBranch.name != repository.defaultBranch.name %}/tree/{{ commitBranch.name }}{% endif %}">
-              <span class="text-muted mr-1">{% include '/icon.twig' with { icon: 'git-branch' } %}</span>
+              <span class="text-muted mr-1">{{ icon(assetsPath, 'git-branch') }}</span>
               <strong>{{ commitBranch.name }}</strong>
             </a>
         {% endif %}
         {% if commit.tags | length > 0 %}
           {% set commitTag = commit.tags | first %}
           <a class="link-secondary mr-2" href="{{ repository.name }}/tree/{{ commitTag.name }}">
-            <span class="text-muted mr-1">{% include '/icon.twig' with { icon: 'tag' } %}</span>
+            <span class="text-muted mr-1">{{ icon(assetsPath, 'tag') }}</span>
             <strong>{{ commitTag.name }}</strong>
           </a>
           {% if commit.tags | length > 1 %}
@@ -93,7 +95,7 @@
   </div>
 
   <div class="my-3">
-    {% include '/icon.twig' with { icon: 'diff' } %}
+    {{ icon(assetsPath, 'diff') }}
     Showing
     <strong>{{ stats.items | length }} changed file(s)</strong>
     with

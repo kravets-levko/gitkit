@@ -1,45 +1,49 @@
-<table class="table table-striped table-hover m-0">
-  <tbody>
-  {% if tree.path != '' %}
-    <tr>
-      {% set parentPath = tree.path | split('/') | reverse | slice(1) | reverse | join('/') %}
-      <td colspan="3" class="py-2">
-        {% if parentPath == '' %}
-          {% if ref.name == defaultBranch.name %}
-            <a href="{{ base }}" class="tree-level-up ml-1"></a>
-          {% else %}
-            <a href="{{ base }}/tree/{{ ref.name }}" class="tree-level-up ml-1"></a>
-          {% endif %}
-        {% else %}
-          <a href="{{ base }}/tree/{{ ref.name }}:{{ parentPath }}" class="tree-level-up ml-1"></a>
-        {% endif %}
-      </td>
-    </tr>
-  {% endif %}
-  {% spaceless %}
-    {% for node in tree.children %}
+{% spaceless %}
+  {% from '/macros.twig' import icon %}
+
+  <table class="table table-striped table-hover m-0">
+    <tbody>
+    {% if tree.path != '' %}
       <tr>
-        <td class="py-2">
-            <span class="mr-1 text-secondary">
-              {% if node.type == 'blob' %}{% include '/icon.twig' with { icon: 'file' } %}{% endif %}
-              {% if node.type == 'tree' %}{% include '/icon.twig' with { icon: 'file-directory' } %}{% endif %}
-            </span>
-          <a href="{{ base }}/{{ node.type }}/{{ ref.name }}:{{ node.path }}">{{ node.name }}</a>
-        </td>
-        <td class="py-2">
-          <div class="text-truncate" style="max-width: 400px;">
-            <a title="{{ node.commit.info.message }}"
-              href="{{ base }}/commit/{{ node.commit.hash }}"
-            >{{ node.commit.info.message }}</a>
-          </div>
-        </td>
-        <td width="1%" class="py-2 text-nowrap text-right">
-          <span title="{{ node.commit.info.committerDate | full_date }}">{{
-            node.commit.info.committerDate | format_time_ago
-          }}</span>
+        {% set parentPath = tree.path | split('/') | reverse | slice(1) | reverse | join('/') %}
+        <td colspan="3" class="py-2">
+          {% if parentPath == '' %}
+            {% if ref.name == defaultBranch.name %}
+              <a href="{{ base }}" class="tree-level-up ml-1"></a>
+            {% else %}
+              <a href="{{ base }}/tree/{{ ref.name }}" class="tree-level-up ml-1"></a>
+            {% endif %}
+          {% else %}
+            <a href="{{ base }}/tree/{{ ref.name }}:{{ parentPath }}" class="tree-level-up ml-1"></a>
+          {% endif %}
         </td>
       </tr>
-    {% endfor %}
-  {% endspaceless %}
-  </tbody>
-</table>
+    {% endif %}
+    {% spaceless %}
+      {% for node in tree.children %}
+        <tr>
+          <td class="py-2">
+              <span class="mr-1 text-secondary">
+                {% if node.type == 'blob' %}{{ icon(assetsPath, 'file') }}{% endif %}
+                {% if node.type == 'tree' %}{{ icon(assetsPath, 'file-directory') }}{% endif %}
+              </span>
+            <a href="{{ base }}/{{ node.type }}/{{ ref.name }}:{{ node.path }}">{{ node.name }}</a>
+          </td>
+          <td class="py-2">
+            <div class="text-truncate" style="max-width: 400px;">
+              <a title="{{ node.commit.info.message }}"
+                href="{{ base }}/commit/{{ node.commit.hash }}"
+              >{{ node.commit.info.message }}</a>
+            </div>
+          </td>
+          <td width="1%" class="py-2 text-nowrap text-right">
+            <span title="{{ node.commit.info.committerDate | full_date }}">{{
+              node.commit.info.committerDate | format_time_ago
+            }}</span>
+          </td>
+        </tr>
+      {% endfor %}
+    {% endspaceless %}
+    </tbody>
+  </table>
+{% endspaceless %}

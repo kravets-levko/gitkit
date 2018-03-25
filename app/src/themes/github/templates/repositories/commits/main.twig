@@ -4,6 +4,8 @@
 
 {% block content %}
 {% spaceless %}
+  {% from '/macros.twig' import icon %}
+
   <h1>{% include '../repository-header.twig' with {repository: repository} %}</h1>
 
   <div class="row my-3">
@@ -17,7 +19,7 @@
       } %}
     </div>
     <div class="col-auto text-nowrap d-flex align-items-center">
-      <span class="text-muted mr-1">{% include '/icon.twig' with { icon: 'history' } %}</span>
+      <span class="text-muted mr-1">{{ icon(assetsPath, 'history') }}</span>
       <strong class="mr-1">{{ ref.commits | length }}</strong>
       <span class="text-muted">commit(s)</span>
     </div>
@@ -27,7 +29,7 @@
   <div class="my-3 commit-history">
   {% for date, commits in groups %}
     <div class="commit-history-header">
-      {% include '/icon.twig' with { icon: 'git-commit' } %}
+      {{ icon(assetsPath, 'git-commit') }}
       <span class="text-muted">Commits on {{ date }}</span>
     </div>
     <div class="commit-history-items">
@@ -53,7 +55,7 @@
               v-bs-clipboard data-clipboard-text="{{ commit.hash }}"
               v-bs-tooltip data-placement="bottom"
               title="Copy the full hash" data-title-copied="Copied!"
-            >{% include '/icon.twig' with { icon: 'clippy', class: 'align-middle' } %}</button>
+            >{{ icon(assetsPath, 'clippy', null, null, 'align-middle') }}</button>
             <a class="btn form-control"
               href="{{ repository.name }}/commit/{{ commit.hash }}">
               <span class="text-monospace align-middle d-inline-block" style="height: 1.2em">
@@ -66,7 +68,7 @@
             title="Browse the repository at this point in the history"
             v-bs-tooltip data-placement="bottom"
             href="{{ repository.name }}/tree/{{ commit.hash }}"
-          >{% include '/icon.twig' with { icon: 'code', class: 'align-middle' } %}</a>
+          >{{ icon(assetsPath, 'code', null, null, 'align-middle') }}</a>
         </div>
       </div>
     {% endfor %}

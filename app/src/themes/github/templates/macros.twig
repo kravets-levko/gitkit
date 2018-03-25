@@ -1,0 +1,8 @@
+{% macro icon(assetsPath, icon, width, height, class) %}{% spaceless %}
+  {% set icon = (icon ~ '@octicons') | split('@') %}
+  {% set iconset = icon[1] %}
+  {% set icon = icon[0] %}
+  <svg class="octicon {{ class }}" width="{{ width ?? 16 }}" height="{{ height ?? width ?? 16 }}">
+    <use xlink:href="{{ assetsPath }}/{{ iconset ?? 'octicons' }}.svg#{{ icon | escape('url') }}"></use>
+  </svg>
+{% endspaceless %}{% endmacro %}

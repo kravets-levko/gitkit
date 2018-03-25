@@ -3,37 +3,39 @@
 {% block title %}{{ repository.name }} - GitKit{% endblock %}
 
 {% block content %}
-  {% spaceless %}
-    <h1>{% include '../repository-header.twig' with {repository: repository} %}</h1>
+{% spaceless %}
+  {% from '/macros.twig' import icon %}
 
-    <div class="my-3 list-group">
-      {% for branch in repository.branches %}
-      <div class="list-group-item px-0">
-        {% set is_default = branch.name == repository.defaultBranch.name %}
-        <div class="row no-gutters align-items-center">
-          <div class="col pl-3">
-            <span class="{{ is_default ? 'text-success' : 'text-muted' }} mr-1"
-            >{% include '/icon.twig' with { icon: 'git-branch' } %}</span>
-            <a href="{{ repository.name }}/tree/{{ branch.name }}">{{ branch.name }}</a>
-          </div>
-          <div class="col-auto">
-            {% if is_default %}
-              <span class="badge badge-success font-weight-normal" style="font-size: 90%">Default</span>
-              <a class="btn form-control w-auto d-inline-block ml-4 mr-3"
-                href="{{ repository.name }}/settings">Change default branch</a>
-            {% else %}
-              <form method="post" class="d-inline-block">
-                <input type="hidden" name="branch" value="{{ branch.name }}">
-                <button class="btn bg-white text-danger border-0 mr-2"
-                  name="action" value="delete" type="submit">
-                  {% include '/icon.twig' with { icon: 'trashcan' } %}
-                </button>
-              </form>
-            {% endif %}
-          </div>
+  <h1>{% include '../repository-header.twig' with {repository: repository} %}</h1>
+
+  <div class="my-3 list-group">
+    {% for branch in repository.branches %}
+    <div class="list-group-item px-0">
+      {% set is_default = branch.name == repository.defaultBranch.name %}
+      <div class="row no-gutters align-items-center">
+        <div class="col pl-3">
+          <span class="{{ is_default ? 'text-success' : 'text-muted' }} mr-1"
+          >{{ icon(assetsPath, 'git-branch') }}</span>
+          <a href="{{ repository.name }}/tree/{{ branch.name }}">{{ branch.name }}</a>
+        </div>
+        <div class="col-auto">
+          {% if is_default %}
+            <span class="badge badge-success font-weight-normal" style="font-size: 90%">Default</span>
+            <a class="btn form-control w-auto d-inline-block ml-4 mr-3"
+              href="{{ repository.name }}/settings">Change default branch</a>
+          {% else %}
+            <form method="post" class="d-inline-block">
+              <input type="hidden" name="branch" value="{{ branch.name }}">
+              <button class="btn bg-white text-danger border-0 mr-2"
+                name="action" value="delete" type="submit">
+                {{ icon(assetsPath, 'trashcan') }}
+              </button>
+            </form>
+          {% endif %}
         </div>
       </div>
-      {% endfor %}
     </div>
-  {% endspaceless %}
+    {% endfor %}
+  </div>
+{% endspaceless %}
 {% endblock %}

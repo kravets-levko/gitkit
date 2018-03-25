@@ -4,6 +4,8 @@
 
 {% block content %}
 {% spaceless %}
+  {% from '/macros.twig' import icon %}
+
   <div vue-widget>
     <div class="my-3">
       <a href="new{% if group %}?group={{ group | escape('url') }}{% endif %}" class="btn btn-success">New repository</a>
@@ -23,7 +25,7 @@
             {% set commitBranch = repository.latestCommit.branches | first %}
             <a class="ml-2"
               href="{{ repository.name }}{% if commitBranch.name != repository.defaultBranch.name %}/tree/{{ commitBranch.name }}{% endif %}">
-              <span class="text-muted">{% include '/icon.twig' with { icon: 'git-branch' } %}</span>
+              <span class="text-muted">{{ icon(assetsPath, 'git-branch') }}</span>
               <span>{{ commitBranch.name }}</span>
             </a>
             <span class="ml-2" title="{{ repository.latestCommit.info.committerDate | full_date }}">{{

@@ -21,6 +21,10 @@ class Tags extends Action {
   }
 
   public function get(Request $request, Response $response, $args) {
+    if (count($this -> repository -> tags) == 0) {
+      $this -> notFound();
+    }
+
     return $this -> render('repositories/tags', [
       'repository' => $this -> repository,
     ]);

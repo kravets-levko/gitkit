@@ -21,6 +21,10 @@ class Branches extends Action {
   }
 
   public function get(Request $request, Response $response, $args) {
+    if (count($this -> repository -> branches) == 0) {
+      $this -> notFound();
+    }
+
     return $this -> render('repositories/branches', [
       'repository' => $this -> repository,
     ]);

@@ -1,4 +1,6 @@
 {% spaceless %}
+  {% from '/macros.twig' import icon %}
+
   <div vue-widget class="dropdown" data-close-outside>
     <button class="btn btn-success dropdown-toggle" data-toggle="dropdown" type="button">Clone or download</button>
     <div class="dropdown-menu dropdown-menu-right shadow p-0">
@@ -35,7 +37,7 @@
                     v-bs-clipboard data-clipboard-text="{{ url }}"
                     v-bs-tooltip data-placement="bottom"
                     title="Copy to clipboard" data-title-copied="Copied!"
-                  >{% include '/icon.twig' with { icon: 'clippy' } %}</button>
+                  >{{ icon(assetsPath, 'clippy') }}</button>
                 </span>
               </div>
             </div>

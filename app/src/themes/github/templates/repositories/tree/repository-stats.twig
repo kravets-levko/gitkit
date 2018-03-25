@@ -1,45 +1,47 @@
 {% spaceless %}
-<div class="card">
-  <div class="card-body p-0">
-    <div class="row py-2">
-      <div class="col text-center">
-        <a class="link-secondary" href="{{ base }}/commits/{{ ref.name }}">
-          <span class="text-muted mr-1">{% include '/icon.twig' with { icon: 'history' } %}</span>
-          <strong>{{ ref.commits | length }}</strong><span class="text-muted-soft ml-1">commits</span>
-        </a>
-      </div>
+  {% from '/macros.twig' import icon %}
 
-      <div class="col text-center">
-        <a class="link-secondary" href="{{ base }}/branches">
-          <span class="text-muted mr-1">{% include '/icon.twig' with { icon: 'git-branch' } %}</span>
-          <strong>{{ repository.branches | length }}</strong><span class="text-muted-soft ml-1">branches</span>
-        </a>
-      </div>
-
-      <div class="col text-center">
-        <a class="link-secondary" href="{{ base }}/tags">
-          <span class="text-muted mr-1">{% include '/icon.twig' with { icon: 'tag' } %}</span>
-          <strong>{{ repository.tags | length }}</strong><span class="text-muted-soft ml-1">tags</span>
-        </a>
-      </div>
-
-      {% set node = ref.tree.children('LICEN[CS]E.*', 'LICEN[CS]E') | first %}
-      {% if node.type == 'blob' %}
+  <div class="card">
+    <div class="card-body p-0">
+      <div class="row py-2">
         <div class="col text-center">
-          <a class="link-secondary" href="{{ base }}/{{ node.type }}/{{ ref.name }}:{{ node.path }}">
-            <span class="text-muted mr-1">{% include '/icon.twig' with { icon: 'law' } %}</span>
-            <span>Licence</span>
+          <a class="link-secondary" href="{{ base }}/commits/{{ ref.name }}">
+            <span class="text-muted mr-1">{{ icon(assetsPath, 'history') }}</span>
+            <strong>{{ ref.commits | length }}</strong><span class="text-muted-soft ml-1">commits</span>
           </a>
         </div>
-      {% endif %}
 
-      <div class="col text-center">
-        <a class="link-secondary" href="{{ base }}/settings">
-          <span class="text-muted mr-1">{% include '/icon.twig' with { icon: 'gear' } %}</span>
-          <span>Settings</span>
-        </a>
+        <div class="col text-center">
+          <a class="link-secondary" href="{{ base }}/branches">
+            <span class="text-muted mr-1">{{ icon(assetsPath, 'git-branch') }}</span>
+            <strong>{{ repository.branches | length }}</strong><span class="text-muted-soft ml-1">branches</span>
+          </a>
+        </div>
+
+        <div class="col text-center">
+          <a class="link-secondary" href="{{ base }}/tags">
+            <span class="text-muted mr-1">{{ icon(assetsPath, 'tag') }}</span>
+            <strong>{{ repository.tags | length }}</strong><span class="text-muted-soft ml-1">tags</span>
+          </a>
+        </div>
+
+        {% set node = ref.tree.children('LICEN[CS]E.*', 'LICEN[CS]E') | first %}
+        {% if node.type == 'blob' %}
+          <div class="col text-center">
+            <a class="link-secondary" href="{{ base }}/{{ node.type }}/{{ ref.name }}:{{ node.path }}">
+              <span class="text-muted mr-1">{{ icon(assetsPath, 'law') }}</span>
+              <span>Licence</span>
+            </a>
+          </div>
+        {% endif %}
+
+        <div class="col text-center">
+          <a class="link-secondary" href="{{ base }}/settings">
+            <span class="text-muted mr-1">{{ icon(assetsPath, 'gear') }}</span>
+            <span>Settings</span>
+          </a>
+        </div>
       </div>
     </div>
   </div>
-</div>
 {% endspaceless %}
