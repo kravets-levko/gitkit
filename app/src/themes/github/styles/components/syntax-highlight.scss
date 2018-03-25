@@ -15,57 +15,103 @@ syntax-highlight,
 
   .source-line {
     display: table-row;
-    .source-line-number,
-    .source-line-text {
-      display: table-cell;
-      padding: 0;
-    }
 
     .source-line-number {
+      display: table-cell;
       width: 1%;
       min-width: 50px;
       text-align: right;
       color: $gray-400;
       user-select: none;
-      padding-right: 0.75rem;
+      white-space: nowrap;
+      padding: 0;
+
+      span {
+        display: inline-block;
+        padding: 0 0.5rem;
+        width: 50%;
+
+        &:only-child {
+          width: 100%;
+        }
+      }
+    }
+
+    .source-line-text {
+      display: table-cell;
+      padding: 0 0.5rem;
     }
   }
 
-  .source-line.highlighted {
-    .source-line-text, .source-line-text * {
-      background: mix($yellow, #ffffff, 20%);
+  @mixin highlight-variant($class, $color, $text-color: '') {
+    .source-line.#{$class} {
+      .source-line-text, .source-line-text * {
+        background: mix($color, $white, 20%);
+        @if ($text-color != '') {
+          color: mix($text-color, $gray-500, 40%);
+        }
+      }
     }
-  }
 
-  &.highlight-whole-line {
-    .source-line.highlighted {
+    &.highlight-whole-line {
+      .source-line.#{$class} {
+        .source-line-number {
+          background: mix($color, $white, 30%);
+          color: mix($color, $gray-500, 40%);
+
+          * {
+            color: inherit !important;
+            background: inherit !important;
+          }
+        }
+      }
+    }
+
+    &.selecting-enabled {
       .source-line-number {
-        background: mix($yellow, #ffffff, 30%);
-        color: mix($yellow, $gray-500, 40%);
+        cursor: pointer;
 
-        * {
-          color: inherit !important;
-          background: inherit !important;
+        &:hover, &:active, &:focus {
+          color: $gray-600;
+        }
+      }
+
+      &.highlight-whole-line {
+        .source-line.highlighted {
+          .source-line-number {
+            &:hover, &:active, &:focus {
+              color: mix($color, $gray-600, 40%);
+            }
+          }
         }
       }
     }
   }
 
-  &.selecting-enabled {
-    .source-line-number {
-      cursor: pointer;
+  @include highlight-variant('added', lighten($green, 20%));
+  @include highlight-variant('removed', lighten($red, 20%));
+  @include highlight-variant('muted', $gray-200);
+  @include highlight-variant('highlighted', $yellow);
+  @include highlight-variant('collapsed', lighten($primary, 10%), $primary);
 
-      &:hover, &:active, &:focus {
-        color: $gray-600;
-      }
+  .source-line.collapsed {
+    .source-line-number {
+      text-align: center;
+      padding-top: 0.2rem;
+      padding-bottom: 0.2rem;
     }
 
-    &.highlight-whole-line {
-      .source-line.highlighted {
-        .source-line-number {
-          &:hover, &:active, &:focus {
-            color: mix($yellow, $gray-600, 40%);
-          }
+    .source-line-text {
+      padding-top: 0.2rem;
+      padding-bottom: 0.2rem;
+    }
+
+    &.with-children {
+      .source-line-number {
+        cursor: pointer;
+        &:hover, &:focus, &:active {
+          background: $primary;
+          color: $white;
         }
       }
     }

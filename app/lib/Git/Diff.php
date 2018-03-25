@@ -23,6 +23,54 @@ class Diff {
     return implode('..', array_filter([$from, $to], 'strlen'));
   }
 
+  private function getDiffRanges($diff) {
+    $result = [];
+
+    $lines = explode("\n", $diff);
+    $pattern = '#^\s*@@\s*\-(?<del>[0-9]+(,[0-9]+)?)\s*\+(?<add>[0-9]+(,[0-9]+)?)\s*@@#u';
+    while (count($lines) > 0) {
+      $line = array_shift($lines);
+      if (preg_match($pattern, $line, $matches)) {
+        list($delOffset, $delCount) = explode(',', $matches['del'] . ',1');
+        list($addOffset, $addCount) = explode(',', $matches['add'] . ',1');
+        $delLines = [];
+        $addLines = [];
+        while (count($lines) > 0) {
+          $line = array_shift($lines);
+          if (preg_match($pattern, $line)) {
+            array_unshift($lines, $line);
+            break;
+          }
+          $type = substr($line, 0, 1);
+          $line = substr($line, 1);
+          switch ($type) {
+            case '-':
+              $delLines[] = $line;
+              break;
+            case '+':
+              $addLines[] = $line;
+              break;
+          }
+        }
+
+        $result[] = (object)[
+          'delete' => (object)[
+            'offset' => (int)$delOffset,
+            'count' => (int)$delCount,
+            'lines' => $delLines,
+          ],
+          'add' => (object)[
+            'offset' => (int)$addOffset,
+            'count' => (int)$addCount,
+            'lines' => $addLines,
+          ],
+        ];
+      }
+    }
+
+    return $result;
+  }
+
   public function __construct(RepositoryContext $context, Commit $from, Commit $to = null) {
     $this -> context = $context;
     $this -> _from = is_object($from) ? $from : null;
@@ -96,22 +144,26 @@ class Diff {
 
   public function get($path) {
     $data = $this -> context -> execute([
-      'show', '--format=format:%b', $this -> getRange(), '--', $path,
+      'show', '--no-expand-tabs', '--unified=0', '--format=format:%b',
+      $this -> getRange(), '--', $path,
     ]);
-    // skip first 4 lines
-    $data = explode("\n", ltrim($data));
-    return implode("\n", array_slice($data, 4));
+
+    $commit = $this -> _to ? $this -> _to : $this -> _from;
+    $blob = $commit -> tree -> node($path);
+    $blob -> info -> diff = $this -> getDiffRanges($data);
+
+    return $blob;
   }
 
   public function diff() {
     return $this -> context -> execute([
-      'show', '--format=format:%b', $this -> getRange(), '--',
+      'show', '--no-expand-tabs', '--format=format:%b', $this -> getRange(), '--',
     ], true);
   }
 
   public function patch() {
     return $this -> context -> execute([
-      'show', '--format=email', '--patch', '--stat', $this -> getRange(), '--',
+      'show', '--no-expand-tabs', '--format=email', '--patch', '--stat', $this -> getRange(), '--',
     ], true);
   }
 

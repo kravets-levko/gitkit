@@ -46,14 +46,16 @@
     <div class="my-3">
       <h5><strong>Create a new repository on the command line:</strong></h5>
       <div class="bg-light p-3 rounded">
-        <syntax-highlight language="bash" v-bind:detect="false" v-bind:gutter="false">{% pre %}
-          echo '# test' > 'README.md'
-          git init
-          git add 'README.md'
-          git commit -m 'Initial commit'
-          git remote add origin '{{ url }}'
-          git push --set-upstream origin master
-        {% endpre %}</syntax-highlight>
+        <syntax-highlight language="bash" v-bind:detect="false" v-bind:gutter="false">
+          <template v-pre>{% pre %}
+            echo '# test' > 'README.md'
+            git init
+            git add 'README.md'
+            git commit -m 'Initial commit'
+            git remote add origin '{{ url }}'
+            git push --set-upstream origin master
+          {% endpre %}</template>
+        </syntax-highlight>
       </div>
     </div>
 
@@ -62,10 +64,12 @@
     <div class="mt-3">
       <h5><strong>Push an existing repository from the command line:</strong></h5>
       <div class="bg-light p-3 rounded">
-        <syntax-highlight language="bash" v-bind:detect="false" v-bind:gutter="false">{% pre %}
-          git remote add origin '{{ url }}'
-          git push --set-upstream origin master
-        {% endpre %}</syntax-highlight>
+        <syntax-highlight language="bash" v-bind:detect="false" v-bind:gutter="false">
+          <template v-pre>{% pre %}
+            git remote add origin '{{ url }}'
+            git push --set-upstream origin master
+          {% endpre %}</template>
+        </syntax-highlight>
       </div>
     </div>
   </div>

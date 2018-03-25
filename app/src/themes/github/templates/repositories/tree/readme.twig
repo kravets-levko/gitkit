@@ -8,8 +8,8 @@
         <span class="mr-1">{{ icon(assetsPath, 'book') }}</span>
         <span>{{ node.name }}</span>
       </div>
-      <div vue-widget class="card-body">
-        <markdown>{{ node.data }}</markdown>
+      <div vue-widget class="card-body scrollbox p-0">
+        <markdown class="p-3"><template v-pre>{{ node.data }}</template></markdown>
       </div>
     </div>
   {% endif %}

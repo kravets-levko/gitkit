@@ -1,6 +1,6 @@
 {% extends '/layouts/default/main.twig' %}
 
-{% block title %}{{ repository.name }} - GitKit{% endblock %}
+{% block title %}{{ commit.info.message | first }} &middot; {{ repository.name }}@{{ commit.abbreviatedHash }}{% endblock %}
 
 {% block content %}
 {% spaceless %}
@@ -11,10 +11,12 @@
   {% set slots = 5 %}
   {% set stats = commit.diff.stats(slots) %}
 
-  <div class="card">
+  <div vue-widget class="card">
     <div class="card-header">
       <div class="row">
-        <div class="col">{{ commit.info.message }}</div>
+        <div class="col">
+          {% include '../commit-message.twig' with { message: commit.info.message } %}
+        </div>
         <div class="col-auto">
           <a class="btn btn-outline-primary" href="{{ repository.name }}/tree/{{ commit.hash }}">Browse files</a>
         </div>
@@ -120,9 +122,13 @@
         </div>
       </div>
     </div>
-    <div vue-widget class="card-body scrollbox">
-      <syntax-highlight language="diff" class="highlight-whole-line"
-        v-bind:gutter="true">{{ commit.diff.get(item.path) }}</syntax-highlight>
+    <div vue-widget class="card-body scrollbox p-0">
+      {% set blob = commit.diff.get(item.path) %}
+      <syntax-highlight language="{{ blob.ext | lower }}" v-bind:detect="true" class="highlight-whole-line" v-bind:gutter="true">
+        <template v-pre>{{ blob.data }}</template>
+        <template slot="diff"><template v-pre>{{ blob.info.diff | json_encode }}</template></template>
+        <template slot="expand"><template v-pre>{{ icon(assetsPath, 'unfold') | escape('html') }}</template></template>
+      </syntax-highlight>
     </div>
   </div>
   {% endfor %}

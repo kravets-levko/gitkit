@@ -33,8 +33,8 @@
             }}</span>
           {% endif %}
         </div>
-        <div>
-          <markdown class="mb-3">{{ repository.latestCommit.info.message }}</markdown>
+        <div class="mb-3">
+          {% include '../commit-message.twig' with { message: repository.latestCommit.info.message } %}
         </div>
         {% endif %}
       </div>

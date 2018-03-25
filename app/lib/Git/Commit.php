@@ -50,6 +50,7 @@ class Commit extends Ref {
 
       $result -> authorDate = new \DateTime('@' . $result -> authorDate);
       $result -> committerDate = new \DateTime('@' . $result -> committerDate);
+      $result -> message = array_map('trim', explode("\n", trim($result -> message)));
 
       return $result;
     });

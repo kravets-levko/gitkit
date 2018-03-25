@@ -53,15 +53,17 @@
         base: repository.name,
       } %}
     </div>
-    <div vue-widget class="card-body scrollbox">
+    <div vue-widget class="card-body scrollbox p-0">
       {% if blob.info.size <= 2 * 1024 * 1024 %}
         {% if blob.matchesMime('text/markdown', 'text/x-markdown') or blob.matchesGlob('README', 'README.*') %}
-          <markdown>{{ blob.data }}</markdown>
+          <markdown class="p-3"><template v-pre>{{ blob.data }}</template></markdown>
         {% elseif blob.matchesGlob('LICEN[CS]E', 'LICEN[CS]E.*') %}
           <div class="text-block text-monospace p-0">{{ blob.data }}</div>
         {% elseif blob.matchesMime('text/*') %}
           <syntax-highlight language="{{ blob.ext | lower }}" v-bind:detect="true"
-            selection="multiline" v-bind:gutter="true">{{ blob.data }}</syntax-highlight>
+            selection="multiline" v-bind:gutter="true">
+            <template v-pre>{{ blob.data }}</template>
+          </syntax-highlight>
         {% elseif blob.matchesMime('image/*') %}
           <div class="text-center">
             <img src="{{ rawUrl }}" alt="{{ blob.name }}">

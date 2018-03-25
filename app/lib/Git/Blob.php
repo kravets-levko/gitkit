@@ -10,7 +10,7 @@ class Blob {
   use Cached;
 
   protected $context;
-  protected $info;
+  protected $_info;
   private $_ref;
   private $_parent;
 
@@ -20,6 +20,10 @@ class Blob {
 
   protected function get_ref() {
     return $this -> _ref;
+  }
+
+  protected function get_info() {
+    return $this -> _info;
   }
 
   protected function get_name() {
@@ -127,7 +131,7 @@ class Blob {
     $this -> context = $context;
     $this -> _ref = $ref;
     $this -> _parent = $parent;
-    $this -> info = $info;
+    $this -> _info = $info;
   }
 
   public function matchesMime(...$mimeTypes) {

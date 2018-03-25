@@ -52,9 +52,10 @@ code {
 .o-3 { opacity: 0.75 !important; }
 .o-4 { opacity: 1 !important; }
 
-.text-small  { font-size: $small-font-size !important; }
-.text-large  { font-size: 200% !important; }
-.text-larger { font-size: 125% !important; }
+.text-smaller { font-size: ($small-font-size + 100%) / 2 !important; }
+.text-small   { font-size: $small-font-size !important; }
+.text-large   { font-size: 200% !important; }
+.text-larger  { font-size: 125% !important; }
 
 .text-wrap {
   word-break: break-all;

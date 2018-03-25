@@ -31,9 +31,9 @@
           </td>
           <td class="py-2">
             <div class="text-truncate" style="max-width: 400px;">
-              <a title="{{ node.commit.info.message }}"
+              <a title="{{ node.commit.info.message | first }}"
                 href="{{ base }}/commit/{{ node.commit.hash }}"
-              >{{ node.commit.info.message }}</a>
+              >{{ node.commit.info.message | first }}</a>
             </div>
           </td>
           <td width="1%" class="py-2 text-nowrap text-right">

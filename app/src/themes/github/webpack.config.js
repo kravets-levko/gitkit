@@ -55,7 +55,8 @@ module.exports = {
     ],
     'octicons': [
       'clippy', 'book', 'history', 'git-branch', 'tag', 'law', 'gear', 'file',
-      'file-directory', 'mark-github', 'diff', 'key', 'code', 'git-commit', 'trashcan',
+      'file-directory', 'mark-github', 'diff', 'key', 'code', 'git-commit',
+      'trashcan', 'unfold',
     ].map(name => 'octicons/build/svg/' + name + '.svg'),
   },
   output: {
