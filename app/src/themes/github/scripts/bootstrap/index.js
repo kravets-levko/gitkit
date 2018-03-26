@@ -1,7 +1,5 @@
 import $ from 'jquery';
 import Popper from 'popper.js';
-import Vue from 'vue';
-const Clipboard = require('clipboard');
 
 window.$ = window.jQuery = $;
 window.Popper = Popper;
@@ -32,38 +30,6 @@ $(() => {
       target.addClass('show active');
     }
   });
-});
-
-Vue.directive('bsTooltip', {
-  bind(element) {
-    $(element).tooltip();
-  },
-  unbind(element) {
-    $(element).tooltip('dispose');
-  },
-});
-
-Vue.directive('bsClipboard', {
-  bind(element) {
-    const clipboard = new Clipboard(element);
-    clipboard.on('success', function(element) {
-      // TODO: Move it from here, it's custom code
-      element = $(element.trigger);
-      const originalTitle = element.attr('data-original-title');
-      element.attr('data-original-title', element.attr('data-title-copied'));
-      element.tooltip('setContent').tooltip('show');
-      element.one('hidden.bs.tooltip', function() {
-        element.attr('data-original-title', originalTitle);
-      });
-    });
-    $(element).data('bs-clipboard', clipboard);
-  },
-  unbind(element) {
-    const clipboard = $(element).data('bs-clipboard');
-    if (clipboard instanceof Clipboard) {
-      clipboard.destroy();
-    }
-  },
 });
 
 // TODO: Refactor

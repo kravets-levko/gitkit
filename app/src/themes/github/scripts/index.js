@@ -1,13 +1,6 @@
-import Vue from 'vue';
-import * as components from './components';
-import * as directives from './directives';
-import './bootstrap';
 import { each } from 'lodash';
+import * as components from './components';
+import './bootstrap';
 
-each(document.querySelectorAll('[vue-widget]'), (element) => {
-  new Vue({
-    el: element,
-    components,
-    directives,
-  });
-});
+each(components, component => component.bootstrap());
+

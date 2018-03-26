@@ -27,10 +27,10 @@
         base: repository.name,
       } %}
     </div>
-    <div vue-widget class="col-auto">
+    <div class="col-auto">
       <button class="btn form-control" type="button"
-        v-bs-clipboard data-clipboard-text="{{ blob.path }}"
-        v-bs-tooltip data-placement="bottom"
+        bs-clipboard data-clipboard-text="{{ blob.path }}"
+        bs-tooltip data-placement="bottom"
         title="Copy file path to clipboard" data-title-copied="Copied!"
       >Copy path</button>
     </div>
@@ -53,17 +53,15 @@
         base: repository.name,
       } %}
     </div>
-    <div vue-widget class="card-body scrollbox p-0">
+    <div class="card-body scrollbox p-0">
       {% if blob.info.size <= 2 * 1024 * 1024 %}
         {% if blob.matchesMime('text/markdown', 'text/x-markdown') or blob.matchesGlob('README', 'README.*') %}
-          <markdown class="p-3"><template v-pre>{{ blob.data }}</template></markdown>
+          <markdown class="p-3">{{ blob.data }}</markdown>
         {% elseif blob.matchesGlob('LICEN[CS]E', 'LICEN[CS]E.*') %}
           <div class="text-block text-monospace p-0">{{ blob.data }}</div>
         {% elseif blob.matchesMime('text/*') %}
-          <syntax-highlight language="{{ blob.ext | lower }}" v-bind:detect="true"
-            selection="multiline" v-bind:gutter="true">
-            <template v-pre>{{ blob.data }}</template>
-          </syntax-highlight>
+          <syntax-highlight language="{{ blob.ext | lower }}" gutter="yes" detect="yes"
+            selection="multiline">{{ blob.data }}</syntax-highlight>
         {% elseif blob.matchesMime('image/*') %}
           <div class="text-center">
             <img src="{{ rawUrl }}" alt="{{ blob.name }}">

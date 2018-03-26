@@ -6,7 +6,7 @@
 {% spaceless %}
   {% from '/macros.twig' import icon %}
 
-  <div vue-widget>
+  <div>
     <div class="my-3">
       <a href="new{% if group %}?group={{ group | escape('url') }}{% endif %}" class="btn btn-success">New repository</a>
     </div>

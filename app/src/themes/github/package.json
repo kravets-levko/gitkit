@@ -24,8 +24,7 @@
     "jquery": "^3.3.1",
     "marked": "^0.3.17",
     "octicons": "^7.1.0",
-    "popper.js": "^1.12.9",
-    "vue": "^2.5.16"
+    "popper.js": "^1.12.9"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -47,8 +46,6 @@
     "svg-fill-loader": "0.0.8",
     "svg-sprite-loader": "^3.7.1",
     "uglifyjs-webpack-plugin": "^1.2.3",
-    "vue-loader": "^14.2.1",
-    "vue-template-compiler": "^2.5.16",
     "webpack": "^3.11.0"
   }
 }

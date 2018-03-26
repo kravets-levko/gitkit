@@ -1,9 +1,13 @@
-import markdown from './markdown';
-import syntaxHighlight from './syntax-highlight';
-import inputAutocomplete from './input-autocomplete';
+import BSTooltip from './bs-tooltip';
+import BSClipboard from './bs-clipboard';
+import Markdown from './markdown';
+import SyntaxHighlight from './syntax-highlight';
+import InputAutocomplete from './input-autocomplete';
 
 export {
-  markdown,
-  syntaxHighlight,
-  inputAutocomplete,
+  BSTooltip,
+  BSClipboard,
+  Markdown,
+  InputAutocomplete,
+  SyntaxHighlight,
 };

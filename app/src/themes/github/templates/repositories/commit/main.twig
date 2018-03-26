@@ -11,7 +11,7 @@
   {% set slots = 5 %}
   {% set stats = commit.diff.stats(slots) %}
 
-  <div vue-widget class="card">
+  <div class="card">
     <div class="card-header">
       <div class="row">
         <div class="col">
@@ -122,12 +122,12 @@
         </div>
       </div>
     </div>
-    <div vue-widget class="card-body scrollbox p-0">
+    <div class="card-body scrollbox p-0">
       {% set blob = commit.diff.get(item.path) %}
-      <syntax-highlight language="{{ blob.ext | lower }}" v-bind:detect="true" class="highlight-whole-line" v-bind:gutter="true">
-        <template v-pre>{{ blob.data }}</template>
-        <template slot="diff"><template v-pre>{{ blob.info.diff | json_encode }}</template></template>
-        <template slot="expand"><template v-pre>{{ icon(assetsPath, 'unfold') | escape('html') }}</template></template>
+      <syntax-highlight class="highlight-whole-line" language="{{ blob.ext | lower }}" detect="yes" gutter="yes">
+        <slot name="default">{{ blob.data }}</slot>
+        <slot name="diff" class="d-none">{{ blob.info.diff | json_encode }}</slot>
+        <slot name="expand" class="d-none">{{ icon(assetsPath, 'unfold') }}</slot>
       </syntax-highlight>
     </div>
   </div>

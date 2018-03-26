@@ -49,11 +49,11 @@
             </small>
           </div>
         </div>
-        <div vue-widget class="flex-grow-0 ml-2 text-nowrap">
+        <div class="flex-grow-0 ml-2 text-nowrap">
           <div class="btn-group">
             <button class="btn form-control cursor-pointer" type="button"
-              v-bs-clipboard data-clipboard-text="{{ commit.hash }}"
-              v-bs-tooltip data-placement="bottom"
+              bs-clipboard data-clipboard-text="{{ commit.hash }}"
+              bs-tooltip data-placement="bottom"
               title="Copy the full hash" data-title-copied="Copied!"
             >{{ icon(assetsPath, 'clippy', null, null, 'align-middle') }}</button>
             <a class="btn form-control"
@@ -66,7 +66,7 @@
 
           <a class="btn form-control w-auto ml-3"
             title="Browse the repository at this point in the history"
-            v-bs-tooltip data-placement="bottom"
+            bs-tooltip data-placement="bottom"
             href="{{ repository.name }}/tree/{{ commit.hash }}"
           >{{ icon(assetsPath, 'code', null, null, 'align-middle') }}</a>
         </div>

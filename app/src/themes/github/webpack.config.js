@@ -93,17 +93,10 @@ module.exports = {
           options: 'fill=currentColor&selector=path',
         }] ,
       },
-      {
-        test: /\.vue$/,
-        use: 'vue-loader',
-      }
     ],
   },
   resolve: {
-    extensions: ['.js', '.json', '.vue'],
-    alias: {
-      'vue$': 'vue/dist/vue.common.js'
-    },
+    extensions: ['.js', '.json'],
   },
   devtool: 'source-map',
   plugins: plugins,

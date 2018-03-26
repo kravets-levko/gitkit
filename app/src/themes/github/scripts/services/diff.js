@@ -94,12 +94,14 @@ export function collapseLines(lines, contextLinesCount) {
   const result = [];
 
   let buffer = [];
-  let scale = 1;
+  let firstRangeFound = false;
   each(lines, line => {
     if (line.isAdded || line.isRemoved) {
       if (buffer.length > 0) {
-        if (buffer.length > contextLinesCount * scale) {
-          result.push(...buffer.splice(0, contextLinesCount));
+        if (buffer.length > contextLinesCount * (firstRangeFound ? 2 : 1)) {
+          if (firstRangeFound) {
+            result.push(...buffer.splice(0, contextLinesCount));
+          }
           result.push({
             isCollapsedBlock: true,
             value: '',
@@ -112,7 +114,7 @@ export function collapseLines(lines, contextLinesCount) {
         buffer = [];
       }
       result.push(line);
-      scale = 2;
+      firstRangeFound = true;
     } else {
       buffer.push(line);
     }

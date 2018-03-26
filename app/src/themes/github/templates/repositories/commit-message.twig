@@ -2,7 +2,7 @@
   <div>{{ message | first }}</div>
   {% if (message | length > 1) and not single_line %}
     <div class="text-smaller text-muted mt-1">
-      <markdown><template v-pre>{{ message | slice(1) | join('\n') }}</template></markdown>
+      <markdown>{{ message | slice(1) | join('\n') }}</markdown>
     </div>
   {% endif %}
 {% endspaceless %}
