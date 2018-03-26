@@ -92,38 +92,41 @@ class Blob {
 
   protected function get_lines() {
     return $this -> cached(__METHOD__, function() {
-      $result = (object)[
-        'total' => 0,
-        'nonEmpty' => 0,
+      $process = $this -> context -> git -> start([
+        'show', $this -> ref -> name . ':' . $this -> path
+      ]);
+
+      $totalCount = 0;
+      $nonEmptyCount = 0;
+
+      $stdout = $process -> stdout();
+      $prev = null;
+      while (!$stdout -> eof()) {
+        $buffer = $stdout -> read(1024);
+        if ($buffer === false) break;
+        if ($buffer === '') continue;
+
+        $buffer = explode("\n", $prev . $buffer);
+        $prev = array_pop($buffer);
+        foreach ($buffer as $line) {
+          $line = preg_replace('#\s+#uS', '', $line);
+          $totalCount += 1;
+          if ($line != '') $nonEmptyCount += 1;
+        }
+      }
+      if ($prev !== null) {
+        $totalCount += 1;
+      }
+
+      $stderr = $process -> stderr() -> read();
+      $exitCode = $process -> close();
+
+      if ($exitCode != 0) throw new Exception($stderr);
+
+      return (object)[
+        'total' => $totalCount,
+        'nonEmpty' => $nonEmptyCount,
       ];
-
-      // Total lines
-      $process = $this -> context -> git -> start([
-        'show', $this -> ref -> name . ':' . $this -> path
-      ]);
-      $process -> stdin() -> close();
-      $process -> stderr() -> close();
-
-      $process = new Process('wc -l', null, null, [
-        StdPipe::STDIN => $process -> stdout(),
-      ]);
-      $result -> total = (int)(trim($process -> stdout() -> read()));
-      $process -> close();
-
-      // Non-empty lines
-      $process = $this -> context -> git -> start([
-        'show', $this -> ref -> name . ':' . $this -> path
-      ]);
-      $process -> stdin() -> close();
-      $process -> stderr() -> close();
-
-      $process = new Process('grep -cvx \'^\s*$\'', null, null, [
-        StdPipe::STDIN => $process -> stdout(),
-      ]);
-      $result -> nonEmpty = (int)(trim($process -> stdout() -> read()));
-      $process -> close();
-
-      return $result;
     });
   }
 

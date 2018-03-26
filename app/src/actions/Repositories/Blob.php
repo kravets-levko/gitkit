@@ -35,17 +35,14 @@ class Blob extends Action {
         -> withBody(new HttpStreamAdapter(
         // read
           function($length = -1) use ($stdout) {
-            trigger_error("Read `${length}`", E_USER_NOTICE);
             return $stdout -> read($length);
           },
           // eof
           function() use ($stdout) {
-            trigger_error("Eof", E_USER_NOTICE);
             return $stdout -> eof();
           },
           // close
           function() use ($stdout) {
-            trigger_error("Close", E_USER_NOTICE);
             $stdout -> close();
           }
         ));
